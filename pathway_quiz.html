@@ -23,133 +23,169 @@
 	</script>
 <style>
 :root {
---mg-bg: #FBF8EA;
+/* === Thang viền & Bo góc (Border & Radius Hierarchy) === */
+--mg-border-strong: 3px;
+--mg-border-mid: 2px;
+--mg-border-thin: 1px;
+--mg-hairline: rgba(20, 20, 20, 0.14);
+--mg-border: var(--mg-border-mid);
+
+--mg-radius-lg: 14px;
+--mg-radius-md: 10px;
+--mg-radius-sm: 6px;
+--mg-radius: var(--mg-radius-md);
+
+/* === Thang bóng đổ (Shadow Hierarchy) === */
+--mg-shadow-color: #141414;
+--mg-shadow-strong: 3px 4px 0 var(--mg-shadow-color);
+--mg-shadow-soft: 1px 2px 0 var(--mg-shadow-color);
+--mg-shadow-none: none;
+--mg-shadow: var(--mg-shadow-none);
+--mg-shadow-sm: var(--mg-shadow-none);
+
+/* === 1. Bảng màu Trung tính (Neutral Core Tokens) === */
+--mg-bg: #FAF8F2;
 --mg-ink: #141414;
 --mg-ink-soft: #55554C;
---mg-line: #141414;
---mg-question: #FFF3B8;
---mg-option: #EEF9E9;
---mg-option-hover: #E1F5D4;
---mg-start: #CDF3B0;
---mg-start-hover: #B9EB94;
---mg-correct: #8FF06B;
---mg-wrong: #F97B6B;
---mg-blue: #1D4ED8;
---mg-orange: #E8590C;
---mg-gold: #FFD166;
---mg-sky: #8ED1FC;
---mg-peach: #FFB88C;
---mg-gray: #E6E3D8;
---mg-panel: #EBE9DC;
+--mg-line: #222220;
+--mg-panel: #EFECE2;
 --mg-surface: #FFFFFF;
---mg-surface-alpha: rgba(255, 255, 255, 0.8);
+--mg-surface-alpha: rgba(255, 255, 255, 0.9);
 --mg-surface-soft: rgba(255, 255, 255, 0.7);
---mg-surface-faint: rgba(255, 255, 255, 0.6);
+--mg-surface-faint: rgba(255, 255, 255, 0.5);
 --mg-paper: #FFFFFF;
---mg-paper-soft: rgba(255, 255, 255, 0.55);
---mg-chartpaper: rgba(255, 255, 255, 0.72);
+--mg-paper-soft: rgba(255, 255, 255, 0.6);
+--mg-chartpaper: #FAF8F2;
+--mg-scrim: rgba(20, 20, 20, 0.4);
+--mg-placeholder: #8C8B82;
+
+/* === 2. Màu nhấn & Trạng thái Chọn/Hỏi (Accent & Selection) === */
+--mg-question: #FEF08A;
+--mg-start: #22C55E;
+--mg-start-hover: #16A34A;
+--mg-option: var(--mg-surface);
+--mg-option-hover: #F3F0E6;
+--mg-enzyme-bg: var(--mg-panel);
+
+/* === 3. Phản hồi Đúng / Sai (2 Feedback Colors Only) === */
+--mg-correct: #22C55E;
+--mg-wrong: #EF4444;
+--mg-error-bg: #FEF2F2;
+--mg-error-ink: #991B1B;
+--mg-missed-line: var(--mg-wrong);
+--mg-missed-fill: #FEE2E2;
+
+/* === 4. Chip Cofactors (2 Nhóm màu + 1 Trung tính viền) === */
+--mg-chip-adenylate: #FDE047;
+--mg-chip-redox: #93C5FD;
+--mg-chip-carrier: var(--mg-surface);
+--mg-chip-ink: #141414;
+
+/* === Aliases tương thích ngược cho SVG/Map & Components === */
+--mg-blue: #2563EB;
+--mg-orange: #EA580C;
+--mg-gold: #FDE047;
+--mg-sky: #93C5FD;
+--mg-peach: #FDBA74;
+--mg-gray: #E5E7EB;
 --mg-art-bg: transparent;
 --mg-on-paper: #141414;
 --mg-ink-contrast: #FFFFFF;
 --mg-outline-fill: #FFFFFF;
 --mg-outline-stroke: #141414;
 --mg-on-fill: #FFFFFF;
---mg-switch-track: #FFFFFF;
---mg-shadow-color: #141414;
---mg-hairline: rgba(20, 20, 20, 0.12);
---mg-placeholder: #9A998E;
---mg-excluded-bg: #EFEDE3;
---mg-excluded-ink: #8C8B80;
---mg-scrim: rgba(20, 20, 20, 0.28);
---mg-panel-inset: rgba(255, 255, 255, 0.5);
---mg-enzyme-bg: #DFF5D8;
---mg-missed-line: #9A3300;
---mg-missed-fill: #9A3300;
---mg-error-ink: #7A1F10;
---mg-error-bg: #FFF0EC;
+--mg-switch-track: #E5E7EB;
+--mg-excluded-bg: #F3F0E6;
+--mg-excluded-ink: #78716C;
+--mg-panel-inset: rgba(255, 255, 255, 0.6);
 --mg-struct: #141414;
---mg-struct-hl: #1D4ED8;
---mg-struct-pill: #DCEAFF;
---mg-chip-adenylate: #FFD166;
---mg-chip-redox: #8ED1FC;
---mg-chip-carrier: #FFB88C;
---mg-chip-ink: #141414;
---mg-map-adenylate: #FFD08A;
---mg-map-adenylate-ink: #5C2E00;
---mg-map-redox: #FFD08A;
---mg-map-redox-ink: #5C2E00;
---mg-map-carrier: #D7DBE0;
+--mg-struct-hl: #2563EB;
+--mg-struct-pill: #DBEAFE;
+--mg-map-adenylate: var(--mg-chip-adenylate);
+--mg-map-adenylate-ink: #713F12;
+--mg-map-redox: var(--mg-chip-redox);
+--mg-map-redox-ink: #1E3A8A;
+--mg-map-carrier: var(--mg-panel);
 --mg-map-carrier-ink: #141414;
 --mg-map-small: #FFFFFF;
 --mg-map-small-ink: #141414;
 --mg-tile-dim: none;
 color-scheme: light;
---mg-border: 3px;
---mg-radius: 18px;
---mg-shadow: 4px 5px 0 var(--mg-shadow-color);
---mg-shadow-sm: 3px 4px 0 var(--mg-shadow-color);
 --mg-tap: 44px;
 --mg-max: 1100px;
 --mg-font: "Avenir Next", "Nunito", "Arial Rounded MT Bold", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
 }
 [data-theme="dark"] {
---mg-bg: #282A36;
+--mg-border-strong: 3px;
+--mg-border-mid: 2px;
+--mg-border-thin: 1px;
+--mg-hairline: rgba(244, 244, 240, 0.14);
+--mg-shadow-color: rgba(0, 0, 0, 0.5);
+
+/* === 1. Bảng màu Trung tính Dark === */
+--mg-bg: #21222C;
 --mg-ink: #F4F4F0;
---mg-ink-soft: #B3B9D2;
---mg-line: #6272A4;
---mg-question: #464263;
---mg-option: #384670;
---mg-option-hover: #435385;
---mg-start: #535CA8;
---mg-start-hover: #5E67B4;
---mg-correct: #67E789;
---mg-wrong: #F0788C;
---mg-blue: #8CDDF0;
---mg-orange: #B05F2A;
---mg-gold: #E6EE9C;
---mg-sky: #8CDDF0;
---mg-peach: #F0B979;
---mg-gray: #3B3E52;
---mg-panel: #21222C;
+--mg-ink-soft: #A6ACCD;
+--mg-line: #4E5579;
+--mg-panel: #282A36;
 --mg-surface: #343746;
---mg-surface-alpha: rgba(52, 55, 70, 0.88);
---mg-surface-soft: rgba(52, 55, 70, 0.78);
---mg-surface-faint: rgba(52, 55, 70, 0.66);
+--mg-surface-alpha: rgba(52, 55, 70, 0.9);
+--mg-surface-soft: rgba(52, 55, 70, 0.7);
+--mg-surface-faint: rgba(52, 55, 70, 0.5);
 --mg-paper: #282A36;
 --mg-paper-soft: #282A36;
 --mg-chartpaper: #21222C;
+--mg-scrim: rgba(15, 16, 22, 0.75);
+--mg-placeholder: #7982A9;
+
+/* === 2. Màu nhấn & Trạng thái Chọn/Hỏi Dark === */
+--mg-question: #4C4863;
+--mg-start: #535CA8;
+--mg-start-hover: #5E67B4;
+--mg-option: var(--mg-surface);
+--mg-option-hover: #414558;
+--mg-enzyme-bg: var(--mg-panel);
+
+/* === 3. Phản hồi Đúng / Sai Dark === */
+--mg-correct: #4ADE80;
+--mg-wrong: #F87171;
+--mg-error-bg: #452327;
+--mg-error-ink: #FCA5A5;
+--mg-missed-line: var(--mg-wrong);
+--mg-missed-fill: #3A1D22;
+
+/* === 4. Chip Cofactors Dark === */
+--mg-chip-adenylate: #854D0E;
+--mg-chip-redox: #1E40AF;
+--mg-chip-carrier: var(--mg-surface);
+--mg-chip-ink: #F4F4F0;
+
+/* === Aliases tương thích Dark === */
+--mg-blue: #60A5FA;
+--mg-orange: #FB923C;
+--mg-gold: #FACC15;
+--mg-sky: #60A5FA;
+--mg-peach: #FDBA74;
+--mg-gray: #374151;
 --mg-art-bg: transparent;
---mg-ink-contrast: #282A36;
+--mg-ink-contrast: #21222C;
 --mg-outline-fill: #F4F4F0;
 --mg-outline-stroke: #191A21;
 --mg-on-fill: #FBFBF8;
 --mg-switch-track: #44475A;
---mg-shadow-color: rgba(0, 0, 0, 0.45);
---mg-hairline: rgba(244, 244, 240, 0.12);
---mg-placeholder: #8A91B4;
---mg-excluded-bg: #2E3040;
+--mg-excluded-bg: #2B2D3C;
 --mg-excluded-ink: #8189AD;
---mg-scrim: rgba(25, 26, 33, 0.7);
 --mg-panel-inset: rgba(244, 244, 240, 0.05);
---mg-enzyme-bg: #384670;
---mg-missed-line: #FFA877;
---mg-missed-fill: #B5532A;
---mg-error-ink: #FFB8C6;
---mg-error-bg: #52323C;
 --mg-struct: #F4F4F0;
---mg-struct-hl: #8CDDF0;
---mg-struct-pill: #2B4A57;
---mg-chip-adenylate: #6F4D2A;
---mg-chip-redox: #2D5A6B;
---mg-chip-carrier: #6B3A5B;
---mg-chip-ink: #F4F4F0;
---mg-map-adenylate: #6F4D2A;
---mg-map-adenylate-ink: #FBE3C2;
---mg-map-redox: #6F4D2A;
---mg-map-redox-ink: #FBE3C2;
---mg-map-carrier: #4A4F6B;
+--mg-struct-hl: #60A5FA;
+--mg-struct-pill: #1E3A8A;
+--mg-map-adenylate: var(--mg-chip-adenylate);
+--mg-map-adenylate-ink: #FEF08A;
+--mg-map-redox: var(--mg-chip-redox);
+--mg-map-redox-ink: #DBEAFE;
+--mg-map-carrier: #383B4D;
 --mg-map-carrier-ink: #ECECF4;
---mg-map-small: #3E4155;
+--mg-map-small: #343746;
 --mg-map-small-ink: #ECECF4;
 --mg-tile-dim: brightness(0.8) saturate(0.85);
 color-scheme: dark;
@@ -5563,6 +5599,90 @@ padding-right: 62px;
 .mg-dw-key {
 transition: none;
 }
+}
+
+/* ==========================================================================
+   PHASE 1: VISUAL DECLUTTER & BORDER/SHADOW HIERARCHY OVERRIDES
+   ========================================================================== */
+
+/* Bỏ hoàn toàn các đốm mờ nhiễu nền */
+.mg-backdrop {
+  display: none !important;
+}
+
+/* Phân cấp viền & bóng cho nút bấm */
+.mg-btn {
+  border: var(--mg-border-mid) solid var(--mg-line);
+  border-radius: var(--mg-radius-sm);
+  box-shadow: none;
+}
+.mg-btn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+.mg-btn--primary,
+[data-key="start"] {
+  border: var(--mg-border-strong) solid var(--mg-line);
+  box-shadow: var(--mg-shadow-strong) !important;
+  border-radius: var(--mg-radius-md);
+}
+.mg-btn--primary:active:not(:disabled),
+[data-key="start"]:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 2px 0 var(--mg-shadow-color) !important;
+}
+
+/* Thẻ (Card) & Khung */
+.mg-card {
+  border: var(--mg-border-thin) solid var(--mg-line);
+  border-radius: var(--mg-radius-md);
+  box-shadow: none;
+}
+.mg-card--question,
+.mgq-eq-card {
+  border: var(--mg-border-strong) solid var(--mg-line);
+  box-shadow: var(--mg-shadow-soft);
+  background: var(--mg-question);
+}
+
+/* Nhãn Section: Đậm, rõ, màu ink, cỡ lớn hơn nút phụ */
+.mg-label {
+  font: 800 15px/1.2 var(--mg-font);
+  color: var(--mg-ink);
+  letter-spacing: 0.02em;
+  margin: 0 0 8px 2px;
+}
+
+/* Thẻ Pathway (ptile): Phẳng, không bóng, trạng thái chọn rõ rệt */
+.mg-ptile {
+  border: var(--mg-border-thin) solid var(--mg-line);
+  border-radius: var(--mg-radius-sm);
+  box-shadow: none;
+  background: var(--mg-surface);
+}
+.mg-ptile:hover {
+  background: var(--mg-option-hover);
+}
+.mg-ptile.is-selected {
+  background: var(--mg-question);
+  border: var(--mg-border-mid) solid var(--mg-line);
+  font-weight: 800;
+}
+/* Bỏ chấm màu gây nhiễu ở từng pathway card (giữ ô vuông màu nhận diện ở nhóm) */
+.mg-ptile__dot {
+  display: none !important;
+}
+
+/* Phản hồi sai (missed) chuyển thành viền nét đứt cảnh báo, không dùng màu thứ 3 */
+.mgq-box.is-missed {
+  border: 2px dashed var(--mg-wrong) !important;
+  background: var(--mg-error-bg) !important;
+}
+
+/* Chip cofactor: carrier trung tính có viền */
+.mg-chip--carrier {
+  background: var(--mg-surface);
+  border: 1px solid var(--mg-line);
 }
 </style>
 </head>

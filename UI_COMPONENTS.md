@@ -23,6 +23,25 @@ Tài liệu này tổng hợp và khai báo toàn bộ các thuộc tính, trạ
 
 Tất cả các biến CSS được khai báo tại `:root` và tự động ghi đè qua `[data-theme="dark"]`.
 
+### 2.0 Thang Phân Cấp Viền & Bóng Đổ (Border & Shadow Hierarchy - Refactored Phase 1)
+
+| Biến CSS | Giá trị mặc định | Phân cấp & Mục đích áp dụng |
+| :--- | :--- | :--- |
+| `--mg-border-strong` | `3px` | Cấp 1: Nút hành động chính (`Start Quiz`), Thẻ câu hỏi active |
+| `--mg-border-mid` | `2px` | Cấp 2: Các phần tử bấm được (Buttons, Active ptile, Chooser options) |
+| `--mg-border-thin` | `1px` | Cấp 3: Thành phần thụ động (Cards, Panels, Inactive ptiles, Dividers) |
+| `--mg-hairline` | `rgba(20, 20, 20, 0.14)` | Đường ngăn cách cực mảnh |
+| `--mg-shadow-strong` | `3px 4px 0 var(--mg-shadow-color)` | Bóng đổ đậm duy nhất cho nút Start Quiz và Active question |
+| `--mg-shadow-soft` | `1px 2px 0 var(--mg-shadow-color)` | Bóng đổ nhẹ cho active card |
+| `--mg-shadow-none` | `none` | Triệt tiêu bóng đổ cho các nút/card thông thường để chống quá tải thị giác |
+| `--mg-border` | `var(--mg-border-mid)` | *(Alias tương thích ngược)* Trỏ về 2px |
+| `--mg-shadow` | `var(--mg-shadow-none)` | *(Alias tương thích ngược)* Mặc định phẳng |
+| `--mg-shadow-sm` | `var(--mg-shadow-none)` | *(Alias tương thích ngược)* Mặc định phẳng |
+| `--mg-radius-lg` | `14px` | Bo góc modal và container lớn |
+| `--mg-radius-md` | `10px` | Bo góc card và panels |
+| `--mg-radius-sm` | `6px` | Bo góc nút bấm, chips, tiles |
+| `--mg-radius` | `var(--mg-radius-md)` | *(Alias tương thích ngược)* 10px |
+
 ### 2.1 Bảng màu cốt lõi & Bề mặt (Core Surfaces & Typography)
 
 | Biến CSS | Giá trị Light Theme (`:root`) | Giá trị Dark Theme (`[data-theme="dark"]`) | Mục đích áp dụng |
