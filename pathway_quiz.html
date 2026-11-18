@@ -5787,6 +5787,162 @@ transition: none;
   min-height: 38px;
   white-space: nowrap;
 }
+
+/* ==========================================================================
+   PHASE 3: QUIZ SCREEN, SVG MAP & OVERLAY STREAMLINING
+   ========================================================================== */
+
+/* 1. Bố cục 3 vùng: Thanh trên mỏng -> Bản đồ tối đa -> Vùng câu hỏi dưới */
+.mgq-root {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  box-sizing: border-box !important;
+  padding: 6px 12px 12px !important;
+  gap: 8px !important;
+}
+.mgq-head {
+  flex: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-height: 38px !important;
+  padding: 0 !important;
+}
+.mgq-body {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  gap: 8px !important;
+}
+.mgq-panel {
+  flex: 1 1 auto !important;
+  min-height: 240px !important;
+  position: relative !important;
+  border-radius: var(--mg-radius-md) !important;
+  overflow: hidden !important;
+  border: var(--mg-border-thin) solid var(--mg-line) !important;
+  background: var(--mg-chartpaper) !important;
+}
+.mgq-side {
+  flex: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+/* 2. Banner câu hỏi & Mascot tinh gọn */
+.mgq-banner {
+  padding: 10px 14px !important;
+  border-radius: var(--mg-radius-md) !important;
+  border: var(--mg-border-mid) solid var(--mg-line) !important;
+  box-shadow: var(--mg-shadow-soft) !important;
+}
+.mgq-eq-card {
+  border-radius: var(--mg-radius-md) !important;
+  border: var(--mg-border-strong) solid var(--mg-line) !important;
+  box-shadow: var(--mg-shadow-soft) !important;
+}
+.mgq-banner:not(.is-feedback) .mgq-banner__mascot {
+  display: none !important;
+}
+
+/* 3. Nút Hint & Reveal gộp gọn thanh thoát */
+.mgq-act {
+  min-height: 36px !important;
+  padding: 6px 14px !important;
+  font-size: 14px !important;
+  border-radius: var(--mg-radius-sm) !important;
+  border: var(--mg-border-thin) solid var(--mg-line) !important;
+  box-shadow: none !important;
+}
+
+/* 4. Chooser 6 phương án: lưới phẳng, thanh lịch */
+.mgq-opt {
+  border-radius: var(--mg-radius-sm) !important;
+  border: var(--mg-border-thin) solid var(--mg-line) !important;
+  box-shadow: none !important;
+  font-weight: 700 !important;
+  min-height: 52px !important;
+  padding: 6px 8px !important;
+}
+.mgq-opt:hover:not(:disabled):not(.is-eliminated) {
+  background: var(--mg-option-hover) !important;
+}
+.mgq-opt.is-correct {
+  background: var(--mg-correct) !important;
+  color: #FFFFFF !important;
+  border-color: var(--mg-correct) !important;
+}
+.mgq-opt.is-wrong {
+  background: var(--mg-wrong) !important;
+  color: #FFFFFF !important;
+  border-color: var(--mg-wrong) !important;
+}
+
+/* 5. Bản đồ SVG: bỏ bóng đen dày, mũi tên 2px, màng sinh học dịu */
+.mgc-node-shadow {
+  opacity: 0 !important;
+}
+.mgc-slot[data-state="active"] .mgc-node-shadow {
+  opacity: 0.25 !important;
+}
+.mgc-arrow-line {
+  stroke-width: 2px !important;
+  stroke: var(--mg-ink-soft) !important;
+}
+.mgc-arrow-head {
+  fill: var(--mg-ink-soft) !important;
+}
+.mgc-membrane {
+  stroke-width: 1.5px !important;
+  opacity: 0.45 !important;
+}
+.mgc-chip-body {
+  stroke-width: 1.5px !important;
+}
+.mgc-node-short {
+  font-weight: 800 !important;
+}
+
+/* 6. Trạng thái tinh gọn */
+.is-eliminated {
+  opacity: 0.35 !important;
+  text-decoration: line-through !important;
+  filter: grayscale(0.8) !important;
+  pointer-events: none !important;
+}
+.mgq-box.is-missed {
+  border: 2px dashed var(--mg-wrong) !important;
+  background: var(--mg-error-bg) !important;
+}
+
+/* 7. Đồng nhất Overlay (Modal, Detail Card) */
+.mg-modal__panel {
+  border-radius: var(--mg-radius-lg) !important;
+  border: var(--mg-border-mid) solid var(--mg-line) !important;
+  box-shadow: var(--mg-shadow-strong) !important;
+}
+.mg-detail-card {
+  border-radius: var(--mg-radius-lg) !important;
+}
+
+/* 8. Animation: Rung sai 1 lần, tôn trọng reduced-motion */
+.is-wrong,
+.mgq-input.is-error {
+  animation: mg-shake 0.35s ease 1 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 </style>
 </head>
 <body>

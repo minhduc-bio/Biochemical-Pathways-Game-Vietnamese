@@ -184,6 +184,15 @@ async function runTestSuite() {
     assert(quizStartTest.hasHint, "Nút Hint (.mgq-hint-btn) có mặt");
     assert(quizStartTest.hasReveal, "Nút Reveal (.mgq-reveal-btn) có mặt");
     assert(quizStartTest.optCount >= 4, "Có các phương án lựa chọn trả lời", quizStartTest.optCount);
+    
+    // Kiểm tra các đặc tính hiển thị của Pha 3
+    const phase3Check = await evaluate(`({
+      hasCleanNodeShadow: !document.querySelector('.mgc-node-shadow[style*="opacity: 1"]'),
+      hasCleanArrowLine: !!document.querySelector('.mgc-arrow-line'),
+      modalPanelStyled: !!document.querySelector('.mg-header')
+    })`);
+    assert(phase3Check.hasCleanNodeShadow, "Pha 3: SVG Node bóng đen dày đã được làm sạch");
+    assert(phase3Check.hasCleanArrowLine, "Pha 3: Mũi tên SVG phản ứng hiển thị sắc nét");
 
     console.log("\n--- TEST GROUP 5: Tương tác Reveal (Tính lỗi & Chuyển bước) ---");
     const revealTest = await evaluate(`(() => {
