@@ -5684,6 +5684,109 @@ transition: none;
   background: var(--mg-surface);
   border: 1px solid var(--mg-line);
 }
+
+/* ==========================================================================
+   PHASE 2: MENU LAYOUT, SUMMARY CHIPS, DOCK & ACCORDION STYLES
+   ========================================================================== */
+
+/* Header help icon */
+.mg-help-icon {
+  width: 38px;
+  height: 38px;
+  font-size: 18px;
+  font-weight: 800;
+  border-radius: 50%;
+  border: var(--mg-border-mid) solid var(--mg-line);
+  background: var(--mg-surface);
+  color: var(--mg-ink);
+}
+
+/* Picked pathway summary chips */
+.mg-picked-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.mg-chip--picked {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font: 700 13px/1 var(--mg-font);
+  background: var(--mg-question);
+  color: var(--mg-ink);
+  border: var(--mg-border-thin) solid var(--mg-line);
+  border-radius: var(--mg-radius-sm);
+}
+.mg-chip__remove {
+  background: none;
+  border: none;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 0 2px;
+  cursor: pointer;
+  color: var(--mg-ink-soft);
+}
+.mg-chip__remove:hover {
+  color: var(--mg-wrong);
+}
+
+/* Mode description micro-copy */
+.mg-mode-desc {
+  margin: 6px 0 0 2px;
+  font: 600 13px/1.3 var(--mg-font);
+  color: var(--mg-ink-soft);
+}
+
+/* Tile step status refinement */
+.mg-tile__pct.is-mastered {
+  color: #15803D;
+  font-weight: 800;
+}
+.mg-tile__pct.is-learning {
+  color: var(--mg-ink-soft);
+  font-weight: 700;
+}
+.mg-panel--steps {
+  min-height: 190px;
+}
+
+/* Dock bar with Start Quiz and Settings */
+.mg-dock__bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.mg-dock__bar [data-key="start"] {
+  flex: 1;
+}
+.mg-dock__settings {
+  flex: none;
+  width: 58px;
+  height: 58px;
+  border-radius: var(--mg-radius-md);
+  border: var(--mg-border-mid) solid var(--mg-line);
+  background: var(--mg-surface);
+}
+
+/* Menu tools responsive toolbar */
+.mg-select__tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+}
+.mg-select__tools .mg-btn {
+  font-size: 13px;
+  padding: 7px 12px;
+  min-height: 38px;
+  white-space: nowrap;
+}
 </style>
 </head>
 <body>
@@ -29672,7 +29775,7 @@ titleSvg: '<svg class="mg-brand__title" xmlns="http://www.w3.org/2000/svg" viewB
 'use strict';
 var MG = root.MG = root.MG || {};
 var RAMP = [
-{ at: 0, rgb: [244, 128, 111] },
+{ at: 0, rgb: [254, 226, 226] },
 { at: 33, rgb: [255, 176, 112] },
 { at: 66, rgb: [246, 242, 106] },
 { at: 100, rgb: [141, 235, 106] }
@@ -30514,9 +30617,8 @@ return (!!g.everything && g.everything.id === s.pathwayId) || g.pathways.some(fu
 function toggleTab(group) {
 var s = readSettings();
 var open = openGroupIds(pathwayGroups(), s, pickedPathways(s));
-var at = open.indexOf(group.id);
-if (at >= 0) { open.splice(at, 1); } else { open.push(group.id); }
-openTabs = open;
+var isOpen = open.indexOf(group.id) >= 0;
+openTabs = isOpen ? [] : [group.id];
 rerender('tab:' + group.id);
 }
 function menuPathwayIds() {
@@ -30633,7 +30735,12 @@ rerender('toggle:' + rxnId);
 }
 function pctLabel(pct) {
 if (pct === null) { return null; }
-return el('span', { class: 'mg-tile__pct' }, icon('check'), el('span', { text: Math.round(pct) + ' %' }));
+var roundPct = Math.round(pct);
+if (roundPct >= 80) {
+return el('span', { class: 'mg-tile__pct is-mastered' }, icon('check'), el('span', { text: roundPct + ' %' }));
+} else {
+return el('span', { class: 'mg-tile__pct is-learning' }, el('span', { text: roundPct + ' %' }));
+}
 }
 function tileFor(r, pathway, mastery, blank, excluded) {
 var enzyme = ent('enzyme', r.enzyme) || { name: r.enzyme, short: r.enzyme };
@@ -30716,8 +30823,26 @@ on: { click: function () { chooseEverything(p.id); } }
 }
 function pathwayBlock(s) {
 var all = MG.everythingAll ? pathwayById(MG.everythingAll) : null;
+var picked = pickedPathways(s);
+var chips = null;
+if (picked.length > 0) {
+var chipList = picked.map(function (pid) {
+var p = pathwayById(pid);
+if (!p) { return null; }
+return el('span', { class: 'mg-chip mg-chip--picked', 'data-key': 'picked:' + p.id },
+el('span', { text: p.title }),
+el('button', {
+type: 'button', class: 'mg-chip__remove', 'aria-label': 'Bỏ ' + p.title,
+on: { click: function (e) { e.stopPropagation(); choosePathway(p.id); } }
+}, '×'));
+}).filter(Boolean);
+if (chipList.length > 0) {
+chips = el('div', { class: 'mg-picked-chips', role: 'group', 'aria-label': 'Selected pathways' }, chipList);
+}
+}
 return el('div', { class: 'mg-section' },
 el('p', { class: 'mg-label', text: 'Pathway' }),
+chips,
 all ? everythingButton(all, isEverythingPicked(s) ? all.id : s.pathwayId, null, false) : null,
 pathwayPicker(s));
 }
@@ -30863,14 +30988,27 @@ var inQuiz = total - excluded.length;
 var totalLine = picks > 1
 ? el('p', { class: 'mg-dock__total', 'data-key': 'total', 'aria-live': 'polite', text: picks + ' pathways, ' + inQuiz + (inQuiz === 1 ? ' step' : ' steps') })
 : null;
+var settingsBtn = el('button', {
+type: 'button', class: 'mg-btn mg-btn--icon mg-dock__settings', 'data-key': 'settings:open',
+'aria-label': 'Settings', title: 'Settings',
+on: { click: function () { openSettings(); } }
+}, icon('gear'));
 var dock = el('div', { class: 'mg-dock' },
 totalLine,
-el('button', { type: 'button', class: 'mg-btn mg-btn--primary', 'data-key': 'start', disabled: none, on: { click: startFromSelect } }, startLabel));
+el('div', { class: 'mg-dock__bar' },
+el('button', { type: 'button', class: 'mg-btn mg-btn--primary', 'data-key': 'start', disabled: none, on: { click: startFromSelect } }, startLabel),
+settingsBtn));
 var left = el('div', { class: 'mg-select__col' },
 courseList().length ? section('Course', courseStrip(course)) : null,
 course ? sectionsBlock(course, s) : pathwayBlock(s));
+var modeDescriptions = {
+build: 'Build: Dựng bản đồ theo từng bước phản ứng.',
+pick: 'Fill the Map: Bản đồ khuyết với 6 phương án trắc nghiệm.',
+type: 'Fill in the Blank: Tự gõ chính xác tên chất và enzyme.'
+};
+var modeDesc = el('p', { class: 'mg-mode-desc', text: modeDescriptions[s.mode] || '' });
 var right = el('div', { class: 'mg-select__col' },
-section('Mode', modes),
+section('Mode', el('div', null, modes, modeDesc)),
 formats
 ? el('div', { class: 'mg-section' }, el('div', { class: 'mg-label-row' }, el('p', { class: 'mg-label', text: 'Show molecules as' }), cofToggle), formats)
 : el('div', { class: 'mg-section' }, el('div', { class: 'mg-label-row mg-label-row--end' }, cofToggle)),
@@ -30879,7 +31017,7 @@ el('div', { class: 'mg-history' }, practiceBtn, wipe.node),
 dock,
 hint ? el('p', { class: 'mg-hint', text: hint }) : null);
 return el('section', { class: 'mg-screen mg-select' + (fresh ? ' is-entering' : '') },
-el('header', { class: 'mg-select__head' }, brandTitle(), introStrip()),
+el('header', { class: 'mg-select__head' }, brandTitle(), helpHeaderButton()),
 el('div', { class: 'mg-select__body' }, left, right),
 el('footer', { class: 'mg-select__foot' }, menuTools()));
 }
@@ -31101,7 +31239,7 @@ function gamesOpenButton() {
 if (!MG.gamesUi || !MG.gameEngine || !MG.gameEngine.games().length) { return null; }
 return el('button', {
 type: 'button', class: 'mg-btn mg-btn--ghost mg-games-open', 'data-key': 'games:open', on: { click: showGames }
-}, 'Quizzes');
+}, 'Compare & Mechanisms');
 }
 function howToPlay() {
 var points = [
@@ -31131,14 +31269,13 @@ el('span', { class: 'mg-brand__text', html: b.titleSvg }),
 el('span', { class: 'mg-brand__sr', text: 'Pathway Quiz' }));
 }
 function introStrip() {
-if (readSettings().introSeen) { return null; }
-return el('div', { class: 'mg-intro', 'data-key': 'intro' },
-el('span', { class: 'mg-intro__text', text: 'New here?' }),
-el('button', { type: 'button', class: 'mg-btn mg-btn--ghost mg-intro__more', 'data-key': 'intro:more', on: { click: howToPlay } }, 'How to play'),
-el('button', {
-type: 'button', class: 'mg-btn mg-btn--icon mg-intro__close', 'data-key': 'intro:close', 'aria-label': 'Close',
-on: { click: function () { writeSettings({ introSeen: true }); rerender('start'); } }
-}, icon('close')));
+return null;
+}
+function helpHeaderButton() {
+return el('button', {
+type: 'button', class: 'mg-btn mg-btn--icon mg-help-icon', 'data-key': 'help:open',
+'aria-label': 'How to play', title: 'How to play', on: { click: howToPlay }
+}, '?');
 }
 function helpButton() {
 return el('button', {
@@ -31171,7 +31308,7 @@ if (root.location && typeof root.location.reload === 'function') { root.location
 return handle;
 }
 function menuTools() {
-return el('div', { class: 'mg-select__tools' }, helpButton(), atpOpenButton(), drawOpenButton(), gamesOpenButton(), advancedButton());
+return el('div', { class: 'mg-select__tools' }, atpOpenButton(), drawOpenButton(), gamesOpenButton(), advancedButton());
 }
 function atpOpenButton() {
 if (!MG.atpUi || !MG.atp) { return null; }
