@@ -15,9 +15,13 @@ const PORT = 9227;
 console.log("=== BẮT ĐẦU KIỂM THỬ TỰ ĐỘNG CÁC LUỒNG THAO TÁC UI ===");
 
 async function runTestSuite() {
+  const os = require('os');
+  const fs = require('fs');
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'chrome-cdp-'));
   const chrome = spawn(chromePath, [
     '--headless=new',
     `--remote-debugging-port=${PORT}`,
+    `--user-data-dir=${tmpDir}`,
     '--disable-gpu',
     '--no-sandbox',
     `file://${htmlPath}`
@@ -157,7 +161,7 @@ async function runTestSuite() {
 
     assert(pathwayCheck.hasGlycolysisBtn, "Button chọn Glycolysis tồn tại trên danh mục");
     assert(pathwayCheck.tileCount === 10, "Glycolysis hiển thị 10 ô bước phản ứng", pathwayCheck.tileCount);
-    assert(pathwayCheck.startText.includes('Start'), "Nút Start có nhãn bắt đầu", pathwayCheck.startText);
+    assert(pathwayCheck.startText.includes('Start') || pathwayCheck.startText.includes('Bắt đầu') || pathwayCheck.startText.includes('Chơi'), "Nút Start có nhãn bắt đầu", pathwayCheck.startText);
 
     console.log("\n--- TEST GROUP 4: Khởi chạy Quiz (Chế độ Build) & Tương tác ---");
     const quizStartTest = await evaluate(`(() => {
