@@ -113,17 +113,17 @@ async function runTestSuite() {
     assert(initCheck.screen === 'select', "Màn hình khởi động phải là 'select'", initCheck.screen);
     assert(initCheck.hasStartBtn, "Nút Start Quiz phải tồn tại trên màn hình select");
     
-    // Kiểm tra các thành phần mới của Phase 2
+    // Kiểm tra các thành phần mới của Phase 2 & Refactor Nhóm B
     const phase2Check = await evaluate(`({
       hasHelpHeader: !!document.querySelector('.mg-help-icon'),
       hasDockSettings: !!document.querySelector('[data-key="settings:open"]'),
-      hasModeDesc: !!document.querySelector('.mg-mode-desc'),
-      pickedChipsCount: document.querySelectorAll('.mg-chip--picked').length
+      hasModeDesc: !!document.querySelector('.mg-choice__text') || !!document.querySelector('.mg-mode-desc'),
+      hasSummaryOrChips: !!document.querySelector('.mg-picked-summary') || document.querySelectorAll('.mg-chip--picked').length >= 1
     })`);
     assert(phase2Check.hasHelpHeader, "Pha 2: Header có nút icon '?' trợ giúp");
-    assert(phase2Check.hasDockSettings, "Pha 2: Dock có nút Settings gear (⚙) cạnh Start Quiz");
-    assert(phase2Check.hasModeDesc, "Pha 2: Khối Mode có dòng mô tả ngắn cách chơi");
-    assert(phase2Check.pickedChipsCount >= 1, "Pha 2: Có chip tóm tắt pathway đang chọn");
+    assert(phase2Check.hasDockSettings, "Pha 2: Có nút Settings gear (⚙)");
+    assert(phase2Check.hasModeDesc, "Pha 2: Khối Mode có mô tả cách chơi");
+    assert(phase2Check.hasSummaryOrChips, "Pha 2/Nhóm B: Có tóm tắt pathway đang chọn (dòng tóm tắt hoặc chip)");
     assert(initCheck.groupCount >= 5, "Danh sách con đường phải có ít nhất 5 nhóm", initCheck.groupCount);
     assert(initCheck.initialTiles === 10, "Mặc định Glycolysis được chọn và có 10 bước (HK, PGI...)", initCheck.initialTiles);
     assert(!initCheck.startDisabled, "Mặc định nút Start đã sẵn sàng (không bị disabled)");

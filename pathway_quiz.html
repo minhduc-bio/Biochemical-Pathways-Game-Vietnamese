@@ -6115,6 +6115,176 @@ h1, h2, h3, h4, h5, h6,
   overflow-wrap: break-word;
 }
 
+
+/* === Nhóm B: Bố cục Menu & Header & Thứ tự Mobile === */
+
+/* B1: Header logo và nút ? trên cùng một hàng */
+.mg-select__head {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 8px 0 4px !important;
+  min-height: 56px !important;
+}
+
+.mg-select__head .mg-brand {
+  margin: 0 auto !important;
+}
+
+.mg-select__head .mg-help-icon {
+  position: absolute !important;
+  right: 0 !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
+}
+
+@media (max-width: 520px) {
+  .mg-select__head {
+    padding: 4px 0 !important;
+    min-height: 46px !important;
+  }
+  .mg-brand__mascot {
+    width: 42px !important;
+    height: auto !important;
+  }
+  .mg-brand__title,
+  .mg-brand__text svg {
+    height: 32px !important;
+    width: auto !important;
+  }
+  .mg-select__head .mg-help-icon {
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 17px !important;
+  }
+}
+
+/* B3: Thứ tự ưu tiên trên mobile: Chế độ -> Phân tử/Cofactors -> Con đường -> Lưới bước -> Bắt đầu */
+.mg-section--mode { order: 1; }
+.mg-section--format { order: 2; }
+.mg-section--course { order: 3; }
+.mg-section--pathway { order: 4; }
+.mg-panel--steps { order: 5; }
+.mg-practice__btn { order: 6; }
+.mg-dock { order: 7; }
+.mg-history { order: 8; }
+
+@media (max-width: 767px) {
+  .mg-select__body {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin-top: 6px !important;
+  }
+  .mg-select__col {
+    display: contents !important;
+  }
+  .mg-panel--steps {
+    margin-top: 4px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .mg-select__body {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) !important;
+    gap: 20px !important;
+    margin-top: 10px !important;
+  }
+  .mg-select__col {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}
+
+/* B4: Dòng tóm tắt khi chọn 1 con đường */
+.mg-picked-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 2px 0 10px 2px;
+  font: 700 14px/1.35 var(--mg-font-body);
+  color: var(--mg-ink);
+}
+
+.mg-picked-summary__badge {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: var(--mg-radius-sm);
+  background: var(--mg-question);
+  border: 1.5px solid var(--mg-line);
+  color: var(--mg-ink);
+}
+
+.mg-picked-summary__name {
+  font-weight: 800;
+  font-family: var(--mg-font-display);
+}
+
+.mg-picked-summary__dot,
+.mg-picked-summary__count {
+  color: var(--mg-ink-soft);
+}
+
+/* B6: Nút Luyện tập bước yếu nổi bật & Link xóa lịch sử tinh gọn */
+.mg-practice__btn {
+  width: 100% !important;
+  margin-top: 8px !important;
+  margin-bottom: 4px !important;
+  min-height: 44px !important;
+  background: var(--mg-question) !important;
+  border: var(--mg-border-mid) solid var(--mg-line) !important;
+  border-radius: var(--mg-radius) !important;
+  color: var(--mg-ink) !important;
+  font: 800 15px/1.3 var(--mg-font-display) !important;
+  box-shadow: 2px 2px 0 var(--mg-shadow-color) !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.mg-practice__btn:hover {
+  background: #FEF08A !important;
+}
+
+.mg-history {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 6px 0 0 !important;
+}
+
+.mg-history__link {
+  display: inline-block !important;
+  background: none !important;
+  border: none !important;
+  padding: 4px 8px !important;
+  font: 600 12px/1.3 var(--mg-font-body) !important;
+  color: var(--mg-ink-soft) !important;
+  text-decoration: underline !important;
+  cursor: pointer !important;
+  opacity: 0.8 !important;
+}
+
+.mg-history__link:hover {
+  opacity: 1 !important;
+  color: var(--mg-wrong) !important;
+}
+
+/* B7: Hint phía trên lưới bước */
+.mg-hint--top {
+  margin: 0 0 8px 2px !important;
+  font: 600 12.5px/1.35 var(--mg-font-body) !important;
+  color: var(--mg-ink-soft) !important;
+  text-align: left !important;
+}
+
 </style>
 </head>
 <body>
@@ -30925,7 +31095,7 @@ type: 'button', class: 'mg-btn mg-btn--icon mg-corner__back', 'aria-label': 'V�
 on: { click: function () { showSelect(); } }
 }, icon('undo'));
 var gear = el('button', {
-type: 'button', class: 'mg-btn mg-btn--icon mg-corner__gear', 'aria-label': 'Cài đặt', title: 'Cài đặt',
+type: 'button', class: 'mg-btn mg-btn--icon mg-corner__gear', 'data-key': 'settings:open', 'aria-label': 'Cài đặt', title: 'Cài đặt',
 on: { click: function () { openSettings(); } }
 }, icon('gear'));
 app = el('div', { class: 'mg-app', 'data-screen': 'select' }, backdrop, stage, el('div', { class: 'mg-corner' }, back, gear));
@@ -31130,6 +31300,11 @@ if (!p || !p.title) { return ''; }
 var m = p.title.match(/^(.*?)\s*\((.*?)\)$/);
 return m ? m[1].trim() : p.title;
 }
+function groupShortTitle(title) {
+if (!title) { return ''; }
+var m = title.match(/^(.*?)\s*\((.*?)\)$/);
+return m ? m[1].trim() : title;
+}
 function pathwayTile(p, picked) {
 var on = picked.indexOf(p.id) >= 0;
 var several = picked.length >= 2;
@@ -31162,7 +31337,16 @@ function pathwayBlock(s) {
 var all = MG.everythingAll ? pathwayById(MG.everythingAll) : null;
 var picked = pickedPathways(s);
 var chips = null;
-if (picked.length > 0) {
+if (picked.length === 1) {
+var p0 = pathwayById(picked[0]);
+if (p0) {
+chips = el('div', { class: 'mg-picked-summary', 'aria-live': 'polite' },
+el('span', { class: 'mg-picked-summary__badge', text: 'Đã chọn' }),
+el('span', { class: 'mg-picked-summary__name', text: pathwayShortTitle(p0) }),
+el('span', { class: 'mg-picked-summary__dot', text: '·' }),
+el('span', { class: 'mg-picked-summary__count', text: (p0.order ? p0.order.length : 0) + ' bước' }));
+}
+} else if (picked.length > 1) {
 var chipList = picked.map(function (pid) {
 var p = pathwayById(pid);
 if (!p) { return null; }
@@ -31203,7 +31387,7 @@ type: 'button', class: 'mg-group__tab' + (isOpen ? ' is-open' : '') + (badge ? '
 on: { click: function () { toggleTab(g); } }
 },
 dot,
-el('span', { class: 'mg-group__name', text: g.title }),
+el('span', { class: 'mg-group__name', text: groupShortTitle(g.title), title: g.title }),
 badge ? el('span', { class: 'mg-group__badge', text: badge }) : null,
 el('span', { class: 'mg-group__chev', 'aria-hidden': 'true' }));
 var all = inPick === g.pathways.length;
@@ -31309,10 +31493,10 @@ var everything = (!!pathway && !!pathway.hidden && !isMix) || isEverythingPicked
 var hint = pathway ? 'Chạm vào một bước để đọc thông tin.' : null;
 var startLabel = none ? (course ? 'Chọn một chặng' : 'Chọn một con đường') : (everything ? 'Bắt đầu tất cả' : (ctx ? 'Bắt đầu chặng ' + (ctx.index + 1) : 'Bắt đầu Quiz'));
 var scored = pathway ? hasHistory(pathway) : false;
-var wipe = confirmButton('mg-btn mg-btn--ghost mg-history__btn', 'Xóa lịch sử', 'Chạm lần nữa để xóa điểm', function () {
+var wipe = confirmButton('mg-history__link', 'Xóa lịch sử bước này', 'Chạm lần nữa để xác nhận xóa', function () {
 if (!pathway) { return; }
 clearHistory(pathway.id);
-toast('Đã xóa lịch sử');
+toast('Đã xóa lịch sử con đường này');
 rerender('start');
 });
 wipe.node.setAttribute('data-key', 'history');
@@ -31320,28 +31504,22 @@ wipe.node.setAttribute('title', !pathway ? 'Chưa chọn con đường nào' : (
 if (!scored) { wipe.node.disabled = true; }
 var practice = weakPractice();
 var practiceBtn = practice ? el('button', {
-type: 'button', class: 'mg-btn mg-btn--ghost mg-history__btn mg-practice__btn', 'data-key': 'practice',
+type: 'button', class: 'mg-btn mg-practice__btn', 'data-key': 'practice',
 title: 'Một vòng ' + MODE_NAME[s.mode] + ' gồm ' + practice.steps.length + ' bước bạn hay làm sai nhất, từ mọi con đường',
 on: { click: function () { startPractice(practice); } }
-}, 'Luyện tập các bước còn yếu (' + practice.steps.length + ')') : null;
+}, '⚡ Luyện tập các bước còn yếu (' + practice.steps.length + ')') : null;
 var picks = pathway && (isMix || isEverythingPicked(s)) ? pickedPathways(s).length : 0;
 var inQuiz = total - excluded.length;
 var totalLine = picks > 1
 ? el('p', { class: 'mg-dock__total', 'data-key': 'total', 'aria-live': 'polite', text: picks + ' con đường, ' + inQuiz + ' bước' })
 : null;
-var settingsBtn = el('button', {
-type: 'button', class: 'mg-btn mg-btn--icon mg-dock__settings', 'data-key': 'settings:open',
-'aria-label': 'Cài đặt', title: 'Cài đặt',
-on: { click: function () { openSettings(); } }
-}, icon('gear'));
 var dock = el('div', { class: 'mg-dock' },
 totalLine,
 el('div', { class: 'mg-dock__bar' },
-el('button', { type: 'button', class: 'mg-btn mg-btn--primary', 'data-key': 'start', disabled: none, on: { click: startFromSelect } }, startLabel),
-settingsBtn));
+el('button', { type: 'button', class: 'mg-btn mg-btn--primary', 'data-key': 'start', disabled: none, on: { click: startFromSelect } }, startLabel)));
 var left = el('div', { class: 'mg-select__col' },
-courseList().length ? section('Khóa học', courseStrip(course)) : null,
-course ? sectionsBlock(course, s) : pathwayBlock(s));
+courseList().length ? el('div', { class: 'mg-section mg-section--course' }, el('p', { class: 'mg-label', text: 'Khóa học' }), courseStrip(course)) : null,
+el('div', { class: 'mg-section mg-section--pathway' }, course ? sectionsBlock(course, s) : pathwayBlock(s)));
 var modeDescriptions = {
 build: 'Dựng từng bước: Dựng bản đồ từng bước, mỗi lần một câu hỏi.',
 pick: 'Chọn đáp án: Bản đồ khuyết, chọn 1 trong 6 đáp án cho mỗi ô.',
@@ -31349,14 +31527,16 @@ type: 'Tự gõ: Bản đồ khuyết, tự gõ chính xác tên chất.'
 };
 var modeDesc = el('p', { class: 'mg-mode-desc', text: modeDescriptions[s.mode] || '' });
 var right = el('div', { class: 'mg-select__col' },
-section('Chế độ', el('div', null, modes, modeDesc)),
+el('div', { class: 'mg-section mg-section--mode' }, el('p', { class: 'mg-label', text: 'Chế độ' }), modes),
 formats
-? el('div', { class: 'mg-section' }, el('div', { class: 'mg-label-row' }, el('p', { class: 'mg-label', text: 'Hiển thị phân tử' }), cofToggle), formats)
-: el('div', { class: 'mg-section' }, el('div', { class: 'mg-label-row mg-label-row--end' }, cofToggle)),
-el('div', { class: 'mg-panel mg-panel--steps' }, grid),
-el('div', { class: 'mg-history' }, practiceBtn, wipe.node),
+? el('div', { class: 'mg-section mg-section--format' }, el('div', { class: 'mg-label-row' }, el('p', { class: 'mg-label', text: 'Hiển thị phân tử' }), cofToggle), formats)
+: el('div', { class: 'mg-section mg-section--format' }, el('div', { class: 'mg-label-row mg-label-row--end' }, cofToggle)),
+el('div', { class: 'mg-panel mg-panel--steps' },
+hint ? el('p', { class: 'mg-hint mg-hint--top', text: hint }) : null,
+grid),
+practiceBtn,
 dock,
-hint ? el('p', { class: 'mg-hint', text: hint }) : null);
+el('div', { class: 'mg-history' }, wipe.node));
 return el('section', { class: 'mg-screen mg-select' + (fresh ? ' is-entering' : '') },
 el('header', { class: 'mg-select__head' }, brandTitle(), helpHeaderButton()),
 el('div', { class: 'mg-select__body' }, left, right),
