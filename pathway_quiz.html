@@ -1,13 +1,13 @@
 <!doctype html>
-<!-- Pathway Quiz. Copyright (c) 2026 Benjamin E. Peterson. All rights reserved. Free to use for personal study and teaching; see LICENSE. -->
-<html lang="en">
+<!-- Pathway Quiz. Bản quyền © 2026 Benjamin E. Peterson. Bảo lưu mọi quyền. Được phép sử dụng miễn phí cho mục đích tự học và giảng dạy; xem LICENSE. Bản dịch tiếng Việt: Hybrid Catalog. -->
+<html lang="vi">
 <head>
 	<meta charset="utf-8">
 	<meta name="author" content="Benjamin E. Peterson">
 	<meta name="copyright" content="Copyright (c) 2026 Benjamin E. Peterson. All rights reserved.">
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<meta name="theme-color" content="#FBF8EA">
-	<title>Pathway Quiz</title>
+	<title>Trắc nghiệm Con đường Chuyển hóa</title>
 	<script>
 		/* The saved theme goes on the page before the first paint, so a dark page never flashes light. app.js applies it again at start. */
 		(function () {
@@ -10129,7 +10129,7 @@ var SUMMARY_UREA = [
 function clone(o) { return JSON.parse(JSON.stringify(o)); }
 var gly = glycolysisPart();
 var glycolysis = {
-id: 'glycolysis', title: 'Glycolysis khi có oxygen', subtitle: 'Glucose thành pyruvate, sau đó qua shuttle', tag: 'GLY',
+id: 'glycolysis', title: 'Đường phân (Glycolysis)', subtitle: 'Glucose thành pyruvate', tag: 'GLY',
 location: 'Cytosol', color: '#FFB347', big: true,
 nodes: gly.nodes, reactions: gly.reactions, order: gly.order, start: ['glc'],
 regions: gly.regions, notes: gly.notes, summary: SUMMARY_GLY,
@@ -10138,7 +10138,7 @@ region: ['gly', 'both', 'all'], noDistractor: ['hplus', 'mg']
 var lacGly = clone(gly);
 lacGly.nodes.lac = node('lactate', COL + 380, row(9));
 var lactate = {
-id: 'lactate', title: 'Lactic Acid Fermentation', subtitle: 'Glucose thành lactate không cần oxygen', tag: 'LAC',
+id: 'lactate', title: 'Lên men lactic (Lactic Acid Fermentation)', subtitle: 'Glucose thành lactate trong điều kiện thiếu oxygen', tag: 'LAC',
 location: 'Cytosol', color: '#F28CA6', big: true,
 nodes: lacGly.nodes,
 reactions: lacGly.reactions.concat([ldhReaction()]),
@@ -10151,7 +10151,7 @@ region: ['gly', 'both', 'all'], noDistractor: ['hplus', 'mg']
 };
 var glycogenParts = glycogenPart();
 var glycogen = {
-id: 'glycogen', title: 'Glycogen Metabolism', subtitle: 'Tổng hợp và phân giải glycogen', tag: 'GLG',
+id: 'glycogen', title: 'Chuyển hóa glycogen (Glycogen Metabolism)', subtitle: 'Tổng hợp và phân giải glycogen', tag: 'GLG',
 location: 'Cytosol (liver and muscle)', color: '#9BD66F',
 nodes: glycogenParts.nodes, reactions: glycogenParts.reactions, order: glycogenParts.order, start: ['g6p'],
 regions: glycogenParts.regions, notes: glycogenParts.notes, summary: SUMMARY_GLYCOGEN,
@@ -10159,7 +10159,7 @@ region: ['gly', 'both', 'all', 'glycogen'], noDistractor: ['hplus', 'mg']
 };
 var gngParts = gluconeogenesisPart();
 var gluconeogenesis = {
-id: 'gluconeogenesis', title: 'Gluconeogenesis', subtitle: 'Pyruvate quay lại thành glucose', tag: 'GNG',
+id: 'gluconeogenesis', title: 'Tân tạo glucose (Gluconeogenesis)', subtitle: 'Chuyển pyruvate ngược trở lại thành glucose', tag: 'GNG',
 location: 'Liver and kidney (mitochondrion and cytosol)', color: '#F2A65A', big: true,
 nodes: gngParts.nodes, reactions: gngParts.reactions, order: gngParts.order, start: ['pyr'],
 regions: gngParts.regions, notes: gngParts.notes, summary: SUMMARY_GNG,
@@ -10169,7 +10169,7 @@ var ethGly = clone(gly);
 ethGly.nodes.acet = node('acetaldehyde', COL + 380, row(9));
 ethGly.nodes.etoh = node('ethanol', COL + 760, row(9));
 var ethanol = {
-id: 'ethanol', title: 'Alcohol Fermentation', subtitle: 'Glucose thành ethanol không cần oxygen', tag: 'ETH',
+id: 'ethanol', title: 'Lên men rượu (Alcohol Fermentation)', subtitle: 'Glucose thành ethanol trong điều kiện thiếu oxygen', tag: 'ETH',
 location: 'Cytosol (yeast)', color: '#E9B96E', big: true,
 nodes: ethGly.nodes,
 reactions: ethGly.reactions.concat(ethanolReactions()),
@@ -10185,7 +10185,7 @@ var pdhNodes = pdhRing.nodes;
 pdhNodes.pyr = node('pyruvate', 150, 150);
 pdhNodes.acetylcoa = node('acetylcoa', 530, 150);
 var pdhtca = {
-id: 'pdhtca', title: 'Pyruvate to CO₂', subtitle: 'Pyruvate dehydrogenase và TCA cycle', tag: 'PDH',
+id: 'pdhtca', title: 'Pyruvate thành CO₂ (Pyruvate to CO₂)', subtitle: 'Pyruvate dehydrogenase và chu trình TCA', tag: 'PDH',
 location: 'Mitochondrial matrix', color: '#7FB8E8',
 nodes: pdhNodes,
 reactions: [linkReaction()].concat(pdhRing.reactions),
@@ -10196,7 +10196,7 @@ region: ['tca', 'both', 'all'], noDistractor: ['hplus', 'mg']
 };
 var boxParts = betaoxPart();
 var betaox = {
-id: 'betaox', title: 'Beta-Oxidation', subtitle: 'Chất béo thành acetyl-CoA', tag: 'FAO',
+id: 'betaox', title: 'Beta-oxidation', subtitle: 'Chuyển hóa chất béo thành acetyl-CoA', tag: 'FAO',
 location: 'Cytosol and mitochondrial matrix', color: '#F0A878',
 nodes: boxParts.nodes, reactions: boxParts.reactions, order: boxParts.order, start: ['tag'],
 regions: boxParts.regions, notes: boxParts.notes, summary: SUMMARY_BETAOX,
@@ -10204,7 +10204,7 @@ region: ['tca', 'both', 'all', 'lipid'], noDistractor: ['hplus', 'mg']
 };
 var boxSimpleParts = boxSimplePart();
 var boxsimple = {
-id: 'boxsimple', title: 'Beta-Oxidation, Simple', subtitle: 'Chu trình bốn bước cắt chất béo thành acetyl-CoA', tag: 'BOS', simpleOf: 'betaox',
+id: 'boxsimple', title: 'Beta-oxidation (cơ bản)', subtitle: 'Chu trình bốn bước phân cắt acid béo thành acetyl-CoA', tag: 'BOS', simpleOf: 'betaox',
 location: 'Cytosol and mitochondrial matrix', color: '#F0A878',
 nodes: boxSimpleParts.nodes, reactions: boxSimpleParts.reactions, order: boxSimpleParts.order, start: ['fa'],
 regions: boxSimpleParts.regions, notes: boxSimpleParts.notes, summary: SUMMARY_BOXSIMPLE,
@@ -10213,7 +10213,7 @@ noDistractor: ['hplus', 'mg', 'cpt1', 'lipase', 'acc', 'co2', 'hco3', 'nadp', 'n
 };
 var etcParts = etcPart();
 var etc = {
-id: 'etc', title: 'Electron Transport Chain', subtitle: 'NADH và FADH₂ tạo oxygen và ATP', tag: 'ETC',
+id: 'etc', title: 'Chuỗi vận chuyển electron (Electron Transport Chain)', subtitle: 'NADH và FADH₂ chuyển electron đến oxygen và tạo ATP', tag: 'ETC',
 location: 'Inner mitochondrial membrane', color: '#B596F2',
 nodes: etcParts.nodes, reactions: etcParts.reactions, order: etcParts.order,
 start: ['nadh', 'fadh2', 'adp'],
@@ -10222,7 +10222,7 @@ region: ['etc', 'all'], noDistractor: ['mg']
 };
 var etcSimpleParts = etcSimplePart();
 var etcsimple = {
-id: 'etcsimple', title: 'Electron Transport, Simple', subtitle: 'NADH và FADH₂ tới oxygen, sau đó tạo ATP', tag: 'ETS', simpleOf: 'etc',
+id: 'etcsimple', title: 'Vận chuyển electron (cơ bản)', subtitle: 'Truyền electron từ NADH và FADH₂ đến oxygen, sau đó tạo ATP', tag: 'ETS', simpleOf: 'etc',
 location: 'Inner mitochondrial membrane', color: '#B596F2', terms: { enz: 'complex' },
 nodes: etcSimpleParts.nodes, reactions: etcSimpleParts.reactions, order: etcSimpleParts.order,
 start: ['nadh', 'fadh2', 'adp'],
@@ -10233,7 +10233,7 @@ noDistractor: ['mg', 'hplus', 'ucp1', 'aox', 'gpd2', 'ant', 'mkat', 'gaa', 'fmn'
 };
 var tcaStandalone = tcaPart(800, 800, [320, 150]);
 var tca = {
-id: 'tca', title: 'Một vòng của TCA cycle', subtitle: 'Một acetyl-CoA thành CO₂', tag: 'TCA',
+id: 'tca', title: 'Chu trình TCA (TCA Cycle)', subtitle: 'Acetyl-CoA thành CO₂', tag: 'TCA',
 location: 'Mitochondrial matrix', color: '#6CB4EE',
 nodes: tcaStandalone.nodes, reactions: tcaStandalone.reactions, order: tcaStandalone.order,
 start: ['acetylcoa'], regions: tcaStandalone.regions, notes: tcaStandalone.notes, summary: SUMMARY_TCA,
@@ -10245,7 +10245,7 @@ var fullNodes = fullGly.nodes;
 fullNodes.acetylcoa = node('acetylcoa', COL + 380, row(9));
 Object.keys(fullTca.nodes).forEach(function (id) { fullNodes[id] = fullTca.nodes[id]; });
 var full = {
-id: 'full', title: 'Glucose to CO₂', subtitle: 'Glycolysis, link reaction và TCA cycle', tag: 'FULL',
+id: 'full', title: 'Từ glucose đến CO₂ (Glucose to CO₂)', subtitle: 'Đường phân, phản ứng chuyển tiếp và chu trình TCA', tag: 'FULL',
 location: 'Cytosol, then mitochondrion', color: '#8BD17C',
 nodes: fullNodes,
 reactions: fullGly.reactions.concat([linkReaction()], fullTca.reactions),
@@ -10258,7 +10258,7 @@ region: ['gly', 'tca', 'both', 'all'], noDistractor: ['hplus', 'mg']
 };
 var etcPathParts = etcPathPart();
 var etcpath = {
-id: 'etcpath', title: 'Electron Carriers in Order', subtitle: 'NADH tới oxygen, lần lượt qua từng electron carrier', tag: 'ETP',
+id: 'etcpath', title: 'Thứ tự các chất mang electron (Electron Carriers in Order)', subtitle: 'Truyền electron từ NADH đến oxygen qua từng chất mang electron', tag: 'ETP',
 location: 'Inner mitochondrial membrane', color: '#B596F2',
 nodes: etcPathParts.nodes, reactions: etcPathParts.reactions, order: etcPathParts.order, start: ['nadh'],
 regions: etcPathParts.regions, notes: etcPathParts.notes, summary: SUMMARY_ETCPATH,
@@ -10266,7 +10266,7 @@ region: ['etc', 'all'], noDistractor: ['mg']
 };
 var gpParts = glycerolShuttlePart();
 var gpshuttle = {
-id: 'gpshuttle', title: 'Glycerol Phosphate Shuttle', subtitle: 'Electron từ cytosolic NADH tới ubiquinone', tag: 'GPS',
+id: 'gpshuttle', title: 'Glycerol phosphate shuttle', subtitle: 'Truyền electron từ NADH trong bào tương đến ubiquinone', tag: 'GPS',
 location: 'Cytosol and inner mitochondrial membrane', color: '#E9B96E',
 nodes: gpParts.nodes, reactions: gpParts.reactions, order: gpParts.order, start: ['dhap'],
 regions: gpParts.regions, membranes: gpParts.membranes, notes: gpParts.notes, summary: SUMMARY_GPSHUTTLE,
@@ -10274,7 +10274,7 @@ region: ['gly', 'etc', 'both', 'all'], noDistractor: ['mg']
 };
 var maParts = malateAspartateShuttlePart();
 var masshuttle = {
-id: 'masshuttle', title: 'Malate-Aspartate Shuttle', subtitle: 'Electron từ cytosolic NADH thành matrix NADH', tag: 'MAS',
+id: 'masshuttle', title: 'Malate-aspartate shuttle', subtitle: 'Chuyển electron từ NADH trong bào tương thành NADH trong chất nền ty thể', tag: 'MAS',
 location: 'Cytosol and mitochondrial matrix', color: '#6CB4EE', terms: { enz: 'protein' },
 nodes: maParts.nodes, reactions: maParts.reactions, order: maParts.order, start: ['oaa'],
 regions: maParts.regions, membranes: maParts.membranes, notes: maParts.notes, summary: SUMMARY_MASHUTTLE,
@@ -10282,7 +10282,7 @@ region: ['tca', 'etc', 'both', 'all'], noDistractor: ['mg']
 };
 var antParts = atpExportPart();
 var antport = {
-id: 'antport', title: 'ATP Synthesis and Export', subtitle: 'ATP synthase và ATP-ADP translocase', tag: 'ANT',
+id: 'antport', title: 'Tổng hợp và vận chuyển ATP ra ngoài (ATP Synthesis and Export)', subtitle: 'ATP synthase và ATP-ADP translocase', tag: 'ANT',
 location: 'Inner mitochondrial membrane', color: '#8BD17C', terms: { enz: 'protein' },
 nodes: antParts.nodes, reactions: antParts.reactions, order: antParts.order, start: ['adp'],
 regions: antParts.regions, membranes: antParts.membranes, notes: antParts.notes, summary: SUMMARY_ANTPORT,
@@ -10290,7 +10290,7 @@ region: ['etc', 'all'], noDistractor: ['mg']
 };
 var pyeParts = pyruvateEntryPart();
 var pyrentry = {
-id: 'pyrentry', title: 'Pyruvate Entry and Link Reaction', subtitle: 'Qua hai lớp màng để tạo acetyl-CoA', tag: 'PYE',
+id: 'pyrentry', title: 'Pyruvate đi vào ty thể và phản ứng chuyển tiếp (Pyruvate Entry and Link Reaction)', subtitle: 'Đi qua hai lớp màng để tạo acetyl-CoA', tag: 'PYE',
 location: 'Cytosol, mitochondrial membranes and matrix', color: '#F2B35E',
 nodes: pyeParts.nodes, reactions: pyeParts.reactions, order: pyeParts.order, start: ['pyrc'],
 regions: pyeParts.regions, membranes: pyeParts.membranes, notes: pyeParts.notes, summary: SUMMARY_PYRENTRY,
@@ -10298,7 +10298,7 @@ region: ['tca', 'mito', 'both', 'all'], noDistractor: ['mg'], terms: { enz: 'pro
 };
 var mdParts = mitoDynamicsPart();
 var mitodyn = {
-id: 'mitodyn', title: 'Mitochondrial Fission and Fusion', subtitle: 'Cách ty thể phân chia và dung hợp', tag: 'MDY',
+id: 'mitodyn', title: 'Phân chia và hợp nhất ty thể (Mitochondrial Fission and Fusion)', subtitle: 'Cách ty thể phân chia và hợp nhất', tag: 'MDY',
 location: 'Mitochondrial membranes', color: '#7BC8A4',
 nodes: mdParts.nodes, reactions: mdParts.reactions, order: mdParts.order, start: ['fused'],
 regions: mdParts.regions, notes: mdParts.notes, summary: SUMMARY_MITODYN,
@@ -10306,7 +10306,7 @@ region: ['dyn', 'all'], noDistractor: ['mg'], terms: { enz: 'protein' }
 };
 var aiParts = intrinsicApoptosisPart();
 var apopint = {
-id: 'apopint', title: 'Apoptosis: Intrinsic Pathway', subtitle: 'Con đường ty thể dẫn đến chết tế bào', tag: 'AIN',
+id: 'apopint', title: 'Apoptosis: con đường nội sinh (Intrinsic Pathway)', subtitle: 'Con đường gây chết tế bào qua ty thể', tag: 'AIN',
 location: 'Mitochondrion and cytosol', color: '#E56F6F', big: true, terms: { enz: 'protein' },
 nodes: aiParts.nodes, reactions: aiParts.reactions, order: aiParts.order, start: ['dna', 'prot'],
 regions: aiParts.regions, notes: aiParts.notes, summary: SUMMARY_APOINT,
@@ -10314,7 +10314,7 @@ region: ['apop'], noDistractor: ['mg']
 };
 var aeParts = extrinsicApoptosisPart();
 var apopext = {
-id: 'apopext', title: 'Apoptosis: Extrinsic Pathway', subtitle: 'Con đường death receptor dẫn đến chết tế bào', tag: 'AEX',
+id: 'apopext', title: 'Apoptosis: con đường ngoại sinh (Extrinsic Pathway)', subtitle: 'Con đường gây chết tế bào thông qua thụ thể chết', tag: 'AEX',
 location: 'Plasma membrane and cytosol', color: '#B58AE0', big: true, terms: { enz: 'protein' },
 nodes: aeParts.nodes, reactions: aeParts.reactions, order: aeParts.order, start: ['tnf', 'prot'],
 regions: aeParts.regions, notes: aeParts.notes, summary: SUMMARY_APOEXT,
@@ -10322,7 +10322,7 @@ region: ['apop'], noDistractor: ['mg']
 };
 var ureaParts = ureaCyclePart();
 var urea = {
-id: 'urea', title: 'Urea Cycle', subtitle: 'Ammonia thành urea', tag: 'URE',
+id: 'urea', title: 'Chu trình urea (Urea Cycle)', subtitle: 'Chuyển ammonia thành urea', tag: 'URE',
 location: 'Liver: mitochondrial matrix and cytosol', color: '#C79BE0',
 nodes: ureaParts.nodes, reactions: ureaParts.reactions, order: ureaParts.order, start: ['nh4'],
 regions: ureaParts.regions, membranes: ureaParts.membranes, notes: ureaParts.notes, summary: SUMMARY_UREA,
@@ -10330,7 +10330,7 @@ region: ['urea', 'all'], noDistractor: ['hplus', 'mg']
 };
 var glParts = glutamateAlaninePart();
 var gluala = {
-id: 'gluala', title: 'Glutamate and Alanine', subtitle: 'Bắt giữ và giải phóng ammonium, cùng các transaminases', tag: 'GLA',
+id: 'gluala', title: 'Glutamate và alanine (Glutamate and Alanine)', subtitle: 'Thu nhận và giải phóng ammonium, cùng các enzyme transaminase', tag: 'GLA',
 location: 'Cytosol and mitochondrial matrix of the liver, kidney, muscle and brain', color: '#8FC1E3',
 nodes: glParts.nodes, reactions: glParts.reactions, order: glParts.order, start: ['akg1', 'nh41', 'ala', 'asp'],
 regions: glParts.regions, notes: glParts.notes, summary: SUMMARY_GLUALA,
@@ -10349,32 +10349,32 @@ urea: urea, gluala: gluala
 var MG = root.MG = root.MG || {};
 MG.categories = [
 {
-id: 'carbs', title: 'Carbohydrates', color: '#EE9B9D',
+id: 'carbs', title: 'Carbohydrate', color: '#EE9B9D',
 pathways: ['glycolysis', 'lactate', 'ethanol', 'gluconeogenesis', 'glycogen'],
 everything: 'everything-carbs'
 },
 {
-id: 'tca', title: 'TCA cycle', color: '#F0C987',
+id: 'tca', title: 'Chu trình TCA (TCA Cycle)', color: '#F0C987',
 pathways: ['pdhtca', 'tca', 'full', 'pyrentry'],
 everything: 'everything-tca'
 },
 {
-id: 'etc', title: 'Electron transport chain', color: '#E8A55D',
+id: 'etc', title: 'Chuỗi vận chuyển electron (Electron Transport Chain)', color: '#E8A55D',
 pathways: ['etcsimple', 'etc', 'etcpath', 'antport', 'gpshuttle', 'masshuttle'],
 everything: 'everything-etc'
 },
 {
-id: 'lipids', title: 'Lipids', color: '#C5D58A',
+id: 'lipids', title: 'Lipid', color: '#C5D58A',
 pathways: ['boxsimple', 'betaox'],
 everything: 'everything-lipids'
 },
 {
-id: 'aminoacids', title: 'Amino acids', color: '#9CCBEA',
+id: 'aminoacids', title: 'Amino acid', color: '#9CCBEA',
 pathways: ['gluala', 'urea'],
 everything: 'everything-aminoacids'
 },
 {
-id: 'cellbio', title: 'Mitochondrial dynamics and apoptosis', color: '#C9BFE0',
+id: 'cellbio', title: 'Động lực học ty thể và apoptosis', color: '#C9BFE0',
 pathways: ['mitodyn', 'apopint', 'apopext'],
 everything: 'everything-cellbio'
 }
@@ -10565,7 +10565,7 @@ var SUMMARY_CARBS = [
 'Glucose 6-phosphate là ngã ba trung tâm giữa glucose và glycogen. Glycogen synthase và glycogen phosphorylase là hai enzymes khác nhau, nên quá trình dự trữ và phân giải được điều hòa riêng biệt'
 ];
 var carbs = compose({
-id: 'everything-carbs', title: 'Everything: Carbohydrates',
+id: 'everything-carbs', title: 'Tất cả: Carbohydrate',
 subtitle: 'Glycolysis, fermentation, gluconeogenesis và glycogen trên một bản đồ',
 tag: 'ALL', location: 'Cytosol (liver and muscle; yeast for ethanol)', color: '#FFB347',
 summary: SUMMARY_CARBS, scope: { type: 'category', id: 'carbs' },
@@ -10600,7 +10600,7 @@ if (r.id === 'ldh') { return lactateNames(r); }
 return glycolysisIds[r.id] ? glycolysisNames(r) : ethanolNames(r);
 }
 var fermentations = compose({
-id: 'fermentations', title: 'Glycolysis and fermentation',
+id: 'fermentations', title: 'Đường phân và lên men',
 tag: 'FER', location: 'Cytosol (yeast for ethanol)', color: '#FFB347',
 summary: MG.pathways.glycolysis.summary.slice(0, 1).concat(MG.pathways.lactate.summary.slice(0, 1), MG.pathways.ethanol.summary.slice(0, 1)),
 scope: null,
@@ -10624,7 +10624,7 @@ var SUMMARY_TCA = [
 'Pyruvate đi qua màng ngoài qua porin và màng trong trên H⁺/pyruvate symporter, rồi link reaction tạo acetyl-CoA, CO₂ và NADH trong matrix'
 ];
 var tcaMap = compose({
-id: 'everything-tca', title: 'Everything: TCA cycle',
+id: 'everything-tca', title: 'Tất cả: Chu trình TCA',
 subtitle: 'Glucose thành CO₂ và quá trình pyruvate đi vào ty thể trên một bản đồ',
 tag: 'ALL', location: 'Cytosol and mitochondrion', color: '#F2B35E',
 summary: SUMMARY_TCA, scope: { type: 'category', id: 'tca' },
@@ -10638,7 +10638,7 @@ var SUMMARY_ETC = [
 'Các shuttles đưa electrons của cytosolic NADH vào matrix, còn ATP synthase và ATP-ADP translocase tổng hợp và xuất khẩu ATP'
 ];
 var etcMap = compose({
-id: 'everything-etc', title: 'Everything: Electron transport chain',
+id: 'everything-etc', title: 'Tất cả: Chuỗi vận chuyển electron',
 subtitle: 'Chuỗi vận chuyển, các electron carriers, xuất khẩu ATP và hai shuttles trên một bản đồ',
 tag: 'ALL', location: 'Inner mitochondrial membrane and matrix', color: '#B596F2',
 summary: SUMMARY_ETC, scope: { type: 'category', id: 'etc' },
@@ -10651,7 +10651,7 @@ blocks: [
 ]
 });
 var lipids = compose({
-id: 'everything-lipids', title: 'Everything: Lipids',
+id: 'everything-lipids', title: 'Tất cả: Lipid',
 subtitle: 'Beta-oxidation trên một bản đồ',
 tag: 'ALL', location: 'Cytosol and mitochondrial matrix', color: '#B8CC8A',
 summary: MG.pathways.betaox.summary, scope: { type: 'category', id: 'lipids' },
@@ -10660,7 +10660,7 @@ blocks: [{ from: 'betaox', key: 'fao', names: faoNames }]
 var ureNames = numbered('Urea cycle', 'URE');
 var glaNames = numbered('Glutamate and alanine', 'GLA');
 var aminoacids = compose({
-id: 'everything-aminoacids', title: 'Everything: Amino acids',
+id: 'everything-aminoacids', title: 'Tất cả: Amino acid',
 subtitle: 'Glutamate, alanine và urea cycle trên một bản đồ',
 tag: 'ALL', location: 'Liver, kidney, muscle and brain: cytosol and mitochondrial matrix', color: '#C79BE0',
 summary: MG.pathways.gluala.summary.concat(MG.pathways.urea.summary), scope: { type: 'category', id: 'aminoacids' },
@@ -10676,7 +10676,7 @@ var SUMMARY_CELLBIO = [
 'Hai con đường gặp nhau tại các executioner caspases, và caspase-3 cắt các protein tế bào'
 ];
 var cellbio = compose({
-id: 'everything-cellbio', title: 'Everything: Mitochondrial dynamics and apoptosis',
+id: 'everything-cellbio', title: 'Tất cả: Động lực học ty thể và apoptosis',
 subtitle: 'Fission, fusion và hai con đường apoptosis trên một bản đồ',
 tag: 'ALL', location: 'Mitochondrion, plasma membrane and cytosol', color: '#E56F6F',
 summary: SUMMARY_CELLBIO, scope: { type: 'category', id: 'cellbio' },
@@ -10709,7 +10709,7 @@ var GLA_DX = RING_AKG[0] + 510 - 150, GLA_DY = RING_AKG[1] - 150;
 var CHAIN = { x: 3380, y: 1050 };
 var CELL = { x: 3760, y: 320 };
 var everything = compose({
-id: 'everything-all', title: 'Everything: All pathways',
+id: 'everything-all', title: 'Tất cả: Mọi con đường',
 subtitle: 'Tất cả hai mươi pathways trên một bản đồ',
 tag: 'ALL', location: 'Cytosol and mitochondrion', color: '#FFD166',
 summary: SUMMARY_ALL, scope: { type: 'all', id: 'all' },
@@ -10935,12 +10935,12 @@ var MINUS = '−';
 var EPS = 1e-9;
 var SETS = {
 modern: {
-id: 'modern', nadh: 2.5, fadh2: 1.5, title: 'NADH 2.5, FADH' + SUB2 + ' 1.5',
-text: 'NADH có giá trị 2.5 ATP và FADH' + SUB2 + ' 1.5 ATP, nên một glucose tạo ra 30 hoặc 32 ATP.'
+id: 'modern', nadh: 2.5, fadh2: 1.5, title: 'NADH 2,5, FADH' + SUB2 + ' 1,5',
+text: 'NADH có giá trị 2,5 ATP và FADH' + SUB2 + ' 1,5 ATP, nên một glucose tạo ra 30 hoặc 32 ATP.'
 },
 classic: {
 id: 'classic', nadh: 3, fadh2: 2, title: 'NADH 3, FADH' + SUB2 + ' 2',
-text: 'NADH có giá trị 3 ATP và FADH' + SUB2 + ' 2 ATP, nên một glucose tạo ra 36 hoặc 38 ATP (các con số làm tròn trong các sách cũ).'
+text: 'NADH có giá trị 3 ATP và FADH' + SUB2 + ' 2 ATP, nên một glucose tạo ra 36 hoặc 38 ATP.'
 }
 };
 function set(id) { return Object.prototype.hasOwnProperty.call(SETS, id) ? SETS[id] : SETS.modern; }
@@ -10953,7 +10953,7 @@ return 1;
 }
 function format(n) {
 var v = Math.round(n * 1000) / 1000;
-var text = String(Math.abs(v));
+var text = String(Math.abs(v)).replace('.', ',');
 return v < 0 ? MINUS + text : text;
 }
 function parseNumber(text) {
@@ -11166,15 +11166,15 @@ rule: 'Count the dehydrogenase steps that reduce NAD⁺, the step that reduces F
 }
 };
 var SCENARIOS = [
-{ id: 'facts', type: 'facts', group: 'Warm up', title: 'Quick facts', subtitle: 'Carrier values, shuttles, protons and fat basics', options: [] },
-{ id: 'structure', type: 'structure', group: 'Warm up', title: 'From a structure', subtitle: 'Read a drawing, then work out the ATP', options: [] },
-{ id: 'tca', type: 'ledger', group: 'Glucose', title: 'One turn of the TCA cycle', subtitle: 'One acetyl-CoA to CO' + SUB2, options: [] },
-{ id: 'pyruvate', type: 'ledger', group: 'Glucose', title: 'Pyruvate thành CO₂' + SUB2, subtitle: 'Link reaction và một vòng chu trình', options: [] },
-{ id: 'glycolysis', type: 'ledger', group: 'Glucose', title: 'Glycolysis with oxygen', subtitle: 'Glucose to pyruvate, then the shuttle', options: ['shuttle'] },
-{ id: 'glucose', type: 'ledger', group: 'Glucose', title: 'Một phân tử glucose, oxy hóa hoàn toàn', subtitle: 'Glycolysis, link reaction và TCA cycle', options: ['shuttle'] },
-{ id: 'fermentation', type: 'ledger', group: 'Glucose', title: 'Một phân tử glucose khi không có oxygen', subtitle: 'Fermentation thành lactate hoặc ethanol', options: [] },
-{ id: 'uncoupled', type: 'ledger', group: 'Glucose', title: 'Một phân tử glucose với một uncoupler', subtitle: 'Electrons vẫn chảy, ATP synthase không tạo ra gì', options: [] },
-{ id: 'fattyacid', type: 'ledger', group: 'Fats', title: 'Một fatty acid', subtitle: 'Activation, beta-oxidation và TCA cycle', options: ['fattyacid'] }
+{ id: 'facts', type: 'facts', group: 'Khởi động', title: 'Kiến thức nhanh', subtitle: 'Giá trị chất mang, hệ shuttle, proton và kiến thức cơ bản về lipid', options: [] },
+{ id: 'structure', type: 'structure', group: 'Khởi động', title: 'Từ công thức cấu tạo', subtitle: 'Đọc công thức hóa học, sau đó tính lượng ATP', options: [] },
+{ id: 'tca', type: 'ledger', group: 'Glucose', title: 'Một vòng của chu trình TCA', subtitle: 'Từ một acetyl-CoA đến CO' + SUB2, options: [] },
+{ id: 'pyruvate', type: 'ledger', group: 'Glucose', title: 'Pyruvate thành CO' + SUB2, subtitle: 'Link reaction và một vòng chu trình', options: [] },
+{ id: 'glycolysis', type: 'ledger', group: 'Glucose', title: 'Đường phân khi có oxygen', subtitle: 'Glucose thành pyruvate, sau đó qua shuttle', options: ['shuttle'] },
+{ id: 'glucose', type: 'ledger', group: 'Glucose', title: 'Oxy hóa hoàn toàn một phân tử glucose', subtitle: 'Đường phân, phản ứng chuyển tiếp và chu trình TCA', options: ['shuttle'] },
+{ id: 'fermentation', type: 'ledger', group: 'Glucose', title: 'Một phân tử glucose khi không có oxygen', subtitle: 'Lên men tạo lactate hoặc ethanol', options: [] },
+{ id: 'uncoupled', type: 'ledger', group: 'Glucose', title: 'Một phân tử glucose khi có chất phá ghép cặp', subtitle: 'Electron vẫn được truyền nhưng ATP synthase không tổng hợp ATP', options: [] },
+{ id: 'fattyacid', type: 'ledger', group: 'Chất béo', title: 'Một acid béo', subtitle: 'Hoạt hóa, beta-oxidation và chu trình TCA', options: ['fattyacid'] }
 ];
 function scenario(id) {
 for (var i = 0; i < SCENARIOS.length; i++) { if (SCENARIOS[i].id === id) { return SCENARIOS[i]; } }
@@ -13388,7 +13388,7 @@ Object.defineProperty(game, 'count', { enumerable: true, get: function () { if (
 return game;
 }
 register(comparison({
-id: 'cmp-hk-gk', title: 'Hexokinase hay glucokinase', subtitle: 'Một phản ứng, hai isozymes: ái lực, sự ức chế bởi sản phẩm và vị trí hoạt động của từng loại',
+id: 'cmp-hk-gk', title: 'Hexokinase hay glucokinase', subtitle: 'Một phản ứng, hai isoenzyme: ái lực, sự ức chế bởi sản phẩm và vị trí hoạt động của mỗi enzyme',
 a: { short: 'Hexokinase', label: 'Hexokinase (I to III)' }, b: { short: 'Glucokinase', label: 'Glucokinase (hexokinase IV)' },
 summary: 'The same reaction in two settings: hexokinase traps glucose at full speed and stops when glucose 6-phosphate builds up; glucokinase, in the liver and the beta cell, follows blood glucose and is not inhibited.',
 prompts: function (T) {
@@ -13423,7 +13423,7 @@ T.sort('hk.sort', 'Which isozyme does each statement fit?', [
 }
 }));
 register(comparison({
-id: 'cmp-pfk-fbpase', title: 'PFK-1 hay FBPase-1', subtitle: 'Kinase của glycolysis đối đầu phosphatase của gluconeogenesis, và các tín hiệu lựa chọn giữa chúng',
+id: 'cmp-pfk-fbpase', title: 'PFK-1 hay FBPase-1', subtitle: 'So sánh kinase của đường phân với phosphatase của tân tạo glucose và các tín hiệu điều hòa quyết định hoạt động của chúng',
 a: { short: 'PFK-1', label: 'Phosphofructokinase-1 (PFK-1)' }, b: { short: 'FBPase-1', label: 'Fructose 1,6-bisphosphatase (FBPase-1)' },
 summary: 'PFK-1 (ATP, glycolysis) and FBPase-1 (water, gluconeogenesis) undo each other, so AMP and fructose 2,6-bisphosphate turn one up and the other down.',
 prompts: function (T) {
@@ -13464,7 +13464,7 @@ T.pick('pf.futile', 'If both enzymes ran at full speed at once, what would the n
 }
 }));
 register(comparison({
-id: 'cmp-gly-gng', title: 'Glycolysis hay gluconeogenesis', subtitle: 'Nơi mỗi quá trình diễn ra, chi phí của từng quá trình, các enzymes dùng chung và ba bước bypass',
+id: 'cmp-gly-gng', title: 'Đường phân hay tân tạo glucose', subtitle: 'Nơi mỗi quá trình diễn ra, chi phí của từng quá trình, các enzyme dùng chung và ba bước bypass',
 a: { short: 'Glycolysis', label: 'Glycolysis' }, b: { short: 'Gluconeogenesis', label: 'Gluconeogenesis' },
 summary: 'Glycolysis makes two ATP in every cell; gluconeogenesis spends six in the liver and bypasses the three irreversible steps with enzymes of its own.',
 prompts: function (T) {
@@ -13522,7 +13522,7 @@ T.number('gg.atp', 'Per glucose, how many ATP does glycolysis make net, and how 
 }
 }));
 register(comparison({
-id: 'cmp-lactate-ethanol', title: 'Lactate hay ethanol fermentation', subtitle: 'Hai cách thu hồi NAD⁺ không cần oxygen: loài nào dùng cách nào, và sản phẩm giải phóng',
+id: 'cmp-lactate-ethanol', title: 'Lên men lactic hay lên men rượu', subtitle: 'Hai cách tái tạo NAD⁺ khi thiếu oxygen: sinh vật nào sử dụng con đường nào và sản phẩm được giải phóng',
 a: { short: 'Lactate route', label: 'Lactate', mol: 'lactate' }, b: { short: 'Ethanol route', label: 'Ethanol', mol: 'ethanol' },
 summary: 'Both fermentations reduce pyruvate with NADH to get NAD⁺ back for glycolysis; muscle makes lactate in one step, yeast loses CO₂ first and then makes ethanol.',
 prompts: function (T) {
@@ -13570,7 +13570,7 @@ T.sort('le.sort', 'Which route does each one belong to?', [
 }
 }));
 register(comparison({
-id: 'cmp-nadh-fadh2', title: 'NADH hay FADH' + SUB2, subtitle: 'Nơi mỗi carrier đi vào chuỗi hô hấp, giá trị ATP của từng loại, và dehydrogenase nào tạo ra chất nào',
+id: 'cmp-nadh-fadh2', title: 'NADH hay FADH' + SUB2, subtitle: 'Nơi mỗi chất mang đi vào chuỗi hô hấp, giá trị ATP của từng loại, và dehydrogenase nào tạo ra chất nào',
 a: { short: 'NADH', label: 'NADH', mol: 'etcnadh' }, b: { short: FADH2, label: FADH2, mol: 'etcfadh2' },
 summary: 'NADH enters at Complex I and is worth about 2.5 ATP; FADH₂ enters at Complex II, skipping one proton pump, and is worth about 1.5.',
 prompts: function (T) {
@@ -13618,7 +13618,7 @@ T.ab('nf.two', 'Which carrier carries two electrons at a time?', 'both', [
 }
 }));
 register(comparison({
-id: 'cmp-complex1-2', title: 'Complex I hay Complex II', subtitle: 'Hai điểm đi vào của chuỗi: chất mỗi phức hợp oxy hóa, phức hợp nào bơm protons, phức hợp nào là enzyme của TCA',
+id: 'cmp-complex1-2', title: 'Complex I hay Complex II', subtitle: 'Hai điểm đi vào chuỗi: mỗi phức hợp oxy hóa chất nào, phức hợp nào bơm proton và phức hợp nào là enzyme của chu trình TCA',
 a: { short: 'Complex I', label: 'Complex I (NADH dehydrogenase)' }, b: { short: 'Complex II', label: 'Complex II (succinate dehydrogenase)' },
 summary: 'Complex I oxidizes NADH and pumps protons; Complex II (succinate dehydrogenase) oxidizes succinate with its FAD and pumps none; both hand the electrons to ubiquinone.',
 prompts: function (T) {
@@ -13657,7 +13657,7 @@ T.sort('c12.sort', 'Which complex does each statement fit?', [
 }
 }));
 register(comparison({
-id: 'cmp-slp-oxphos', title: 'Substrate-level hay oxidative phosphorylation', subtitle: 'Hai cách tạo ATP: trực tiếp từ một chất trung gian, hoặc từ một proton gradient',
+id: 'cmp-slp-oxphos', title: 'Phosphoryl hóa mức cơ chất hay phosphoryl hóa oxy hóa', subtitle: 'Hai cách tổng hợp ATP: trực tiếp từ một chất trung gian hoặc nhờ gradient proton',
 a: { short: 'Substrate-level', label: 'Substrate-level phosphorylation' }, b: { short: 'Oxidative', label: 'Oxidative phosphorylation' },
 summary: 'Substrate-level phosphorylation takes a phosphate straight from a pathway intermediate and needs no oxygen; oxidative phosphorylation needs the proton gradient that electron transport builds.',
 prompts: function (T) {
@@ -13717,7 +13717,7 @@ T.pick('so.energy', 'Where does oxidative phosphorylation get the energy to make
 }
 }));
 register(comparison({
-id: 'cmp-pdc-kgdh', title: 'PDC hay α-KG dehydrogenase', subtitle: 'Hai phức hợp có cấu tạo giống nhau: cơ chất đầu vào, sản phẩm đầu ra, và những điểm chung',
+id: 'cmp-pdc-kgdh', title: 'PDC hay α-KG dehydrogenase', subtitle: 'Hai phức hợp có cấu trúc tương tự: cơ chất đầu vào, sản phẩm đầu ra và những thành phần chung',
 a: { short: 'PDC', label: 'Pyruvate dehydrogenase complex (PDC)', mol: 'pyruvate' }, b: { short: 'KGDH', label: 'α-Ketoglutarate dehydrogenase complex (KGDH)', mol: 'akg' },
 summary: 'Two complexes, one design: TPP, lipoamide, CoA, FAD and NAD⁺ turn a keto acid into an acyl-CoA, CO₂ and NADH; PDC feeds the cycle with acetyl-CoA, KGDH makes succinyl-CoA inside it.',
 prompts: function (T) {
@@ -13762,7 +13762,7 @@ T.ab('pk.inhibit', 'Which complex is inhibited by its own acyl-CoA product and b
 }
 }));
 register(comparison({
-id: 'cmp-phosphorylase-synthase', title: 'Glycogen phosphorylase hay synthase', subtitle: 'Phân giải hay tổng hợp glycogen: các substrates, cofactor và tác động của phosphorylation lên mỗi enzyme',
+id: 'cmp-phosphorylase-synthase', title: 'Glycogen phosphorylase hay synthase', subtitle: 'Phân giải hoặc tổng hợp glycogen: cơ chất, đồng yếu tố và tác động của phosphoryl hóa lên mỗi enzyme',
 a: { short: 'Phosphorylase', label: 'Glycogen phosphorylase' }, b: { short: 'Synthase', label: 'Glycogen synthase' },
 summary: 'Glycogen synthase builds from UDP-glucose and is switched off by phosphorylation; glycogen phosphorylase cuts with Pᵢ to glucose 1-phosphate and is switched on by it.',
 prompts: function (T) {
@@ -13800,7 +13800,7 @@ T.sort('gs.sort', 'Which enzyme does each statement fit?', [
 }
 }));
 register(comparison({
-id: 'cmp-betaox-fas', title: 'Beta-oxidation hay fatty acid synthesis', subtitle: 'Phân giải và tổng hợp fatty acids: các khoang tế bào, chất mang, electron carriers và đơn vị hai carbon',
+id: 'cmp-betaox-fas', title: 'Beta-oxidation hay tổng hợp acid béo', subtitle: 'Phân giải và tổng hợp acid béo: các khoang tế bào, chất mang, chất mang electron và đơn vị hai carbon',
 a: { short: 'Beta-oxidation', label: 'Beta-oxidation' }, b: { short: 'Fatty acid synthesis', label: 'Fatty acid synthesis' },
 summary: 'Beta-oxidation (matrix, CoA, FAD and NAD⁺) removes two carbons a round as acetyl-CoA; fatty acid synthesis (cytosol, ACP, NADPH) adds two a round from malonyl-CoA.',
 prompts: function (T) {
@@ -13843,7 +13843,7 @@ T.sort('bf.sort', 'Which process does each one belong to?', [
 }
 }));
 register(comparison({
-id: 'cmp-sat-unsat', title: 'Saturated hay unsaturated fatty acid', subtitle: 'Stearic acid đối chiếu oleic acid: cùng 18 carbons, khác một liên kết đôi, và ảnh hưởng tới số lượng ATP',
+id: 'cmp-sat-unsat', title: 'Acid béo bão hòa hay không bão hòa', subtitle: 'So sánh acid stearic và acid oleic: cùng có 18 carbon nhưng khác nhau một liên kết đôi, ảnh hưởng thế nào đến lượng ATP tạo ra',
 a: { short: 'Stearic acid (18:0)', label: 'Stearic acid (18:0), saturated' }, b: { short: 'Oleic acid (18:1)', label: 'Oleic acid (18:1), one cis double bond' },
 summary: 'An 18-carbon acid gives nine acetyl-CoA either way; a double bond already in the chain skips one acyl-CoA dehydrogenase step, so oleic acid gives one FADH₂ (about 1.5 ATP) less than stearic acid.',
 prompts: function (T) {
@@ -13893,7 +13893,7 @@ T.sort('su.sort', 'Which acid does each statement fit?', [
 }
 }));
 register(comparison({
-id: 'cmp-g3p-glycerol3p', title: 'Glyceraldehyde 3-P hay glycerol 3-P', subtitle: 'Hai hợp chất ba carbon có tên gần giống nhau: aldehyde của glycolysis và khung xương của chất béo',
+id: 'cmp-g3p-glycerol3p', title: 'Glyceraldehyde 3-P hay glycerol 3-P', subtitle: 'Hai hợp chất phosphate ba carbon có tên gần giống nhau: aldehyde trong đường phân và khung cấu trúc của chất béo',
 a: { short: 'Glyceraldehyde 3-phosphate', label: 'Glyceraldehyde 3-phosphate' }, b: { short: 'Glycerol 3-phosphate', label: 'Glycerol 3-phosphate' },
 summary: 'Glyceraldehyde 3-phosphate is the aldehyde of glycolysis; glycerol 3-phosphate is the reduced backbone of fats and the carrier of the glycerol phosphate shuttle.',
 prompts: function (T) {
@@ -13939,7 +13939,7 @@ T.sort('g3.sort', 'Which molecule does each statement fit?', [
 }
 }));
 register(comparison({
-id: 'cmp-shuttles', title: 'Glycerol phosphate hay malate-aspartate shuttle', subtitle: 'Hai cách đưa electrons của cytosolic NADH vào ty thể, và lý do giá trị ATP không giống nhau',
+id: 'cmp-shuttles', title: 'Glycerol phosphate shuttle hay malate-aspartate shuttle', subtitle: 'Hai cách đưa electron của NADH trong bào tương vào ty thể và lý do chúng tạo ra lượng ATP khác nhau',
 a: { short: 'Glycerol phosphate shuttle', label: 'Glycerol phosphate shuttle' }, b: { short: 'Malate-aspartate shuttle', label: 'Malate-aspartate shuttle' },
 summary: 'Both shuttles carry the electrons of cytosolic NADH inward; the glycerol phosphate shuttle delivers them to ubiquinone (about 1.5 ATP), the malate-aspartate shuttle remakes NADH in the matrix (about 2.5) and runs one way.',
 prompts: function (T) {
@@ -13988,7 +13988,7 @@ T.sort('sh.sort', 'Which shuttle does each one belong to?', [
 }
 }));
 register(comparison({
-id: 'cmp-apoptosis', title: 'Intrinsic hay extrinsic apoptosis', subtitle: 'Con đường ty thể và con đường death receptor: điểm khởi phát, initiator caspase của mỗi bên và nơi chúng gặp nhau',
+id: 'cmp-apoptosis', title: 'Apoptosis nội sinh hay ngoại sinh', subtitle: 'Con đường qua ty thể và con đường qua thụ thể chết: vị trí khởi đầu, caspase khởi phát và điểm hội tụ của mỗi con đường',
 a: { short: 'Intrinsic', label: 'Intrinsic pathway (mitochondrial)' }, b: { short: 'Extrinsic', label: 'Extrinsic pathway (death receptor)' },
 summary: 'Intrinsic: damage, Bax, cytochrome c, the apoptosome and caspase-9. Extrinsic: TNF, its receptor, FADD and caspase-8. Both end at caspase-3.',
 prompts: function (T) {
@@ -14033,7 +14033,7 @@ T.pick('ap.apoptosome', 'What is the apoptosome?', [
 }
 }));
 register(comparison({
-id: 'cmp-fission-fusion', title: 'Fission hay fusion', subtitle: 'Cách ty thể phân chia và dung hợp: các GTPases, các lớp màng và mục đích của từng quá trình',
+id: 'cmp-fission-fusion', title: 'Phân chia hay hợp nhất', subtitle: 'Cách ty thể phân chia và hợp nhất: các gTPase, các lớp màng và mục đích của từng quá trình',
 a: { short: 'Fission', label: 'Mitochondrial fission' }, b: { short: 'Fusion', label: 'Mitochondrial fusion' },
 summary: 'Fission: Drp1, recruited by Mff and Fis1, tightens a GTP-driven ring and divides the organelle. Fusion: the mitofusins join the outer membranes and Opa1 the inner ones.',
 prompts: function (T) {
@@ -14079,7 +14079,7 @@ T.sort('ff.sort', 'Which process does each one belong to?', [
 }
 }));
 register(comparison({
-id: 'cmp-q-cytc', title: 'Ubiquinone hay cytochrome c', subtitle: 'Hai mobile carriers của chuỗi: một lipid trong màng và một heme protein nằm bên cạnh',
+id: 'cmp-q-cytc', title: 'Ubiquinone hay cytochrome c', subtitle: 'Hai chất mang di động trong chuỗi: một lipid nằm trong màng và một protein heme ở phía bên cạnh',
 a: { short: 'Ubiquinone (Q)', label: 'Ubiquinol (QH' + SUB2 + ')', mol: 'ubiquinol' }, b: { short: 'Cytochrome c', label: 'Cytochrome c (its heme)', mol: 'cytcred' },
 summary: 'Ubiquinone is a lipid in the membrane that takes two electrons from Complexes I and II to Complex III; cytochrome c is a heme protein in the intermembrane space that carries one electron at a time from Complex III to Complex IV.',
 prompts: function (T) {
@@ -14173,7 +14173,7 @@ return { intro: spec.subtitle, summary: spec.summary, prompts: prompts };
 return { id: spec.id, title: spec.title, subtitle: spec.subtitle, group: GROUP, count: spec.moves.length, fixedOrder: true, summary: spec.summary, build: build };
 }
 register(walkthrough({
-id: 'mech-aldolase', title: 'Aldolase: Schiff base', subtitle: 'Cách một gốc lysine của enzyme giúp đường sáu carbon tách thành hai mảnh ba carbon',
+id: 'mech-aldolase', title: 'Aldolase: Schiff base', subtitle: 'Cách lysine tại enzyme giúp phân cắt đường sáu carbon thành hai phân tử ba carbon',
 summary: 'Aldolase holds the sugar as a lysine Schiff base, an electron sink that lets the bond between carbons 3 and 4 break: fructose 1,6-bisphosphate gives glyceraldehyde 3-phosphate and dihydroxyacetone phosphate.',
 start: fig('f16bp', 'Fructose 1,6-bisphosphate'),
 moves: [
@@ -14217,7 +14217,7 @@ explain: 'A positively charged iminium pulls electrons much more strongly than a
 ]
 }));
 register(walkthrough({
-id: 'mech-tpi', title: 'Triose phosphate isomerase: enediol', subtitle: 'Cách nhóm carbonyl dịch chuyển từ carbon 2 sang carbon 1 qua chất trung gian cis-enediol',
+id: 'mech-tpi', title: 'Triose phosphate isomerase: enediol', subtitle: 'Cách nhóm carbonyl chuyển từ carbon số 2 sang carbon số 1 thông qua cis-enediol',
 summary: 'Triose phosphate isomerase moves the carbonyl from carbon 2 to carbon 1 through a cis-enediol, with a glutamate as the base and a histidine as the acid, and a loop keeps the intermediate from losing its phosphate.',
 start: fig('dhap', 'Dihydroxyacetone phosphate'),
 moves: [
@@ -14260,7 +14260,7 @@ explain: 'At equilibrium about 96 percent of the mixture is dihydroxyacetone pho
 ]
 }));
 register(walkthrough({
-id: 'mech-gapdh', title: 'GAPDH: thioester, rồi đến acyl phosphate', subtitle: 'Cách một phản ứng oxy hóa chi trả cho việc tạo thành một phosphate giàu năng lượng',
+id: 'mech-gapdh', title: 'GAPDH: thioester, rồi đến acyl phosphate', subtitle: 'Cách phản ứng oxy hóa cung cấp năng lượng để tạo liên kết phosphate giàu năng lượng',
 summary: 'GAPDH oxidizes the aldehyde to a thioester on its cysteine, reduces NAD⁺, and then lets phosphate (not water) take the acyl group, so the energy of the oxidation is kept in 1,3-bisphosphoglycerate.',
 start: fig('g3p', 'Glyceraldehyde 3-phosphate'),
 moves: [
@@ -14303,7 +14303,7 @@ explain: 'The acyl arsenate falls apart before phosphoglycerate kinase can use i
 ]
 }));
 register(walkthrough({
-id: 'mech-pdc', title: 'Pyruvate dehydrogenase complex: E1, E2, E3', subtitle: 'Năm cofactors theo đúng thứ tự: TPP, lipoamide, coenzyme A, FAD và NAD⁺',
+id: 'mech-pdc', title: 'Phức hợp pyruvate dehydrogenase: E1, E2, E3', subtitle: 'Năm đồng yếu tố theo thứ tự: TPP, lipoamide, coenzyme A, FAD và NAD⁺',
 summary: 'TPP on E1 decarboxylates pyruvate, lipoamide on E2 carries and oxidizes the two carbons and hands them to coenzyme A, and FAD then NAD⁺ on E3 carry the electrons away: pyruvate + CoA + NAD⁺ gives acetyl-CoA, CO₂ and NADH.',
 start: fig('pyruvate', 'Pyruvate'),
 moves: [
@@ -14346,7 +14346,7 @@ explain: 'The electrons end on NADH, which goes to Complex I. The whole complex:
 ]
 }));
 register(walkthrough({
-id: 'mech-aconitase', title: 'Aconitase: qua cis-aconitate', subtitle: 'Cách nhóm hydroxyl di chuyển từ carbon này sang carbon kế tiếp, trên một iron-sulfur cluster không thực hiện phản ứng oxy hóa-khử',
+id: 'mech-aconitase', title: 'Aconitase: qua cis-aconitate', subtitle: 'Cách nhóm hydroxyl chuyển từ carbon này sang carbon kế tiếp trên cụm iron-sulfur không tham gia phản ứng oxy hóa-khử',
 summary: 'Aconitase removes water to make cis-aconitate and adds it back on the other carbon: the hydroxyl moves from the tertiary carbon of citrate to a secondary carbon in isocitrate, where it can be oxidized.',
 start: fig('citrate', 'Citrate'),
 moves: [
@@ -14389,7 +14389,7 @@ explain: 'Fluoroacetyl-CoA is condensed by citrate synthase into fluorocitrate, 
 ]
 }));
 register(walkthrough({
-id: 'mech-atpsynthase', title: 'ATP synthase: binding-change cycle', subtitle: 'Mở (open), lỏng (loose) và chặt (tight): cách trục quay làm ba vị trí luân phiên nhau',
+id: 'mech-atpsynthase', title: 'ATP synthase: chu trình thay đổi liên kết (binding-change)', subtitle: 'Mở (open), lỏng (loose) và chặt (tight): cách trục quay làm ba vị trí luân phiên nhau',
 summary: 'Proton flow turns the γ shaft; each 120-degree step turns L into T (ATP forms), T into O (ATP is released) and O into L (ADP and Pᵢ bind): three ATP per turn, with the energy spent on letting ATP go.',
 start: fig('etcadp', 'ADP'),
 moves: [
@@ -14432,7 +14432,7 @@ explain: 'F₁ has three catalytic β subunits, and one full turn (three steps o
 ]
 }));
 register(walkthrough({
-id: 'mech-qcycle', title: 'Complex III: Q cycle', subtitle: 'Cách hai electrons của một ubiquinol được tách ra, một tới cytochrome c và một quay lại gắn lên quinone',
+id: 'mech-qcycle', title: 'Complex III: chu trình Q (Q cycle)', subtitle: 'Cách hai electron từ một ubiquinol được phân chia: một electron chuyển cho cytochrome c, electron còn lại quay trở lại quinone',
 summary: 'The Q cycle splits the two electrons of each ubiquinol: one goes to cytochrome c, the other back onto a quinone, so that for each ubiquinol oxidized two cytochrome c are reduced and four protons cross to the intermembrane space.',
 start: fig('ubiquinol', 'Ubiquinol (QH' + SUB2 + ')'),
 moves: [
@@ -14475,7 +14475,7 @@ explain: 'Two ubiquinol in, one back out: net one ubiquinol oxidized, two cytoch
 ]
 }));
 register(walkthrough({
-id: 'mech-betaox', title: 'Beta-oxidation: những bước đầu tiên', subtitle: 'Từ một free fatty acid đến acetyl-CoA đầu tiên: hoạt hóa, carnitine shuttle và bốn bước của một vòng',
+id: 'mech-betaox', title: 'Beta-oxidation: những bước đầu tiên', subtitle: 'Từ acid béo tự do đến acetyl-CoA đầu tiên: hoạt hóa, hệ vận chuyển carnitine và bốn bước của một chu kỳ',
 summary: 'Activate, carry in, then oxidize (FAD), hydrate, oxidize (NAD⁺) and cut (thiolase): each round gives one FADH₂, one NADH, one acetyl-CoA and an acyl-CoA two carbons shorter.',
 start: fig('fattyacid', 'A fatty acid'),
 moves: [
@@ -21413,7 +21413,7 @@ text: 'Five of the six G3P stay in the cycle. The reshuffling reactions and phos
 ];
 }
 P.scenarios.push({
-id: 'calvincost', type: 'ledger', group: G_PHOTO, title: 'Calvin cycle', subtitle: 'Lượng ATP và NADPH cho một phân tử glucose', options: [],
+id: 'calvincost', type: 'ledger', group: G_PHOTO, title: 'Chu trình Calvin', subtitle: 'ATP và NADPH cần cho một phân tử glucose', options: [],
 drill: false,
 explainer: {
 id: 'calvin', title: 'The Calvin cycle', subtitle: 'ATP and NADPH for one glucose', noCounting: true,
@@ -21439,7 +21439,7 @@ note: 'The totals for the whole cycle are 18 ATP and 12 NADPH per glucose; one t
 }
 });
 P.scenarios.push({
-id: 'c4cost', type: 'ledger', group: G_PHOTO, title: 'C4 pathway', subtitle: 'Lượng ATP phụ thêm để vận chuyển CO₂' + SUB2, options: [],
+id: 'c4cost', type: 'ledger', group: G_PHOTO, title: 'Con đường C4', subtitle: 'Lượng ATP bổ sung cần cho quá trình vận chuyển CO\' + SUB2' + SUB2, options: [],
 ledger: function (o) {
 var calvin = calvinStages(false, 'one glucose made by a C4 plant');
 return {
@@ -21508,7 +21508,7 @@ note: note + NITROGEN_NOTE
 };
 }
 P.scenarios.push({
-id: 'alanineox', type: 'ledger', group: G_AMINO, title: 'Alanine, oxy hóa hoàn toàn', subtitle: 'Transamination, TCA cycle và urea cycle', options: [],
+id: 'alanineox', type: 'ledger', group: G_AMINO, title: 'Oxy hóa hoàn toàn alanine', subtitle: 'Phản ứng chuyển amin, chu trình TCA và chu trình urea', options: [],
 drill: 'How many ATP is one alanine worth when it is completely oxidized, counting the cost of its nitrogen?',
 explainer: {
 id: 'aminoacid', title: 'An amino acid', subtitle: 'Alanine, completely oxidized',
@@ -21522,14 +21522,14 @@ ledger: aminoLedger('Alanine', 'alanine', 3,
 [], 'Alanine becomes pyruvate, which is worth the same as in the listed pyruvate scenario.')
 });
 P.scenarios.push({
-id: 'aspartateox', type: 'ledger', group: G_AMINO, title: 'Aspartate, oxy hóa hoàn toàn', subtitle: 'Qua oxaloacetate và pyruvate', options: [],
+id: 'aspartateox', type: 'ledger', group: G_AMINO, title: 'Oxy hóa hoàn toàn aspartate', subtitle: 'Thông qua oxaloacetate và pyruvate', options: [],
 drill: 'How many ATP is one aspartate worth when it is completely oxidized, counting the cost of its nitrogen?',
 ledger: aminoLedger('Aspartate', 'aspartate', 4,
 'Aspartate aminotransferase (AST) moves the amino group of aspartate onto alpha-ketoglutarate, which leaves oxaloacetate and makes glutamate, and nothing is made or spent.',
 [oaaStage()], 'Aspartate becomes oxaloacetate, which is turned into pyruvate in the cytosol.')
 });
 P.scenarios.push({
-id: 'glutamateox', type: 'ledger', group: G_AMINO, title: 'Glutamate, oxy hóa hoàn toàn', subtitle: 'Qua alpha-ketoglutarate', options: [],
+id: 'glutamateox', type: 'ledger', group: G_AMINO, title: 'Oxy hóa hoàn toàn glutamate', subtitle: 'Thông qua alpha-ketoglutarate', options: [],
 drill: 'How many ATP is one glutamate worth when it is completely oxidized, counting the cost of its nitrogen?',
 ledger: aminoLedger('Glutamate', 'glutamate', 5,
 'Glutamate dehydrogenase releases the amino group of glutamate as NH₄⁺ and leaves alpha-ketoglutarate; the NADH of that step is counted with the nitrogen.',
@@ -21542,7 +21542,7 @@ text: 'From alpha-ketoglutarate the cycle runs through alpha-ketoglutarate dehyd
 }, oaaStage()], 'Glutamate becomes alpha-ketoglutarate, which is carried round the TCA cycle to oxaloacetate and then to pyruvate.')
 });
 P.scenarios.push({
-id: 'ureacost', type: 'ledger', group: G_AMINO, title: 'Một phân tử urea', subtitle: 'Năng lượng mà urea cycle tiêu tốn', options: [],
+id: 'ureacost', type: 'ledger', group: G_AMINO, title: 'Một phân tử urea', subtitle: 'Năng lượng tiêu hao trong chu trình urea', options: [],
 ledger: function (o) {
 return {
 mode: 'atp', unit: 'one urea',
@@ -21574,7 +21574,7 @@ note: 'Four high-energy phosphate bonds are spent for each urea. Books often say
 }
 });
 P.scenarios.push({
-id: 'pentoseox', type: 'ledger', group: G_NUC, title: 'Ba phân tử pentose, oxy hóa hoàn toàn', subtitle: 'Pentose phosphate pathway đi vào glycolysis', options: ['shuttle'],
+id: 'pentoseox', type: 'ledger', group: G_NUC, title: 'Oxy hóa hoàn toàn ba phân tử pentose', subtitle: 'Từ con đường pentose phosphate đi vào đường phân', options: ['shuttle'],
 drill: 'How many ATP are three of these pentose phosphates worth when they are completely oxidized?',
 explainer: {
 id: 'pentose', title: 'A pentose', subtitle: 'Three pentoses, completely oxidized',
@@ -21631,7 +21631,7 @@ return 'Derived from the steps and the counts of glycolysis and the TCA cycle: a
 }
 });
 P.scenarios.push({
-id: 'purinecost', type: 'ledger', group: G_NUC, title: 'Một phân tử IMP', subtitle: 'Năng lượng tiêu tốn để tổng hợp một purine nucleotide', options: [],
+id: 'purinecost', type: 'ledger', group: G_NUC, title: 'Một phân tử IMP', subtitle: 'Năng lượng cần để tổng hợp một nucleotide purine', options: [],
 ledger: function (o) {
 return {
 mode: 'atp', unit: 'one IMP built from ribose 5-phosphate',
@@ -21667,7 +21667,7 @@ note: 'ATP is spent at three steps, 2, 4 and 7 (counting PRPP to phosphoribosyla
 }
 });
 P.scenarios.push({
-id: 'pyrimidinecost', type: 'ledger', group: G_NUC, title: 'Một phân tử UMP', subtitle: 'Năng lượng tiêu tốn để tổng hợp một pyrimidine nucleotide', options: [],
+id: 'pyrimidinecost', type: 'ledger', group: G_NUC, title: 'Một phân tử UMP', subtitle: 'Năng lượng cần để tổng hợp một nucleotide pyrimidine', options: [],
 ledger: function (o) {
 return {
 mode: 'atp', unit: 'one UMP built from bicarbonate, glutamine, aspartate and ribose 5-phosphate',
@@ -25602,7 +25602,7 @@ addButton('−', 'Thu nhỏ', null, function () {
 var v = viewSize();
 zoomAt(v.w / 2, v.h / 2, 0.8, true);
 });
-addButton('', 'Đặt lại góc nhìn', FIT_ICON, function () { fitTo(true); });
+addButton('', 'Đặt lại khung nhìn', FIT_ICON, function () { fitTo(true); });
 container.appendChild(bar);
 function layoutControls() {
 bar.classList.toggle('mgc-controls--narrow', container.clientWidth > 0 && container.clientWidth < 600);
@@ -26015,16 +26015,16 @@ var MG = root.MG = root.MG || {};
 var MODES = ['build', 'pick', 'type'];
 var FORMATS = ['names', 'structures', 'mixed'];
 var PROMPTS = {
-product: 'Product của bước này là gì?',
-productOne: 'Nêu tên một product của bước này.',
-productOther: 'Nêu tên product còn lại.',
-substrate: 'Substrate còn thiếu là gì?',
-consumeOne: 'Nêu tên một chất mà bước này tiêu thụ.',
-consumeMore: 'Bước này còn tiêu thụ thêm chất nào khác?',
-enz: 'Enzyme nào xúc tác bước này?',
+product: 'Sản phẩm là gì?',
+productOne: 'Hãy nêu một sản phẩm của bước này.',
+productOther: 'Hãy nêu sản phẩm còn lại.',
+substrate: 'Cơ chất còn thiếu là gì?',
+consumeOne: 'Hãy nêu một chất được tiêu thụ ở bước này.',
+consumeMore: 'Bước này còn tiêu thụ chất nào khác?',
+enz: 'Enzyme nào xúc tác cho bước này?',
 'in': 'Bước này tiêu thụ chất gì?',
 out: 'Bước này giải phóng hoặc tạo ra chất gì?',
-releaseOne: 'Nêu tên một chất mà bước này giải phóng hoặc tạo ra.',
+releaseOne: 'Hãy nêu một chất mà bước này giải phóng hoặc tạo ra.',
 releaseMore: 'Bước này còn giải phóng hoặc tạo ra chất nào khác?'
 };
 var TYPE_SUFFIX = ' Gõ một câu trả lời.';
@@ -29941,18 +29941,18 @@ var RAMP = [
 ];
 var NO_DATA = '#E6E3D8';
 var MODES = [
-{ id: 'build', title: 'Xây dựng (Build)', text: 'Dựng bản đồ từng bước, trả lời một câu hỏi mỗi lần' },
+{ id: 'build', title: 'Xây dựng', text: 'Dựng bản đồ từng bước, trả lời một câu hỏi mỗi lần' },
 { id: 'pick', title: 'Điền vào bản đồ', text: 'Bản đồ khuyết với 6 phương án trắc nghiệm cho mỗi ô' },
 { id: 'type', title: 'Điền vào chỗ trống', text: 'Bản đồ khuyết tự gõ bàn phím chính xác tên chất' }
 ];
-var MODE_NAME = { build: 'Xây dựng (Build)', pick: 'Điền vào bản đồ', type: 'Điền vào chỗ trống' };
+var MODE_NAME = { build: 'Xây dựng', pick: 'Điền vào bản đồ', type: 'Điền vào chỗ trống' };
 var HARDER = { build: 'pick', pick: 'type' };
 var FORMATS = [
 { id: 'names', label: 'Tên chất' },
-{ id: 'structures', label: 'Công thức cấu tạo' },
+{ id: 'structures', label: 'Cấu trúc' },
 { id: 'mixed', label: 'Kết hợp' }
 ];
-var FORMAT_NAME = { names: 'tên chất', structures: 'công thức cấu tạo', mixed: 'kết hợp' };
+var FORMAT_NAME = { names: 'tên chất', structures: 'cấu trúc', mixed: 'kết hợp' };
 var DEFAULTS = {
 format: 'mixed', showSlotLabels: true, givenStart: false, cofactors: true, sound: true, introSeen: false, theme: 'light', advanced: false,
 pathwayId: 'glycolysis', mode: 'build', excluded: {}
@@ -29969,18 +29969,18 @@ var EC_CLASS = {
 var CLASS_LABEL = {
 kinase: 'Kinase', isomerase: 'Isomerase', lyase: 'Lyase', dehydrogenase: 'Dehydrogenase',
 ligase: 'Ligase', phosphatase: 'Phosphatase', transferase: 'Transferase', hydrolase: 'Hydrolase',
-etc: 'Electron transport', translocase: 'Translocase', lipid: 'Lipid metabolism',
-channel: 'Channel', symporter: 'Symporter', gtpase: 'GTPase', poreformer: 'Pore-forming protein', platform: 'Protein complex',
-adaptor: 'Adaptor protein', protease: 'Protease (caspase)', receptor: 'Receptor',
-gprotein: 'G protein', sigprotein: 'Signaling protein', transporter: 'Transporter', photocomplex: 'Photosynthetic complex', process: 'Whole process',
-nprocess: 'Whole process', cellmachine: 'Protein or particle of the cell'
+etc: 'Chuỗi vận chuyển electron', translocase: 'Translocase', lipid: 'Chuyển hóa lipid',
+channel: 'Kênh', symporter: 'Symporter', gtpase: 'GTPase', poreformer: 'Protein tạo lỗ', platform: 'Phức hợp protein',
+adaptor: 'Protein nối (adaptor)', protease: 'Protease (caspase)', receptor: 'Thụ thể (receptor)',
+gprotein: 'Protein G', sigprotein: 'Protein truyền tín hiệu', transporter: 'Chất vận chuyển', photocomplex: 'Phức hợp quang hợp', process: 'Toàn bộ quá trình',
+nprocess: 'Toàn bộ quá trình', cellmachine: 'Bộ máy tế bào'
 };
 var FAMILY_LABEL = {
-adenylate: 'Adenylate nucleotide', redox: 'Redox carrier', carrier: 'Carrier group', small: 'Small molecule',
-etc: 'Electron transport', lipid: 'Lipid metabolism', sugar: 'Sugar', acid: 'Carboxylic acid',
-c3: 'Three-carbon compound', coa: 'Acyl-CoA', aminoacid: 'Amino acid', messenger: 'Hormone or messenger', sigstate: 'Protein state or place',
-siglipid: 'Membrane lipid', nucleotide: 'Nucleotide', photocarrier: 'Electron carrier or pigment', photon: 'Light',
-b6: 'Vitamin B6 coenzyme', plpint: 'PLP intermediate', nucint: 'Nucleotide intermediate', tissuepool: 'Pool of molecules', folate: 'Folate coenzyme'
+adenylate: 'Nucleotide adenylate', redox: 'Chất mang oxy hóa-khử', carrier: 'Nhóm chất mang', small: 'Phân tử nhỏ',
+etc: 'Chuỗi vận chuyển electron', lipid: 'Chuyển hóa lipid', sugar: 'Đường', acid: 'Acid carboxylic',
+c3: 'Hợp chất ba carbon', coa: 'Acyl-CoA', aminoacid: 'Amino acid', messenger: 'Hormone hoặc chất truyền tin', sigstate: 'Trạng thái protein',
+siglipid: 'Lipid màng', nucleotide: 'Nucleotide', photocarrier: 'Chất mang electron hoặc sắc tố', photon: 'Ánh sáng',
+b6: 'Coenzyme vitamin B6', plpint: 'Chất trung gian PLP', nucint: 'Chất trung gian nucleotide', tissuepool: 'Nhóm phân tử', folate: 'Coenzyme folate'
 };
 var CHIP_CLASS = {
 adenylate: 'mg-chip--adenylate', redox: 'mg-chip--redox', carrier: 'mg-chip--carrier', small: 'mg-chip--small'
@@ -30952,18 +30952,23 @@ el('span', { class: 'mg-choice__title', text: c.title })));
 return el('div', { class: 'mg-courses', role: 'group', 'aria-label': 'Course' },
 [free].concat(cards.length ? [el('div', { class: 'mg-course-pills' }, cards)] : []));
 }
+function pathwayShortTitle(p) {
+if (!p || !p.title) { return ''; }
+var m = p.title.match(/^(.*?)\s*\((.*?)\)$/);
+return m ? m[1].trim() : p.title;
+}
 function pathwayTile(p, picked) {
 var on = picked.indexOf(p.id) >= 0;
 var several = picked.length >= 2;
 return el('button', {
 type: 'button', class: 'mg-ptile' + (on ? ' is-selected' : '') + (several ? ' mg-ptile--pick' : ''), 'aria-pressed': on,
-'aria-label': p.title + '. ' + p.subtitle, title: p.subtitle,
+'aria-label': p.title + '. ' + p.subtitle, title: p.title + '. ' + p.subtitle,
 'data-key': 'pathway:' + p.id, on: { click: function () { choosePathway(p.id); } }
 },
 el('span', { class: 'mg-ptile__head' },
 several ? el('span', { class: 'mg-ptile__check', 'aria-hidden': 'true' }) : null,
 el('span', { class: 'mg-ptile__dot', style: { background: p.color } }),
-el('span', { class: 'mg-ptile__title', text: p.title })));
+el('span', { class: 'mg-ptile__title', text: pathwayShortTitle(p) })));
 }
 function everythingButton(p, selectedId, where, small) {
 var on = p.id === selectedId;
@@ -30971,12 +30976,12 @@ var steps = p.order.length;
 var all = where === null;
 var covers = all ? 'every pathway' : where;
 var counted = !all || everythingTarget() === p.id;
-var face = small ? el('span', { class: 'mg-everything__pill', text: 'Everything' }) : 'Everything';
+var face = small ? el('span', { class: 'mg-everything__pill', text: 'Tất cả' }) : 'Tất cả';
 return el('button', {
 type: 'button', class: 'mg-btn mg-everything' + (small ? ' mg-everything--small' : '') + (all ? ' mg-everything--all' : '') + (on ? ' is-selected' : ''),
 'aria-pressed': on, 'data-key': 'everything:' + p.id,
-'aria-label': 'Everything in ' + covers + (counted ? ': all ' + steps + ' steps on one map' : ': every pathway on one map'),
-title: counted ? 'All ' + steps + ' steps on one map' : 'Every pathway on one map',
+'aria-label': 'Tất cả trong ' + covers + (counted ? ': toàn bộ ' + steps + ' bước trên một bản đồ' : ': mọi con đường trên một bản đồ'),
+title: counted ? 'Toàn bộ ' + steps + ' bước trên một bản đồ' : 'Mọi con đường trên một bản đồ',
 on: { click: function () { chooseEverything(p.id); } }
 }, face);
 }
@@ -30988,19 +30993,19 @@ if (picked.length > 0) {
 var chipList = picked.map(function (pid) {
 var p = pathwayById(pid);
 if (!p) { return null; }
-return el('span', { class: 'mg-chip mg-chip--picked', 'data-key': 'picked:' + p.id },
-el('span', { text: p.title }),
+return el('span', { class: 'mg-chip mg-chip--picked', 'data-key': 'picked:' + p.id, title: p.title },
+el('span', { text: pathwayShortTitle(p) }),
 el('button', {
 type: 'button', class: 'mg-chip__remove', 'aria-label': 'Bỏ ' + p.title,
 on: { click: function (e) { e.stopPropagation(); choosePathway(p.id); } }
 }, '×'));
 }).filter(Boolean);
 if (chipList.length > 0) {
-chips = el('div', { class: 'mg-picked-chips', role: 'group', 'aria-label': 'Selected pathways' }, chipList);
+chips = el('div', { class: 'mg-picked-chips', role: 'group', 'aria-label': 'Con đường đã chọn' }, chipList);
 }
 }
 return el('div', { class: 'mg-section' },
-el('p', { class: 'mg-label', text: 'Pathway' }),
+el('p', { class: 'mg-label', text: 'Con đường' }),
 chips,
 all ? everythingButton(all, isEverythingPicked(s) ? all.id : s.pathwayId, null, false) : null,
 pathwayPicker(s));
@@ -31015,12 +31020,12 @@ var isOpen = open.indexOf(g.id) >= 0;
 var dot = g.color ? el('span', { class: 'mg-group__dot', style: { background: g.color }, 'aria-hidden': 'true' }) : null;
 var inPick = g.pathways.filter(function (p) { return picked.indexOf(p.id) >= 0; }).length;
 var mapOn = !!g.everything && g.everything.id === s.pathwayId;
-var badge = mapOn ? 'Map' : (inPick ? String(inPick) : '');
+var badge = mapOn ? 'Bản đồ' : (inPick ? String(inPick) : '');
 var panelId = 'mg-tab-' + g.id;
 var tab = el('button', {
 type: 'button', class: 'mg-group__tab' + (isOpen ? ' is-open' : '') + (badge ? ' has-pick' : ''),
 'aria-expanded': isOpen, 'aria-controls': panelId, 'data-key': 'tab:' + g.id,
-'aria-label': g.title + ', ' + g.pathways.length + ' pathways' + (mapOn ? ', the Everything map is chosen' : (inPick ? ', ' + inPick + ' picked' : '')),
+'aria-label': g.title + ', ' + g.pathways.length + ' con đường' + (mapOn ? ', bản đồ Tất cả đã được chọn' : (inPick ? ', đã chọn ' + inPick : '')),
 on: { click: function () { toggleTab(g); } }
 },
 dot,
@@ -31031,9 +31036,9 @@ var all = inPick === g.pathways.length;
 var pickAll = el('button', {
 type: 'button', class: 'mg-group__pickall' + (several ? (all ? ' is-all' : (inPick ? ' is-some' : '')) : ''),
 'aria-pressed': all, 'data-key': 'group:' + g.id,
-'aria-label': (all ? 'Take out all of ' : 'Add all of ') + g.title,
+'aria-label': (all ? 'Bỏ chọn toàn bộ ' : 'Chọn toàn bộ ') + g.title,
 on: { click: function () { toggleGroup(g); } }
-}, el('span', { class: 'mg-group__box', 'aria-hidden': 'true' }), el('span', { text: all ? 'Clear' : 'Pick all' }));
+}, el('span', { class: 'mg-group__box', 'aria-hidden': 'true' }), el('span', { text: all ? 'Xóa' : 'Chọn tất cả' }));
 return el('div', { class: 'mg-group' + (isOpen ? ' is-open' : '') },
 tab,
 el('div', { class: 'mg-group__panel', id: panelId, hidden: !isOpen },
@@ -31051,19 +31056,19 @@ type: 'button', class: 'mg-section-tile' + (on ? ' is-selected' : '') + (stat.st
 'data-key': 'section:' + pathwayId,
 style: stat.started ? { background: masteryColor(stat.pct) } : null,
 'aria-label': 'Section ' + (index + 1) + ', ' + p.title + ', ' + (stat.started ? Math.round(stat.pct) + ' percent' : 'not started'),
-title: p.subtitle,
+title: p.title + (p.subtitle ? '. ' + p.subtitle : ''),
 on: { click: function () { chooseSection(pathwayId); } }
 },
 el('span', { class: 'mg-section-tile__num', text: String(index + 1) }),
 el('span', { class: 'mg-section-tile__text' },
-el('span', { class: 'mg-section-tile__title', text: p.title })),
+el('span', { class: 'mg-section-tile__title', text: pathwayShortTitle(p) })),
 stat.started ? el('span', { class: 'mg-section-tile__pct', text: Math.round(stat.pct) + ' %' }) : null);
 }
 function sectionsBlock(course, s) {
 var every = course.everything ? viewOf(course.everything) : null;
 return el('div', { class: 'mg-section' },
 el('div', { class: 'mg-label-row' },
-el('p', { class: 'mg-label', text: 'Sections' }),
+el('p', { class: 'mg-label', text: 'Chặng' }),
 el('div', { class: 'mg-label-actions' }, every ? everythingButton(every, s.pathwayId, course.title, true) : null)),
 sectionList(course, s));
 }
@@ -31109,9 +31114,9 @@ type: 'button', class: on ? 'is-active' : '', 'aria-pressed': on,
 var cofOn = s.cofactors !== false;
 var cofToggle = el('button', {
 type: 'button', class: 'mg-cof' + (cofOn ? ' is-on' : ''), 'aria-pressed': cofOn, 'data-key': 'cofactors:toggle',
-title: 'ATP, water, NADH and the other small molecules a step uses or releases: ask for them (on) or show them (off)',
+title: 'ATP, nước, NADH và các phân tử nhỏ khác: hỏi (bật) hoặc hiển thị (tắt)',
 on: { click: toggleCofactors }
-}, 'Cofactors: ' + (cofOn ? 'on' : 'off'));
+}, 'Đồng yếu tố: ' + (cofOn ? 'bật' : 'tắt'));
 var tiles = pathway ? pathway.order.map(function (rid) {
 var r = reactionById(pathway, rid);
 return r ? tileFor(r, pathway, mastery, blank, excluded) : null;
@@ -31139,13 +31144,13 @@ if (!scored) { wipe.node.disabled = true; }
 var practice = weakPractice();
 var practiceBtn = practice ? el('button', {
 type: 'button', class: 'mg-btn mg-btn--ghost mg-history__btn mg-practice__btn', 'data-key': 'practice',
-title: 'A ' + MODE_NAME[s.mode] + ' round of the ' + practice.steps.length + ' steps you miss most, from every pathway',
+title: 'Một vòng ' + MODE_NAME[s.mode] + ' gồm ' + practice.steps.length + ' bước bạn hay làm sai nhất, từ mọi con đường',
 on: { click: function () { startPractice(practice); } }
-}, 'Luyện tập các bước yếu (' + practice.steps.length + ')') : null;
+}, 'Luyện tập các bước còn yếu (' + practice.steps.length + ')') : null;
 var picks = pathway && (isMix || isEverythingPicked(s)) ? pickedPathways(s).length : 0;
 var inQuiz = total - excluded.length;
 var totalLine = picks > 1
-? el('p', { class: 'mg-dock__total', 'data-key': 'total', 'aria-live': 'polite', text: picks + ' pathways, ' + inQuiz + (inQuiz === 1 ? ' step' : ' steps') })
+? el('p', { class: 'mg-dock__total', 'data-key': 'total', 'aria-live': 'polite', text: picks + ' con đường, ' + inQuiz + ' bước' })
 : null;
 var settingsBtn = el('button', {
 type: 'button', class: 'mg-btn mg-btn--icon mg-dock__settings', 'data-key': 'settings:open',
@@ -31158,18 +31163,18 @@ el('div', { class: 'mg-dock__bar' },
 el('button', { type: 'button', class: 'mg-btn mg-btn--primary', 'data-key': 'start', disabled: none, on: { click: startFromSelect } }, startLabel),
 settingsBtn));
 var left = el('div', { class: 'mg-select__col' },
-courseList().length ? section('Course', courseStrip(course)) : null,
+courseList().length ? section('Khóa học', courseStrip(course)) : null,
 course ? sectionsBlock(course, s) : pathwayBlock(s));
 var modeDescriptions = {
-build: 'Build: Dựng bản đồ theo từng bước phản ứng.',
-pick: 'Fill the Map: Bản đồ khuyết với 6 phương án trắc nghiệm.',
-type: 'Fill in the Blank: Tự gõ chính xác tên chất và enzyme.'
+build: 'Xây dựng: Dựng bản đồ từng bước, trả lời một câu hỏi mỗi lần.',
+pick: 'Điền vào bản đồ: Bản đồ khuyết với 6 phương án trắc nghiệm cho mỗi ô.',
+type: 'Điền vào chỗ trống: Bản đồ khuyết tự gõ bàn phím chính xác tên chất.'
 };
 var modeDesc = el('p', { class: 'mg-mode-desc', text: modeDescriptions[s.mode] || '' });
 var right = el('div', { class: 'mg-select__col' },
-section('Mode', el('div', null, modes, modeDesc)),
+section('Chế độ', el('div', null, modes, modeDesc)),
 formats
-? el('div', { class: 'mg-section' }, el('div', { class: 'mg-label-row' }, el('p', { class: 'mg-label', text: 'Show molecules as' }), cofToggle), formats)
+? el('div', { class: 'mg-section' }, el('div', { class: 'mg-label-row' }, el('p', { class: 'mg-label', text: 'Hiển thị phân tử' }), cofToggle), formats)
 : el('div', { class: 'mg-section' }, el('div', { class: 'mg-label-row mg-label-row--end' }, cofToggle)),
 el('div', { class: 'mg-panel mg-panel--steps' }, grid),
 el('div', { class: 'mg-history' }, practiceBtn, wipe.node),
@@ -31392,13 +31397,13 @@ function drawOpenButton() {
 if (!MG.drawUi || !MG.draw || !MG.renderMoleculeEx || !MG.draw.molecules().length) { return null; }
 return el('button', {
 type: 'button', class: 'mg-btn mg-btn--ghost mg-draw-open', 'data-key': 'draw:open', on: { click: showDraw }
-}, 'Draw molecules');
+}, 'Vẽ phân tử');
 }
 function gamesOpenButton() {
 if (!MG.gamesUi || !MG.gameEngine || !MG.gameEngine.games().length) { return null; }
 return el('button', {
 type: 'button', class: 'mg-btn mg-btn--ghost mg-games-open', 'data-key': 'games:open', on: { click: showGames }
-}, 'Compare & Mechanisms');
+}, 'So sánh & Cơ chế');
 }
 function howToPlay() {
 var points = [
@@ -31454,7 +31459,7 @@ var on = !!readSettings().advanced;
 var handle = modal({
 title: 'Chế độ nâng cao',
 body: el('div', { class: 'mg-advanced' },
-el('p', { class: 'mg-advanced__text', text: 'Photosynthesis, cell signaling và nucleotides với các bài kiểm tra riêng, và mục Everything sẽ tổng hợp mọi pathway.' }),
+el('p', { class: 'mg-advanced__text', text: 'Quang hợp, truyền tín hiệu tế bào và nucleotide có các bài quiz riêng; mục “Tất cả” tập hợp mọi con đường chuyển hóa.' }),
 el('button', {
 type: 'button', class: 'mg-btn mg-btn--primary', 'data-key': 'advanced:toggle',
 on: { click: function () {
@@ -31473,7 +31478,7 @@ function atpOpenButton() {
 if (!MG.atpUi || !MG.atp) { return null; }
 return el('button', {
 type: 'button', class: 'mg-btn mg-btn--ghost mg-atp-open', 'data-key': 'atp:open', on: { click: showAtp }
-}, 'ATP Calculator');
+}, 'Bộ tính ATP');
 }
 function percentOf(sum) {
 var right = num(sum.right), wrong = num(sum.wrong), answered = right + wrong;
@@ -31585,13 +31590,13 @@ var practiceBtn = again.length ? el('button', {
 type: 'button', class: 'mg-btn mg-practice__btn', 'data-key': 'practice',
 title: 'A ' + MODE_NAME[mode] + ' round of the ' + again.length + (again.length === 1 ? ' step' : ' steps') + ' you missed',
 on: { click: function () { startPractice({ pathwayId: sum.pathwayId, steps: again }); } }
-}, 'Luyện tập các bước làm sai') : null;
+}, 'Luyện tập các bước đã sai') : null;
 var reviewBtn = el('button', { type: 'button', class: 'mg-btn mg-btn--ghost', on: { click: function () { reviewMap(sum, course); } } }, 'Xem lại bản đồ');
 var overview = courseObj && !last ? el('button', {
 type: 'button', class: 'mg-btn mg-btn--ghost',
 on: { click: function () { showCourse(courseObj.id, sum.pathwayId); } }
 }, 'Tổng quan khóa học') : null;
-var back = el('button', { type: 'button', class: 'mg-btn mg-btn--ghost mg-btn--wide', on: { click: function () { showSelect(); } } }, 'Quay lại Menu');
+var back = el('button', { type: 'button', class: 'mg-btn mg-btn--ghost mg-btn--wide', on: { click: function () { showSelect(); } } }, 'Về menu');
 var actions = el('div', { class: 'mg-results__actions' }, lead, againBtn, harder, practiceBtn, reviewBtn, overview, back);
 var score = el('section', { class: 'mg-card mg-card--option mg-score', 'aria-label': 'Điểm' },
 ring(pct),
@@ -31600,7 +31605,7 @@ stat('badge-check', String(right), 'đúng', 'mg-stat--right'),
 stat('badge-cross', String(wrong), 'sai', 'mg-stat--wrong'),
 stat(null, clock(sum.elapsed), 'thời gian'),
 stat(null, String(num(sum.hints)), 'gợi ý'),
-num(sum.revealed) ? stat(null, String(num(sum.revealed)), 'đã tiết lộ') : null));
+num(sum.revealed) ? stat(null, String(num(sum.revealed)), 'đã hiện đáp án') : null));
 return el('section', { class: 'mg-screen mg-results is-entering' },
 el('header', { class: 'mg-results__head' },
 el('h1', { class: 'mg-title', text: title }),

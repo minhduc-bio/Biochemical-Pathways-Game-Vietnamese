@@ -109,7 +109,7 @@ async function runTestSuite() {
       startDisabled: document.querySelector('[data-key="start"]').disabled
     })`);
 
-    assert(initCheck.title === 'Pathway Quiz', "Tiêu đề trang phải là 'Pathway Quiz'", initCheck.title);
+    assert(initCheck.title === 'Pathway Quiz' || initCheck.title === 'Trắc nghiệm Con đường Chuyển hóa', "Tiêu đề trang phải là 'Pathway Quiz' hoặc 'Trắc nghiệm Con đường Chuyển hóa'", initCheck.title);
     assert(initCheck.screen === 'select', "Màn hình khởi động phải là 'select'", initCheck.screen);
     assert(initCheck.hasStartBtn, "Nút Start Quiz phải tồn tại trên màn hình select");
     
