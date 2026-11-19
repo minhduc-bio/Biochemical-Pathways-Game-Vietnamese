@@ -6285,6 +6285,207 @@ h1, h2, h3, h4, h5, h6,
   text-align: left !important;
 }
 
+
+/* === Nhóm C: Tối ưu Màn hình làm bài (Không cuộn ở 1200x860, 1366x768; Sticky mobile) === */
+
+/* C2: Coach mark 1 dòng gọn */
+.mgq-coach {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  padding: 6px 12px !important;
+  margin: 0 0 6px !important;
+  background: var(--mg-panel) !important;
+  border: var(--mg-border-thin) solid var(--mg-line) !important;
+  border-radius: var(--mg-radius-sm) !important;
+  font: 600 13px/1.3 var(--mg-font-body) !important;
+}
+
+.mgq-coach__text {
+  margin: 0 !important;
+  color: var(--mg-ink) !important;
+}
+
+.mgq-coach__ok {
+  flex: none !important;
+  padding: 4px 10px !important;
+  min-height: 28px !important;
+  font-size: 12px !important;
+  border-radius: var(--mg-radius-sm) !important;
+}
+
+/* C3: Thanh Gợi ý gọn */
+.mgq-hints {
+  border-radius: var(--mg-radius-sm) !important;
+  border: var(--mg-border-thin) solid var(--mg-line) !important;
+  background: var(--mg-surface) !important;
+  padding: 3px 8px !important;
+  margin: 2px 0 !important;
+}
+
+.mgq-hints__bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  min-height: 36px !important;
+  padding: 0 !important;
+}
+
+.mgq-hints__title {
+  display: none !important;
+}
+
+.mgq-reveal-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+
+.mgq-reveal-sub {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: var(--mg-error-ink) !important;
+  opacity: 0.85 !important;
+}
+
+/* C1: Màn hình lớn (>= 900px): Chế độ Dựng từng bước chia 2 cột, vừa vặn không cuộn */
+@media (min-width: 900px) {
+  .mgq-root {
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+    padding: 6px 16px 12px !important;
+    gap: 6px !important;
+    box-sizing: border-box !important;
+  }
+
+  .mgq-root[data-mode="build"] .mgq-body {
+    display: grid !important;
+    grid-template-columns: minmax(440px, 500px) minmax(0, 1fr) !important;
+    gap: 16px !important;
+    height: calc(100vh - 60px) !important;
+    height: calc(100dvh - 60px) !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .mgq-root[data-mode="build"] .mgq-side {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    padding-right: 4px !important;
+  }
+
+  .mgq-root[data-mode="build"] .mgq-panel {
+    order: 0 !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    border-radius: var(--mg-radius-md) !important;
+  }
+
+  .mgq-eq-card {
+    padding: 8px 12px !important;
+    min-height: 0 !important;
+  }
+
+  .mgq-eq-card .mgq-prompt {
+    font-size: 19px !important;
+    margin: 0 0 6px !important;
+  }
+
+  .mgq-box {
+    width: 96px !important;
+    height: 82px !important;
+  }
+
+  .mgq-box svg {
+    max-height: 52px !important;
+    width: auto !important;
+    object-fit: contain !important;
+  }
+
+  .mgq-arrow {
+    min-height: 38px !important;
+  }
+
+  .mgq-grid {
+    gap: 6px !important;
+  }
+
+  .mgq-grid .mgq-opt {
+    min-height: 48px !important;
+    padding: 4px 8px !important;
+    font-size: 14.5px !important;
+  }
+
+  .mgq-grid .mgq-opt svg {
+    max-height: 42px !important;
+    width: auto !important;
+    object-fit: contain !important;
+  }
+}
+
+/* C4: Tối ưu trên điện thoại (<= 899px) */
+@media (max-width: 899px) {
+  .mgq-root {
+    padding: 6px 8px 10px !important;
+    gap: 6px !important;
+  }
+
+  .mgq-panel {
+    max-height: 28vh !important;
+    max-height: 28dvh !important;
+    min-height: 130px !important;
+  }
+
+  .mgq-eq-card {
+    padding: 6px 10px !important;
+  }
+
+  .mgq-eq-card .mgq-prompt {
+    font-size: 16px !important;
+  }
+
+  .mgq-box {
+    width: 78px !important;
+    height: 68px !important;
+  }
+
+  .mgq-box svg {
+    max-height: 44px !important;
+    object-fit: contain !important;
+  }
+
+  .mgq-arrow {
+    min-height: 30px !important;
+  }
+
+  .mgq-grid {
+    gap: 6px !important;
+  }
+
+  .mgq-grid .mgq-opt {
+    min-height: 44px !important;
+    font-size: 13.5px !important;
+    padding: 4px 6px !important;
+  }
+
+  .mgq-why__next,
+  .mgq-submit,
+  .mgq-next {
+    position: sticky !important;
+    bottom: 4px !important;
+    z-index: 10 !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -27262,16 +27463,23 @@ side.appendChild(mapCard);
 side.appendChild(whyEl);
 }
 var coach = null;
-if (!review && MG.store && typeof MG.store.getSettings === 'function' && MG.store.getSettings().introSeen === false) {
+var stObj = (MG.store && typeof MG.store.getSettings === 'function') ? MG.store.getSettings() : {};
+var coachKey = 'introSeen_' + mode;
+var coachSeen = stObj[coachKey] || stObj.introSeen;
+if (!review && !coachSeen) {
+var coachText = mode === 'build'
+? 'Chọn đáp án cho ô màu vàng. "Gợi ý" cho manh mối, "Hiện đáp án" tính 1 lỗi.'
+: (mode === 'type'
+? 'Chạm ô trống trên bản đồ và tự gõ chính xác tên chất.'
+: 'Chạm ô trống trên bản đồ, rồi chọn 1 trong 6 đáp án.');
 coach = h('div', { class: 'mgq-coach', role: 'note' },
-h('p', { class: 'mgq-coach__text', text: (mode === 'build'
-? 'Các ô nét đứt là ô trống. Hãy chọn đáp án theo yêu cầu trên thẻ màu vàng. '
-: 'Các ô nét đứt là ô trống. Chạm vào một ô, rồi ' + (mode === 'type' ? 'gõ' : 'chọn') + ' đáp án. ')
-+ 'Gợi ý đưa ra manh mối; Hiện đáp án sẽ hiển thị đáp án và tính là 1 lỗi.' }),
+h('p', { class: 'mgq-coach__text', text: coachText }),
 h('button', {
 type: 'button', class: 'mg-btn mg-btn--ghost mgq-coach__ok', on: { click: function () {
 if (coach.parentNode) { coach.parentNode.removeChild(coach); }
-try { MG.store.setSettings({ introSeen: true }); } catch (err) { console.error(err); }
+var patch = { introSeen: true };
+patch[coachKey] = true;
+try { MG.store.setSettings(patch); } catch (err) { console.error(err); }
 } }
 }, 'Đã hiểu'));
 side.insertBefore(coach, side.firstChild);
@@ -27417,7 +27625,14 @@ flash(flashNode, 'shake');
 function makeHintPanel(onHint, onReveal, bare) {
 var btn = h('button', { type: 'button', class: 'mg-btn mg-btn--ghost mgq-act mgq-hint-btn', on: { click: onHint } }, 'Gợi ý');
 var reveal = onReveal
-? h('button', { type: 'button', class: 'mg-btn mg-btn--ghost mgq-act mgq-reveal-btn', on: { click: onReveal } }, 'Hiện đáp án')
+? h('button', {
+type: 'button', class: 'mg-btn mg-btn--ghost mgq-act mgq-reveal-btn',
+title: 'Hiện đáp án chính xác (tính là 1 lỗi sai)',
+on: { click: onReveal }
+},
+h('span', { text: 'Hiện đáp án' }),
+h('span', { class: 'mgq-reveal-sub', text: '(tính 1 lỗi)' })
+)
 : null;
 var list = h('div', { class: 'mgq-hints__list', on: { scroll: function () { markMore(list); } } });
 var say = h('p', { class: 'mgq-sr-only', 'aria-live': 'polite' });
@@ -27425,7 +27640,7 @@ var cls = 'mgq-hints' + (bare ? ' mgq-hints--bare' : '');
 var el = bare
 ? h('div', { class: cls, role: 'region', 'aria-label': 'Gợi ý' }, list, say)
 : h('div', { class: cls, role: 'region', 'aria-label': 'Gợi ý' },
-h('div', { class: 'mgq-hints__bar' }, h('span', { class: 'mgq-hints__title', text: 'Gợi ý' }), btn, reveal),
+h('div', { class: 'mgq-hints__bar' }, btn, reveal),
 list, say);
 return { el: el, btn: btn, reveal: reveal, list: list, say: say, st: null, open: {}, shown: 0 };
 }
