@@ -11053,35 +11053,35 @@ hidden: true, big: true, scope: spec.scope || null
 };
 }
 function numbered(label, short) {
-return function (r) { return typeof r.step === 'number' ? [label + ' step ' + r.step, short + ' ' + r.step] : null; };
+return function (r) { return typeof r.step === 'number' ? [label + ' bước ' + r.step, short + ' ' + r.step] : null; };
 }
 var glycolysisIds = {};
 MG.pathways.glycolysis.order.forEach(function (id) { glycolysisIds[id] = true; });
-var glycolysisNames = numbered('Glycolysis', 'GLY');
-var tcaNames = numbered('TCA cycle', 'TCA');
+var glycolysisNames = numbered('Đường phân', 'GLY');
+var tcaNames = numbered('Chu trình TCA', 'TCA');
 function oxidationNames(r) {
-if (r.id === 'pdc') { return ['Link reaction', 'Link']; }
+if (r.id === 'pdc') { return ['Phản ứng liên kết (PDC)', 'Link']; }
 return (glycolysisIds[r.id] ? glycolysisNames : tcaNames)(r);
 }
 function ethanolNames(r) {
 if (glycolysisIds[r.id]) { return glycolysisNames(r); }
-return ['Alcohol fermentation step ' + (r.step - 10), 'ETH ' + (r.step - 10)];
+return ['Lên men rượu bước ' + (r.step - 10), 'ETH ' + (r.step - 10)];
 }
 function lactateNames(r) {
-return glycolysisIds[r.id] ? glycolysisNames(r) : ['Lactic acid fermentation', 'LAC'];
+return glycolysisIds[r.id] ? glycolysisNames(r) : ['Lên men lactic', 'LAC'];
 }
-var pyeNames = numbered('Pyruvate entry', 'PYE');
-var mdyNames = numbered('Fission and fusion', 'MDY');
-var ainNames = numbered('Intrinsic apoptosis', 'AIN');
-var aexNames = numbered('Extrinsic apoptosis', 'AEX');
-var ecpNames = numbered('Electron carriers', 'ECP');
-var etcNames = numbered('Electron transport', 'ETC');
-var gpsNames = numbered('Glycerol phosphate shuttle', 'GPS');
-var masNames = numbered('Malate-aspartate shuttle', 'MAS');
-var antNames = numbered('ATP synthesis and export', 'ANT');
-var faoNames = numbered('Beta-oxidation', 'FAO');
-var etcSimpleNames = numbered('Electron transport, simple', 'ETS');
-var faoSimpleNames = numbered('Beta-oxidation, simple', 'BOS');
+var pyeNames = numbered('Vận chuyển pyruvate', 'PYE');
+var mdyNames = numbered('Phân hạch và hợp nhất', 'MDY');
+var ainNames = numbered('Apoptosis nội sinh', 'AIN');
+var aexNames = numbered('Apoptosis ngoại sinh', 'AEX');
+var ecpNames = numbered('Chất mang điện tử', 'ECP');
+var etcNames = numbered('Chuỗi vận chuyển điện tử', 'ETC');
+var gpsNames = numbered('Thoi glycerol phosphat', 'GPS');
+var masNames = numbered('Thoi malate-aspartate', 'MAS');
+var antNames = numbered('Tổng hợp & xuất ATP', 'ANT');
+var faoNames = numbered('Beta-oxy hóa', 'FAO');
+var etcSimpleNames = numbered('Chuỗi vận chuyển điện tử giản lược', 'ETS');
+var faoSimpleNames = numbered('Beta-oxy hóa giản lược', 'BOS');
 var GN = MG.pathways.glycolysis.nodes;
 var COL = GN.pyr.x, SIDE = GN.dhap.x, FORK = GN.glc.x, ROW = GN.g6p.y - GN.glc.y;
 function row(k) { return GN.glc.y + ROW * k; }
@@ -26815,16 +26815,16 @@ var r = rxnById[rid];
 if (!r) { return ''; }
 if (r.label) { return r.label; }
 if (pathway.id !== 'full') { return 'Bước ' + r.step; }
-if (rid === 'pdc') { return 'Link reaction'; }
-if (hasOwn(glyIds, rid)) { return 'Glycolysis step ' + r.step; }
-return 'TCA cycle step ' + r.step;
+if (rid === 'pdc') { return 'Phản ứng liên kết (PDC)'; }
+if (hasOwn(glyIds, rid)) { return 'Bước Đường phân ' + r.step; }
+return 'Bước Chu trình TCA ' + r.step;
 }
 function positionContext(node) {
 var order = pathway.order;
 var usesIt = function (id) { return rxnById[id].substrates.indexOf(node) >= 0; };
 if ((pathway.start || []).indexOf(node) >= 0) {
 var firstUse = order.filter(usesIt)[0];
-return firstUse ? 'Starting molecule, used in ' + stepLabel(firstUse) : 'Starting molecule';
+return firstUse ? 'Phân tử ban đầu, tham gia ' + stepLabel(firstUse) : 'Phân tử ban đầu';
 }
 var producers = producersOf(node);
 if (!producers.length) { return ''; }
