@@ -5991,6 +5991,130 @@ h1, h2, h3, h4, h5, h6,
   padding: 4px 11px !important;
 }
 
+
+/* === Nhóm A: Checkbox cho bước & Nhãn gợi ý & Công tắc Cofactors === */
+.mg-label-hint {
+  margin: -2px 0 8px 2px;
+  font: 600 13px/1.35 var(--mg-font-body);
+  color: var(--mg-ink-soft);
+}
+
+.mg-tile__toggle::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  transform: translate(-50%, -50%);
+  background: var(--mg-surface);
+  border: 2px solid var(--mg-line);
+  border-radius: var(--mg-radius-sm);
+  box-shadow: 1px 1px 0 var(--mg-shadow-color);
+  transition: all 0.15s ease;
+}
+
+.mg-tile__toggle.is-on::before {
+  background: var(--mg-start);
+}
+
+.mg-tile__toggle.is-on::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 5px;
+  height: 9px;
+  border: solid #141414;
+  border-width: 0 2.5px 2.5px 0;
+  transform: translate(-50%, -50%) rotate(45deg);
+  z-index: 1;
+}
+
+.mg-tile__toggle.is-off::before {
+  background: var(--mg-panel);
+  border-style: dashed;
+  opacity: 0.8;
+}
+
+.mg-tile__toggle.is-off::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 2px;
+  background: var(--mg-ink-soft);
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.mg-tile.is-excluded {
+  background: var(--mg-excluded-bg) !important;
+  border-style: dashed !important;
+  box-shadow: none !important;
+  opacity: 0.55 !important;
+}
+
+.mg-tile.is-excluded .mg-tile__name {
+  text-decoration: line-through;
+}
+
+.mg-cof {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 5px 12px;
+  font: 700 13px/1.3 var(--mg-font-body);
+  border: var(--mg-border-thin) solid var(--mg-line);
+  border-radius: 999px;
+  background: var(--mg-panel);
+  color: var(--mg-ink);
+  cursor: pointer;
+}
+
+.mg-cof.is-on {
+  background: var(--mg-surface);
+  border-color: var(--mg-line);
+}
+
+.mg-cof__badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 999px;
+  background: var(--mg-hairline);
+  text-transform: uppercase;
+}
+
+.mg-cof.is-on .mg-cof__badge {
+  background: var(--mg-start);
+  color: #141414;
+}
+
+.mg-choice--mode {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  min-height: 84px !important;
+  padding: 10px 8px !important;
+  gap: 4px !important;
+  text-align: center !important;
+}
+
+.mg-choice--mode .mg-choice__title {
+  font: 800 15px/1.2 var(--mg-font-display);
+}
+
+.mg-choice--mode .mg-choice__text {
+  font: 600 11.5px/1.35 var(--mg-font-body);
+  color: var(--mg-ink-soft);
+  overflow-wrap: break-word;
+}
+
 </style>
 </head>
 <body>
@@ -26319,7 +26443,7 @@ function stepLabel(rid) {
 var r = rxnById[rid];
 if (!r) { return ''; }
 if (r.label) { return r.label; }
-if (pathway.id !== 'full') { return 'Step ' + r.step; }
+if (pathway.id !== 'full') { return 'Bước ' + r.step; }
 if (rid === 'pdc') { return 'Link reaction'; }
 if (hasOwn(glyIds, rid)) { return 'Glycolysis step ' + r.step; }
 return 'TCA cycle step ' + r.step;
@@ -26628,7 +26752,7 @@ function row(s) {
 return {
 slotId: s.id, kind: s.kind, rxnId: s.rxn,
 step: hasOwn(rxnById, s.rxn) ? rxnById[s.rxn].step : null,
-stepLabel: s.rxn ? stepLabel(s.rxn) : 'Starting molecule',
+stepLabel: s.rxn ? stepLabel(s.rxn) : 'Phân tử ban đầu',
 answerId: s.value, answerLabel: labelOf(s.entityKind, s.value)
 };
 }
@@ -26910,11 +27034,11 @@ return isWide() ? SIZE_PART_WIDE : SIZE_PART_PHONE;
 var contextEl = h('p', { class: 'mgq-context mgq-head__context' });
 var rightNum = h('span', { class: 'mgq-num', text: '0' });
 var wrongNum = h('span', { class: 'mgq-num', text: '0' });
-var countRight = review ? null : h('span', { class: 'mg-count mg-count--right', title: 'Right answers' }, MG.ui.icon('badge-check'), rightNum);
-var countWrong = review ? null : h('span', { class: 'mg-count mg-count--wrong', title: 'Wrong answers' }, MG.ui.icon('badge-cross'), wrongNum);
+var countRight = review ? null : h('span', { class: 'mg-count mg-count--right', title: 'Số câu đúng' }, MG.ui.icon('badge-check'), rightNum);
+var countWrong = review ? null : h('span', { class: 'mg-count mg-count--wrong', title: 'Số câu sai' }, MG.ui.icon('badge-cross'), wrongNum);
 var timerEl = review ? null : h('span', { class: 'mg-timer', text: '0:00' });
 var titleEl = review ? h('span', { class: 'mgq-title', text: 'Review: ' + pathway.title }) : null;
-var backBtn = h('button', { type: 'button', class: 'mg-btn mg-btn--icon mgq-back', title: 'Back', 'aria-label': 'Back', on: { click: exitQuiz } }, MG.ui.icon('undo'));
+var backBtn = h('button', { type: 'button', class: 'mg-btn mg-btn--icon mgq-back', title: 'Về menu', 'aria-label': 'Về menu', on: { click: exitQuiz } }, MG.ui.icon('undo'));
 var settingsBtn = typeof hk.onSettings === 'function' ? h('button', {
 type: 'button', class: 'mg-btn mg-btn--icon mgq-settings' + (review ? ' mgq-settings--review' : ''), title: 'Settings', 'aria-label': 'Settings', 'data-key': 'quiz:settings',
 on: { click: openSettings }
@@ -26922,7 +27046,7 @@ on: { click: openSettings }
 var head = h('header', { class: 'mg-header mgq-head' }, backBtn, titleEl, countRight, countWrong, contextEl, timerEl, settingsBtn);
 var fillEl = h('span', { style: { width: review ? '100%' : '0%' } });
 var barEl = h('div', {
-class: 'mg-progress mgq-bar', role: 'progressbar', 'aria-label': 'Answers given',
+class: 'mg-progress mgq-bar', role: 'progressbar', 'aria-label': 'Tiến độ câu trả lời',
 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': review ? '100' : '0'
 }, fillEl);
 var statEl = review ? null : h('span', { class: 'mgq-stat', text: '0 đã trả lời, 0 còn lại' });
@@ -26973,7 +27097,7 @@ coach = h('div', { class: 'mgq-coach', role: 'note' },
 h('p', { class: 'mgq-coach__text', text: (mode === 'build'
 ? 'Các ô nét đứt là ô trống. Hãy chọn đáp án theo yêu cầu trên thẻ màu vàng. '
 : 'Các ô nét đứt là ô trống. Chạm vào một ô, rồi ' + (mode === 'type' ? 'gõ' : 'chọn') + ' đáp án. ')
-+ 'Gợi ý đưa ra manh mối; Tiết lộ hiển thị đáp án và tính là 1 lỗi.' }),
++ 'Gợi ý đưa ra manh mối; Hiện đáp án sẽ hiển thị đáp án và tính là 1 lỗi.' }),
 h('button', {
 type: 'button', class: 'mg-btn mg-btn--ghost mgq-coach__ok', on: { click: function () {
 if (coach.parentNode) { coach.parentNode.removeChild(coach); }
@@ -27123,7 +27247,7 @@ flash(flashNode, 'shake');
 function makeHintPanel(onHint, onReveal, bare) {
 var btn = h('button', { type: 'button', class: 'mg-btn mg-btn--ghost mgq-act mgq-hint-btn', on: { click: onHint } }, 'Gợi ý');
 var reveal = onReveal
-? h('button', { type: 'button', class: 'mg-btn mg-btn--ghost mgq-act mgq-reveal-btn', on: { click: onReveal } }, 'Tiết lộ')
+? h('button', { type: 'button', class: 'mg-btn mg-btn--ghost mgq-act mgq-reveal-btn', on: { click: onReveal } }, 'Hiện đáp án')
 : null;
 var list = h('div', { class: 'mgq-hints__list', on: { scroll: function () { markMore(list); } } });
 var say = h('p', { class: 'mgq-sr-only', 'aria-live': 'polite' });
@@ -27252,7 +27376,7 @@ function buildWrong(q, optId) {
 wrongFor(q.slotId)[optId] = true;
 shownQ = game.options(q.slotId) || q;
 renderGrid(shownQ, { flashId: optId }, gridEl, SIZE_BUILD_OPT, chooseBuild, shownQ.format === 'structures');
-feedbackEl.textContent = 'Not that one. Try another.';
+feedbackEl.textContent = 'Chưa đúng, hãy thử lại.';
 }
 function buildRight(q, optId, res) {
 if (MG.sound) { MG.sound.correct(); }
@@ -27260,7 +27384,7 @@ locked = true;
 syncBuildButtons();
 renderGrid(q, { correctId: optId, lockAll: true }, gridEl, SIZE_BUILD_OPT, chooseBuild, q.format === 'structures');
 renderEquation(q);
-feedbackEl.textContent = 'Correct!';
+feedbackEl.textContent = 'Chính xác!';
 if (res.done || finishing) { return; }   // the done event has started the celebration
 var pause = stepWrapped(q.rxnId) && showWhy(q.rxnId) ? WHY_MS : NEXT_MS;
 timers.next = setTimeout(afterFeedback, pause);
@@ -27291,7 +27415,7 @@ locked = true;
 syncBuildButtons();
 renderGrid(q, { correctId: res.expected, lockAll: true }, gridEl, SIZE_BUILD_OPT, chooseBuild, q.format === 'structures');
 renderEquation(q);
-feedbackEl.textContent = 'The answer is ' + fullName(q.entityKind, res.expected) + '.';
+feedbackEl.textContent = 'Đáp án là: ' + fullName(q.entityKind, res.expected) + '.';
 if (res.done || finishing) { return; }
 var pause = stepWrapped(q.rxnId) && showWhy(q.rxnId) ? WHY_MS : REVEAL_MS;
 timers.next = setTimeout(afterFeedback, pause);
@@ -27307,14 +27431,14 @@ function stepCaption(rxnId) {
 var r = rxnById[rxnId];
 if (!r) { return ''; }
 if (r.label) { return r.label; }
-if (pathway.id !== 'full') { return 'Step ' + r.step; }
-if (rxnId === 'pdc') { return 'Link reaction'; }
+if (pathway.id !== 'full') { return 'Bước ' + r.step; }
+if (rxnId === 'pdc') { return 'Phản ứng liên kết (PDC)'; }
 var gly = !!MG.pathways && !!MG.pathways.glycolysis && MG.pathways.glycolysis.order.indexOf(rxnId) >= 0;
-return (gly ? 'Glycolysis step ' : 'TCA cycle step ') + r.step;
+return (gly ? 'Bước Đường phân ' : 'Bước Chu trình TCA ') + r.step;
 }
 function chooserHeading(q) {
 var s = game.slot(q.slotId);
-if (!s || !s.rxn) { return 'Starting molecule'; }
+if (!s || !s.rxn) { return 'Phân tử ban đầu'; }
 return stepCaption(s.rxn) + ': ' + kindWord(s);
 }
 function buildChooser(q) {
@@ -27325,20 +27449,20 @@ grid: h('div', { class: 'mgq-chooser__grid' }),
 msg: h('div', { class: 'mgq-chooser__msg', role: 'status' }),
 input: null,
 submit: null,
-revealBtn: h('button', { type: 'button', class: 'mg-btn mg-btn--ghost mgq-act mgq-reveal-btn', on: { click: chooserReveal } }, 'Reveal')
+revealBtn: h('button', { type: 'button', class: 'mg-btn mg-btn--ghost mgq-act mgq-reveal-btn', on: { click: chooserReveal } }, 'Hiện đáp án')
 };
 var heading = chooserHeading(q);
 var body;
 if (mode === 'type') {
 ui.input = h('input', {
-class: 'mg-input mgq-input', type: 'text', placeholder: 'Your answer', 'aria-label': 'Your answer',
+class: 'mg-input mgq-input', type: 'text', placeholder: 'Nhập câu trả lời của bạn', 'aria-label': 'Nhập câu trả lời của bạn',
 autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false',
 on: {
 keydown: function (e) { if (e.key === 'Enter') { e.preventDefault(); submitTyped(); } },
 input: function () { ui.input.classList.remove('is-error'); }
 }
 });
-ui.submit = h('button', { type: 'button', class: 'mg-btn mg-btn--primary mgq-submit', on: { click: submitTyped } }, 'Submit');
+ui.submit = h('button', { type: 'button', class: 'mg-btn mg-btn--primary mgq-submit', on: { click: submitTyped } }, 'Gửi');
 body = h('div', { class: 'mgq-typing' }, ui.input, ui.submit);
 } else {
 body = ui.grid;
@@ -27354,7 +27478,7 @@ h('p', { class: 'mgq-chooser__prompt', text: q.prompt })),
 h('div', { class: 'mgq-chooser__tools' },
 ui.revealBtn,
 h('button', {
-type: 'button', class: 'mg-btn mg-btn--icon mgq-close', 'aria-label': 'Close', title: 'Close',
+type: 'button', class: 'mg-btn mg-btn--icon mgq-close', 'aria-label': 'Đóng', title: 'Đóng',
 on: { click: function () { closeChooser(true); } }
 }, MG.ui.icon('close')))),
 ui.hint.el,
@@ -27474,7 +27598,7 @@ var res = engineAnswer(slotId, optId);
 if (res.ok) { chooserRight(slotId); return; }
 wrongFor(slotId)[optId] = true;
 refreshChooser(optId);
-setChooserMsg('Not that one. Try another.');
+setChooserMsg('Chưa đúng, hãy thử lại.');
 }
 function chooserRight(slotId) {
 if (MG.sound) { MG.sound.correct(); }
@@ -27507,7 +27631,7 @@ var name = fullName(game.slot(slotId).entityKind, res.expected);
 if (mode === 'type') { chooserUI.input.value = name; }
 else { renderGrid(chooserQ, { correctId: res.expected, lockAll: true }, chooserUI.grid, SIZE_CHOOSER_OPT, chooseFromChooser, false); }
 syncChooserButtons();
-setChooserMsg('The answer is ' + name + '.');
+setChooserMsg('Đáp án là: ' + name + '.');
 var revealed = game.slot(slotId);
 if (!finishing && revealed && revealed.rxn && stepWrapped(revealed.rxn)) { showWhy(revealed.rxn); }
 timers.close = setTimeout(function () { timers.close = 0; closeChooser(true); }, REVEAL_MS);
@@ -27517,11 +27641,11 @@ if (mode !== 'type' || chooserSlot === null || busy || finishing || !chooserUI) 
 var slotId = chooserSlot;
 var text = chooserUI.input.value;
 var norm = MG.match && typeof MG.match.normalize === 'function' ? MG.match.normalize(text) : String(text).trim();
-if (!norm) { setChooserMsg('Type an answer first.'); return; }
+if (!norm) { setChooserMsg('Hãy nhập câu trả lời trước.'); return; }
 var res = engineAnswer(slotId, text);
 if (res.ok) { chooserRight(slotId); return; }
 var s = game.slot(slotId);
-var lines = ['Not quite. Try again.'];
+var lines = ['Chưa đúng. Hãy thử lại.'];
 var other = MG.match && typeof MG.match.identify === 'function' ? MG.match.identify(s.entityKind, text) : null;
 if (other) { lines.push('That is ' + fullName(s.entityKind, other) + ', but it does not go here.'); }
 setChooserMsg(lines);
@@ -27571,7 +27695,7 @@ function nextEmpty() {
 if (destroyed || finishing || review) { return; }
 closeChooser(false);
 var i = findEmpty(lastNext + 1);
-if (i < 0) { toast('Every slot is filled.'); return; }
+if (i < 0) { toast('Tất cả các ô đã được điền.'); return; }
 lastNext = i;
 var id = game.slotList[i].id;
 focusChart(id, FOCUS_ZOOM);
@@ -27639,7 +27763,7 @@ var mascot = MG.brand && MG.brand.mascot
 : null;
 var banner = h('div', { class: 'mg-card mg-card--question mgq-banner', role: 'status' },
 mascot,
-h('h2', { class: 'mgq-banner__title mg-outlined', text: 'Congratulations!' }),
+h('h2', { class: 'mgq-banner__title mg-outlined', text: 'Chúc mừng bạn!' }),
 h('p', { class: 'mgq-banner__lead', text: 'Pathway complete!' }),
 h('p', { class: 'mgq-banner__text', text: st.right + ' right, ' + st.wrong + ' wrong' }),
 why ? h('p', { class: 'mgq-banner__why' }, h('span', { class: 'mgq-why__label', text: 'Why' }), ' ', why) : null,
@@ -28541,7 +28665,7 @@ h('p', { class: 'mg-atp-look__working', text: p.working })));
 }
 });
 var look = h('section', { class: 'mg-card mg-card--question mg-atp-look' },
-h('h2', { class: 'mg-results__heading', text: 'Worth another look' }),
+h('h2', { class: 'mg-results__heading', text: 'Cần xem lại' }),
 misses.length ? h('ul', { class: 'mg-atp-look__list' }, misses) : h('p', { class: 'mg-results__none', text: 'Every answer was right first time.' }));
 var chart = run.build ? h('section', { class: 'mg-card mg-card--option mg-atp-results__chart' },
 h('h2', { class: 'mg-results__heading', text: 'The ledger' }), ledgerNode(run.build, true)) : null;
@@ -28553,7 +28677,7 @@ h('button', { type: 'button', class: 'mg-btn mg-btn--ghost', 'data-key': 'atp:ho
 var screen = h('section', { class: 'mg-atp-results' },
 h('header', { class: 'mg-atp-results__head' },
 h('h1', { class: 'mg-title', text: run.fullTitle || run.title }),
-h('p', { class: 'mg-subtitle', text: 'Results' })),
+h('p', { class: 'mg-subtitle', text: 'Kết quả' })),
 h('div', { class: 'mg-atp-results__body' },
 h('div', { class: 'mg-atp-results__main' }, score, actions),
 h('div', { class: 'mg-atp-results__side' }, chart, sheet, look)));
@@ -29181,7 +29305,7 @@ h('p', { class: 'mg-gm-look__why', text: p.explain })));
 }
 });
 var look = h('section', { class: 'mg-card mg-card--question mg-gm-look' },
-h('h2', { class: 'mg-results__heading', text: 'Worth another look' }),
+h('h2', { class: 'mg-results__heading', text: 'Cần xem lại' }),
 misses.length ? h('ul', { class: 'mg-gm-look__list' }, misses) : h('p', { class: 'mg-results__none', text: 'Every answer was right first time.' }));
 var actions = h('div', { class: 'mg-gm-results__actions' },
 h('button', { type: 'button', class: 'mg-btn mg-btn--primary', 'data-key': 'games:again', on: { click: again } }, 'Play again'),
@@ -29190,7 +29314,7 @@ h('button', { type: 'button', class: 'mg-btn mg-btn--ghost', 'data-key': 'games:
 var screen = h('section', { class: 'mg-gm-results' },
 h('header', { class: 'mg-gm-results__head' },
 h('h1', { class: 'mg-title', text: run.title }),
-h('p', { class: 'mg-subtitle', text: 'Results' })),
+h('p', { class: 'mg-subtitle', text: 'Kết quả' })),
 h('div', { class: 'mg-gm-results__body' }, score, summary, actions, look));
 show(screen, false);
 var first = container.querySelector('[data-key="games:again"]');
@@ -29915,16 +30039,16 @@ h('p', { class: 'mg-dw-look__name', text: p.name }),
 h('p', { class: 'mg-dw-look__what', text: what }))));
 });
 var look = h('section', { class: 'mg-card mg-card--question mg-dw-look' },
-h('h2', { class: 'mg-results__heading', text: 'Worth another look' }),
+h('h2', { class: 'mg-results__heading', text: 'Cần xem lại' }),
 misses.length ? h('ul', { class: 'mg-dw-look__list' }, misses) : h('p', { class: 'mg-results__none', text: 'Every answer was right first time.' }));
 var actions = h('div', { class: 'mg-dw-results__actions' },
-h('button', { type: 'button', class: 'mg-btn mg-btn--primary', 'data-key': 'draw:again', on: { click: again } }, 'Play again'),
-h('button', { type: 'button', class: 'mg-btn mg-btn--ghost', 'data-key': 'draw:another', on: { click: backToMenu } }, 'Change the practice'),
-h('button', { type: 'button', class: 'mg-btn mg-btn--ghost', 'data-key': 'draw:home', on: { click: exitToMenu } }, 'Back to menu'));
+h('button', { type: 'button', class: 'mg-btn mg-btn--primary', 'data-key': 'draw:again', on: { click: again } }, 'Chơi lại'),
+h('button', { type: 'button', class: 'mg-btn mg-btn--ghost', 'data-key': 'draw:another', on: { click: backToMenu } }, 'Đổi bài luyện tập'),
+h('button', { type: 'button', class: 'mg-btn mg-btn--ghost', 'data-key': 'draw:home', on: { click: exitToMenu } }, 'Về menu'));
 var screen = h('section', { class: 'mg-dw-results' },
 h('header', { class: 'mg-dw-results__head' },
 h('h1', { class: 'mg-title', text: run.title }),
-h('p', { class: 'mg-subtitle', text: 'Results' })),
+h('p', { class: 'mg-subtitle', text: 'Kết quả' })),
 h('div', { class: 'mg-dw-results__body' }, score, actions, look));
 show(screen, false);
 focusKey('draw:again');
@@ -29989,11 +30113,11 @@ var RAMP = [
 ];
 var NO_DATA = '#E6E3D8';
 var MODES = [
-{ id: 'build', title: 'Xây dựng', text: 'Dựng bản đồ từng bước, trả lời một câu hỏi mỗi lần' },
-{ id: 'pick', title: 'Điền vào bản đồ', text: 'Bản đồ khuyết với 6 phương án trắc nghiệm cho mỗi ô' },
-{ id: 'type', title: 'Điền vào chỗ trống', text: 'Bản đồ khuyết tự gõ bàn phím chính xác tên chất' }
+{ id: 'build', title: 'Dựng từng bước', text: 'Dựng bản đồ từng bước, mỗi lần một câu hỏi.' },
+{ id: 'pick', title: 'Chọn đáp án', text: 'Bản đồ khuyết, chọn 1 trong 6 đáp án cho mỗi ô.' },
+{ id: 'type', title: 'Tự gõ', text: 'Bản đồ khuyết, tự gõ chính xác tên chất.' }
 ];
-var MODE_NAME = { build: 'Xây dựng', pick: 'Điền vào bản đồ', type: 'Điền vào chỗ trống' };
+var MODE_NAME = { build: 'Dựng từng bước', pick: 'Chọn đáp án', type: 'Tự gõ' };
 var HARDER = { build: 'pick', pick: 'type' };
 var FORMATS = [
 { id: 'names', label: 'Tên chất' },
@@ -30203,7 +30327,7 @@ function stepText(r, pathway) {
 if (r.short) { return r.short; }
 if (typeof r.step !== 'number') { return String(r.step); }
 if (pathway && pathway.id === 'full' && reactionById(pathwayById('tca'), r.id)) { return 'TCA ' + r.step; }
-return 'Step ' + r.step;
+return 'Bước ' + r.step;
 }
 function masteryOf(pathwayId, rxnId) {
 if (!MG.store || typeof MG.store.mastery !== 'function') { return null; }
@@ -30291,7 +30415,7 @@ list.forEach(function (p) { seen[p.id] = true; });
 return { id: g.id, title: g.title, color: g.color || null, pathways: list, everything: pathwayById(g.everything) };
 }).filter(function (g) { return g.pathways.length > 0; });
 var rest = Object.keys(MG.pathways || {}).filter(function (id) { return !seen[id] && !MG.pathways[id].courseOnly; }).map(pathwayById);
-if (rest.length) { groups.push({ id: 'other', title: 'Other pathways', pathways: rest, everything: null }); }
+if (rest.length) { groups.push({ id: 'other', title: 'Các con đường khác', pathways: rest, everything: null }); }
 return groups;
 }
 function hasDrawnMolecules(pathway) {
@@ -30490,7 +30614,7 @@ return p.order.filter(function (rid) { return ids[rid] === true; });
 }
 function startPractice(practice) {
 if (!practice || !practice.steps.length) { return; }
-if (!quizReady()) { toast('Quiz module not loaded'); return; }
+if (!quizReady()) { toast('Chưa tải được phần quiz, hãy tải lại trang'); return; }
 var cfg = quizConfig(readSettings(), null, practice);
 if (!cfg.steps || !cfg.steps.length) { return; }
 startQuiz(cfg, { course: null, practice: { pathwayId: cfg.pathwayId, steps: cfg.steps.slice() } });
@@ -30623,7 +30747,7 @@ function detailCard(kind, id, opts) {
 var o = opts || {};
 var t = resolveTarget(kind, id, o);
 if (!t) {
-toast('Nothing to show for that yet');
+toast('Chưa có dữ liệu để hiển thị');
 return null;
 }
 return modal({
@@ -30725,7 +30849,7 @@ return el('div', { class: 'mg-eq' }, side(left), arrow, side(right));
 }
 function masteryRow(pathwayId, rxnId) {
 var pct = masteryOf(pathwayId, rxnId);
-if (pct === null) { return el('p', { class: 'mg-mastery mg-mastery--empty', text: 'No answers for this step yet.' }); }
+if (pct === null) { return el('p', { class: 'mg-mastery mg-mastery--empty', text: 'Chưa có câu trả lời nào cho bước này.' }); }
 return el('div', { class: 'mg-mastery' },
 el('span', { text: 'Mastery' }),
 el('div', {
@@ -30797,11 +30921,11 @@ loadCourseState();
 backdrop = el('div', { class: 'mg-backdrop', 'aria-hidden': 'true' });
 stage = el('div', { class: 'mg-stage' });
 var back = el('button', {
-type: 'button', class: 'mg-btn mg-btn--icon mg-corner__back', 'aria-label': 'Back to menu',
+type: 'button', class: 'mg-btn mg-btn--icon mg-corner__back', 'aria-label': 'Về menu', title: 'Về menu',
 on: { click: function () { showSelect(); } }
 }, icon('undo'));
 var gear = el('button', {
-type: 'button', class: 'mg-btn mg-btn--icon mg-corner__gear', 'aria-label': 'Settings',
+type: 'button', class: 'mg-btn mg-btn--icon mg-corner__gear', 'aria-label': 'Cài đặt', title: 'Cài đặt',
 on: { click: function () { openSettings(); } }
 }, icon('gear'));
 app = el('div', { class: 'mg-app', 'data-screen': 'select' }, backdrop, stage, el('div', { class: 'mg-corner' }, back, gear));
@@ -30931,7 +31055,7 @@ if (at >= 0) {
 list.splice(at, 1);
 } else {
 if (pathway && list.length + 1 >= pathway.order.length) {
-toast('Keep at least one step in the quiz');
+toast('Cần giữ ít nhất một bước trong bài');
 return;
 }
 list.push(rxnId);
@@ -30955,7 +31079,7 @@ var label = r.tile || enzyme.short || enzyme.name;
 var off = !blank && excluded.indexOf(r.id) >= 0;
 var pct = typeof mastery[r.id] === 'number' ? mastery[r.id] : null;
 var where = stepText(r, pathway);
-var state = off ? ', left out' : (pct === null ? ', no answers yet' : ', mastery ' + Math.round(pct) + ' percent');
+var state = off ? ', đã bỏ khỏi bài' : (pct === null ? ', chưa có điểm' : ', độ thuần thục ' + Math.round(pct) + '%');
 var body = el('button', {
 type: 'button', class: 'mg-tile__body', 'data-key': 'tile:' + r.id,
 'aria-label': where + ': ' + enzyme.name + state,
@@ -30968,10 +31092,11 @@ var style = {};
 if (!off && pct !== null) { style.background = masteryColor(pct); }
 style['--mastery'] = pct === null ? '' : String(Math.round(pct));
 var toggle = blank ? null : el('button', {
-type: 'button', class: 'mg-tile__toggle', 'data-key': 'toggle:' + r.id,
-'aria-label': (off ? 'Put back ' : 'Leave out ') + where, title: off ? 'Put this step back in the quiz' : 'Leave this step out of the quiz',
+type: 'button', class: 'mg-tile__toggle' + (off ? ' is-off' : ' is-on'), 'data-key': 'toggle:' + r.id,
+'aria-label': (off ? 'Đưa ' + where + ' trở lại' : 'Bỏ ' + where + ' khỏi bài'),
+title: off ? 'Đưa ' + where + ' trở lại bài thi' : 'Bỏ ' + where + ' khỏi bài thi',
 on: { click: function () { toggleStep(pathway.id, r.id); } }
-}, icon(off ? 'plus' : 'close'));
+});
 return el('div', { class: 'mg-tile' + (off ? ' is-excluded' : '') + (!off && pct !== null ? ' is-scored' : ''), style: style }, body, toggle);
 }
 function section(label, content) {
@@ -30980,11 +31105,11 @@ return el('div', { class: 'mg-section' }, el('p', { class: 'mg-label', text: lab
 function courseStrip(course) {
 var free = el('button', {
 type: 'button', class: 'mg-choice mg-choice--course' + (course ? '' : ' is-selected'),
-'aria-pressed': !course, 'data-key': 'course:free', title: 'Any pathway, in any order',
+'aria-pressed': !course, 'data-key': 'course:free', title: 'Chọn bất kỳ con đường nào, theo thứ tự tùy ý',
 on: { click: function () { chooseCourse(null); } }
 },
 el('span', { class: 'mg-choice__dot', style: { background: NO_DATA } }),
-el('span', { class: 'mg-choice__title', text: 'Free play' }));
+el('span', { class: 'mg-choice__title', text: 'Chơi tự do' }));
 var cards = courseList().map(function (c) {
 var on = !!course && course.id === c.id;
 return el('button', {
@@ -30997,7 +31122,7 @@ el('span', { class: 'mg-choice__face' },
 el('span', { class: 'mg-choice__dot', style: { background: c.color || '#FFD166' } }),
 el('span', { class: 'mg-choice__title', text: c.title })));
 });
-return el('div', { class: 'mg-courses', role: 'group', 'aria-label': 'Course' },
+return el('div', { class: 'mg-courses', role: 'group', 'aria-label': 'Khóa học' },
 [free].concat(cards.length ? [el('div', { class: 'mg-course-pills' }, cards)] : []));
 }
 function pathwayShortTitle(p) {
@@ -31022,14 +31147,14 @@ function everythingButton(p, selectedId, where, small) {
 var on = p.id === selectedId;
 var steps = p.order.length;
 var all = where === null;
-var covers = all ? 'every pathway' : where;
 var counted = !all || everythingTarget() === p.id;
-var face = small ? el('span', { class: 'mg-everything__pill', text: 'Tất cả' }) : 'Tất cả';
+var labelText = small ? 'Gộp cả khóa' : 'Gộp tất cả vào 1 bản đồ';
+var face = small ? el('span', { class: 'mg-everything__pill', text: labelText }) : labelText;
 return el('button', {
 type: 'button', class: 'mg-btn mg-everything' + (small ? ' mg-everything--small' : '') + (all ? ' mg-everything--all' : '') + (on ? ' is-selected' : ''),
 'aria-pressed': on, 'data-key': 'everything:' + p.id,
-'aria-label': 'Tất cả trong ' + covers + (counted ? ': toàn bộ ' + steps + ' bước trên một bản đồ' : ': mọi con đường trên một bản đồ'),
-title: counted ? 'Toàn bộ ' + steps + ' bước trên một bản đồ' : 'Mọi con đường trên một bản đồ',
+'aria-label': labelText + (counted ? ': toàn bộ ' + steps + ' bước trên một bản đồ' : ': mọi con đường trên một bản đồ'),
+title: labelText + (counted ? ' (' + steps + ' bước trên một bản đồ)' : ' (mọi con đường trên một bản đồ)'),
 on: { click: function () { chooseEverything(p.id); } }
 }, face);
 }
@@ -31054,6 +31179,7 @@ chips = el('div', { class: 'mg-picked-chips', role: 'group', 'aria-label': 'Con 
 }
 return el('div', { class: 'mg-section' },
 el('p', { class: 'mg-label', text: 'Con đường' }),
+picked.length <= 1 ? el('p', { class: 'mg-label-hint', text: 'Chạm nhiều con đường để học chung.' }) : null,
 chips,
 all ? everythingButton(all, isEverythingPicked(s) ? all.id : s.pathwayId, null, false) : null,
 pathwayPicker(s));
@@ -31084,9 +31210,10 @@ var all = inPick === g.pathways.length;
 var pickAll = el('button', {
 type: 'button', class: 'mg-group__pickall' + (several ? (all ? ' is-all' : (inPick ? ' is-some' : '')) : ''),
 'aria-pressed': all, 'data-key': 'group:' + g.id,
-'aria-label': (all ? 'Bỏ chọn toàn bộ ' : 'Chọn toàn bộ ') + g.title,
+'aria-label': (all ? 'Bỏ chọn nhóm ' : 'Chọn cả nhóm ') + g.title,
+title: all ? 'Bỏ chọn nhóm ' + g.title : 'Chọn cả nhóm ' + g.title,
 on: { click: function () { toggleGroup(g); } }
-}, el('span', { class: 'mg-group__box', 'aria-hidden': 'true' }), el('span', { text: all ? 'Xóa' : 'Chọn tất cả' }));
+}, el('span', { class: 'mg-group__box', 'aria-hidden': 'true' }), el('span', { text: all ? 'Bỏ chọn nhóm' : 'Chọn cả nhóm' }));
 return el('div', { class: 'mg-group' + (isOpen ? ' is-open' : '') },
 tab,
 el('div', { class: 'mg-group__panel', id: panelId, hidden: !isOpen },
@@ -31141,7 +31268,7 @@ var excluded = pathway ? (s.excluded[pathway.id] || []) : [];
 var mastery = pathway ? masteryMap(pathway) : {};
 var total = pathway ? pathway.order.length : 0;
 var ctx = course && pathway ? courseContext(course, pathway.id) : null;
-var modes = el('div', { class: 'mg-choices', role: 'group', 'aria-label': 'Mode' },
+var modes = el('div', { class: 'mg-choices', role: 'group', 'aria-label': 'Chế độ chơi' },
 MODES.map(function (m) {
 var on = m.id === s.mode;
 return el('button', {
@@ -31149,7 +31276,8 @@ type: 'button', class: 'mg-choice mg-choice--mode' + (on ? ' is-selected' : ''),
 'aria-pressed': on, 'data-key': 'mode:' + m.id, title: m.text,
 on: { click: function () { chooseMode(m.id); } }
 },
-el('span', { class: 'mg-choice__title', text: m.title }));
+el('span', { class: 'mg-choice__title', text: m.title }),
+el('span', { class: 'mg-choice__text', text: m.text }));
 }));
 var formats = s.mode === 'type' || (pathway && !hasDrawnMolecules(pathway)) ? null : el('div', { class: 'mg-segmented', role: 'group', 'aria-label': 'Show molecules as' },
 FORMATS.map(function (f) {
@@ -31162,9 +31290,10 @@ type: 'button', class: on ? 'is-active' : '', 'aria-pressed': on,
 var cofOn = s.cofactors !== false;
 var cofToggle = el('button', {
 type: 'button', class: 'mg-cof' + (cofOn ? ' is-on' : ''), 'aria-pressed': cofOn, 'data-key': 'cofactors:toggle',
-title: 'ATP, nước, NADH và các phân tử nhỏ khác: hỏi (bật) hoặc hiển thị (tắt)',
+'aria-label': 'Hỏi cả ATP, H₂O, NADH…: ' + (cofOn ? 'đang bật (sẽ hỏi trong quiz)' : 'đang tắt (chỉ hiển thị sẵn)'),
+title: 'Hỏi cả ATP, H₂O, NADH… (Bật = app sẽ hỏi trong bài thi, Tắt = chỉ hiển thị sẵn trên bản đồ)',
 on: { click: toggleCofactors }
-}, 'Đồng yếu tố: ' + (cofOn ? 'bật' : 'tắt'));
+}, el('span', { class: 'mg-cof__label', text: 'Hỏi cả ATP, H₂O, NADH…' }), el('span', { class: 'mg-cof__badge', text: cofOn ? 'Bật' : 'Tắt' }));
 var tiles = pathway ? pathway.order.map(function (rid) {
 var r = reactionById(pathway, rid);
 return r ? tileFor(r, pathway, mastery, blank, excluded) : null;
@@ -31187,7 +31316,7 @@ toast('Đã xóa lịch sử');
 rerender('start');
 });
 wipe.node.setAttribute('data-key', 'history');
-wipe.node.setAttribute('title', !pathway ? 'Nothing is picked' : (scored ? 'Erase the saved scores of the ' + total + ' steps above' : 'No scores saved for these steps yet'));
+wipe.node.setAttribute('title', !pathway ? 'Chưa chọn con đường nào' : (scored ? 'Xóa điểm đã lưu của ' + total + ' bước ở trên' : 'Chưa có điểm nào được lưu cho các bước này'));
 if (!scored) { wipe.node.disabled = true; }
 var practice = weakPractice();
 var practiceBtn = practice ? el('button', {
@@ -31202,7 +31331,7 @@ var totalLine = picks > 1
 : null;
 var settingsBtn = el('button', {
 type: 'button', class: 'mg-btn mg-btn--icon mg-dock__settings', 'data-key': 'settings:open',
-'aria-label': 'Settings', title: 'Settings',
+'aria-label': 'Cài đặt', title: 'Cài đặt',
 on: { click: function () { openSettings(); } }
 }, icon('gear'));
 var dock = el('div', { class: 'mg-dock' },
@@ -31214,9 +31343,9 @@ var left = el('div', { class: 'mg-select__col' },
 courseList().length ? section('Khóa học', courseStrip(course)) : null,
 course ? sectionsBlock(course, s) : pathwayBlock(s));
 var modeDescriptions = {
-build: 'Xây dựng: Dựng bản đồ từng bước, trả lời một câu hỏi mỗi lần.',
-pick: 'Điền vào bản đồ: Bản đồ khuyết với 6 phương án trắc nghiệm cho mỗi ô.',
-type: 'Điền vào chỗ trống: Bản đồ khuyết tự gõ bàn phím chính xác tên chất.'
+build: 'Dựng từng bước: Dựng bản đồ từng bước, mỗi lần một câu hỏi.',
+pick: 'Chọn đáp án: Bản đồ khuyết, chọn 1 trong 6 đáp án cho mỗi ô.',
+type: 'Tự gõ: Bản đồ khuyết, tự gõ chính xác tên chất.'
 };
 var modeDesc = el('p', { class: 'mg-mode-desc', text: modeDescriptions[s.mode] || '' });
 var right = el('div', { class: 'mg-select__col' },
@@ -31245,18 +31374,18 @@ if (target) { target.focus({ preventScroll: true }); }
 function startFromSelect() {
 var s = readSettings();
 if (s.pathwayId === NONE) {
-toast(courseById(courseSel) ? 'Pick a section first' : 'Pick a pathway first');
+toast(courseById(courseSel) ? 'Hãy chọn một chặng trước' : 'Hãy chọn một con đường trước');
 return;
 }
 if (!quizReady()) {
-toast('Quiz module not loaded');
+toast('Chưa tải được phần quiz, hãy tải lại trang');
 return;
 }
 var pathway = viewOf(s.pathwayId) || viewOf(DEFAULTS.pathwayId);
 var out = s.excluded[pathway.id] || [];
 var inQuiz = pathway.order.filter(function (id) { return out.indexOf(id) < 0; }).length;
 if (s.mode === 'build' && inQuiz === 0) {
-toast('Keep at least one step in the quiz');
+toast('Cần giữ ít nhất một bước trong bài');
 return;
 }
 var course = courseById(courseSel);
@@ -31319,13 +31448,13 @@ toast('Đã xóa lịch sử');
 if (handle) { handle.close(); }
 });
 var body = el('div', { class: 'mg-settings' },
-inQuiz ? el('p', { class: 'mg-settings__note', text: 'Some changes apply to the next quiz.' }) : null,
+inQuiz ? el('p', { class: 'mg-settings__note', text: 'Một số thay đổi sẽ áp dụng từ bài quiz tiếp theo.' }) : null,
 themeRow(),
 settingRow('Hiện nhãn ô khuyết', 'Hiển thị chú thích nhỏ như enzyme, in và out trên các ô khuyết.', 'showSlotLabels'),
 settingRow('Cho trước phân tử đầu tiên', 'Các chế độ bản đồ trống sẽ điền sẵn phân tử đầu tiên.', 'givenStart'),
 settingRow('Âm thanh', 'Âm báo nhẹ khi trả lời đúng và nhạc kết thúc khi hoàn thành pathway.', 'sound'),
 inQuiz ? null : packRow(),
-el('div', { class: 'mg-setting mg-setting--stack', title: 'Clears every score and course result on this device. Clear history under the steps clears one pathway.' },
+el('div', { class: 'mg-setting mg-setting--stack', title: 'Xóa mọi điểm số và kết quả khóa học trên thiết bị này. Xóa lịch sử dưới các bước chỉ xóa một con đường.' },
 el('div', {}, el('div', { class: 'mg-setting__title', text: 'Xóa tất cả lịch sử' })),
 wipe.node));
 handle = modal({
@@ -31345,7 +31474,7 @@ return handle;
 function startQuiz(config, opts) {
 ensure();
 if (!quizReady()) {
-toast('Quiz module not loaded');
+toast('Chưa tải được phần quiz, hãy tải lại trang');
 return;
 }
 var o = opts || {};
@@ -31375,7 +31504,7 @@ try {
 entry.ctl = MG.quiz.mount(section, config, hooks) || null;
 } catch (err) {
 console.error(err);
-toast('The quiz could not start');
+toast('Không thể bắt đầu quiz');
 showSelect();
 return;
 }
@@ -31412,7 +31541,7 @@ if (activeQuiz !== entry) { destroyCtl(entry.ctl); }
 function showGames() {
 ensure();
 if (!MG.gamesUi || !MG.gameEngine || !MG.gameEngine.games().length) {
-toast('Quizzes not loaded');
+toast('Chưa tải được bài trắc nghiệm');
 return;
 }
 var section = el('section', { class: 'mg-screen mg-screen--games' });
@@ -31457,7 +31586,7 @@ function howToPlay() {
 var points = [
 ['Chọn một con đường', 'Mở một nhóm, chạm vào một con đường, sau đó nhấn Bắt đầu Quiz.'],
 ['Điền vào ô trống', 'Mỗi ô nét đứt trên bản đồ là một ô trống: một phân tử, một enzyme hoặc một cofactor. Thẻ màu vàng hỏi từng ô một.'],
-['Bí câu hỏi?', 'Gợi ý đưa ra manh mối mà không làm lộ đáp án. Tiết lộ hiển thị đáp án và tính là một lỗi sai.'],
+['Bí câu hỏi?', 'Gợi ý đưa ra manh mối mà không làm lộ đáp án. Hiện đáp án sẽ hiển thị đáp án và tính là một lỗi sai.'],
 ['Ba cách chơi', 'Xây dựng (Build) dựng dần bản đồ khi bạn trả lời. Điền vào bản đồ và Điền vào chỗ trống bắt đầu với bản đồ trống; trong Điền vào chỗ trống bạn tự gõ từng câu trả lời.']
 ];
 return modal({
@@ -31562,9 +31691,9 @@ return noReaction ? m.stepLabel + ': ' + name : m.stepLabel + ' ' + word + ': ' 
 }
 var where;
 if (noReaction) { where = 'Start'; }
-else if (typeof m.step === 'number') { where = 'Step ' + m.step; }
+else if (typeof m.step === 'number') { where = 'Bước ' + m.step; }
 else if (m.step === 'Link') { where = 'Link reaction'; }
-else { where = 'Step'; }
+else { where = 'Bước'; }
 return where + ' ' + word + ': ' + name;
 }
 function missedRow(m, pathwayId) {
@@ -31584,7 +31713,7 @@ el('span', { text: (i + 1) + '. ' + (p ? p.title : humanize(pid)) }),
 el('span', { class: 'mg-course-done__pct', text: pct === null ? 'not played' : pct + ' %' }));
 });
 return el('section', { class: 'mg-card mg-card--question mg-results__card' },
-el('h2', { class: 'mg-results__heading', text: 'Course complete' }),
+el('h2', { class: 'mg-results__heading', text: 'Hoàn thành khóa học' }),
 el('p', { class: 'mg-results__hint', text: course.title + ': accuracy in each section.' }),
 el('ul', { class: 'mg-course-done' }, rows));
 }
@@ -31605,14 +31734,14 @@ var modeText = 'Mode: ' + MODE_NAME[mode] + (mode === 'type' || (pathway && !has
 var title = last ? courseObj.title + ' complete' : secTitle + ' complete';
 var sub = !courseObj ? modeText
 : (all ? 'Every section of ' + courseObj.title + '. ' : last ? 'Last section: ' + secTitle + '. ' : 'Section ' + (course.index + 1) + ' of ' + courseObj.sections.length + ' in ' + courseObj.title + '. ') + modeText;
-var verdict = pct >= 90 ? 'Excellent work.' : (pct >= 70 ? 'Good progress.' : 'Keep at it. What you got wrong is your next lesson.');
+var verdict = pct >= 90 ? 'Làm tốt lắm!' : (pct >= 70 ? 'Tiến bộ tốt.' : 'Hãy tiếp tục cố gắng. Những bước làm sai sẽ là bài học tiếp theo của bạn.');
 var missed = (Array.isArray(sum.missed) ? sum.missed : []).concat(Array.isArray(sum.retried) ? sum.retried : []);
 var missedCard = el('section', { class: 'mg-card mg-card--option' },
-el('h2', { class: 'mg-results__heading', text: 'To review' }),
+el('h2', { class: 'mg-results__heading', text: 'Cần xem lại' }),
 missed.length
 ? [el('p', { class: 'mg-results__hint', text: 'Tap an item to read about it.' }),
 el('ul', { class: 'mg-missed' }, missed.map(function (m) { return missedRow(m, sum.pathwayId); }))]
-: el('p', { class: 'mg-results__none', text: 'Nothing to review. Nicely done.' }));
+: el('p', { class: 'mg-results__none', text: 'Không còn gì cần xem lại. Làm tốt lắm!' }));
 var lines = Array.isArray(sum.lines) ? sum.lines : (pathway && Array.isArray(pathway.summary) ? pathway.summary : []);
 var linesCard = lines.length ? el('section', { class: 'mg-card mg-card--question' },
 el('h2', { class: 'mg-results__heading', text: 'Ghi nhớ' }),
@@ -31628,7 +31757,7 @@ lead = el('button', { type: 'button', class: 'mg-btn mg-btn--primary', on: { cli
 } else {
 lead = el('button', { type: 'button', class: 'mg-btn mg-btn--primary', on: { click: playAgain } }, 'Chơi lại');
 }
-var againBtn = nextPath || last ? el('button', { type: 'button', class: 'mg-btn', on: { click: playAgain } }, 'Play Again') : null;
+var againBtn = nextPath || last ? el('button', { type: 'button', class: 'mg-btn', on: { click: playAgain } }, 'Chơi lại') : null;
 var harder = HARDER[mode] ? el('button', {
 type: 'button', class: 'mg-btn',
 on: { click: function () { harderMode(mode, course, sum.pathwayId); } }
