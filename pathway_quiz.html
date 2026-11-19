@@ -8,6 +8,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<meta name="theme-color" content="#FBF8EA">
 	<title>Trắc nghiệm Con đường Chuyển hóa</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+
 	<script>
 		/* The saved theme goes on the page before the first paint, so a dark page never flashes light. app.js applies it again at start. */
 		(function () {
@@ -113,7 +117,9 @@
 color-scheme: light;
 --mg-tap: 44px;
 --mg-max: 1100px;
---mg-font: "Avenir Next", "Nunito", "Arial Rounded MT Bold", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+--mg-font-display: 'Baloo 2', system-ui, 'Segoe UI', Roboto, sans-serif;
+--mg-font-body: 'Nunito', system-ui, 'Segoe UI', Roboto, sans-serif;
+--mg-font: var(--mg-font-body);
 }
 [data-theme="dark"] {
 --mg-border-strong: 3px;
@@ -5943,6 +5949,48 @@ transition: none;
     scroll-behavior: auto !important;
   }
 }
+/* === 9. Việt hóa Typography & Phân cấp Font (Baloo 2 & Nunito) === */
+h1, h2, h3, h4, h5, h6,
+.mg-title,
+.mgq-title,
+.mg-brand,
+.mg-brand__title,
+.mg-ptile__title,
+.mg-choice__title,
+.mg-btn,
+.mg-chip,
+.mg-label,
+.mg-section-tile__title,
+.mg-start,
+.mgq-head__title,
+.mgq-lead,
+.mg-choice--mode .mg-choice__title,
+.mg-stat__num,
+.mg-subhead,
+.mg-tile__name,
+.mg-dialog__title {
+  font-family: var(--mg-font-display) !important;
+}
+
+/* Đảm bảo chiều cao dòng không bị cắt dấu thanh tiếng Việt */
+.mg-ptile__title,
+.mg-chip,
+.mg-btn,
+.mg-title,
+.mg-label,
+.mg-section-tile__title,
+.mg-choice__title,
+.mgq-opt,
+.mgq-optlabel {
+  line-height: 1.35 !important;
+}
+
+.mg-chip {
+  height: auto !important;
+  min-height: 30px !important;
+  padding: 4px 11px !important;
+}
+
 </style>
 </head>
 <body>
@@ -26877,7 +26925,7 @@ var barEl = h('div', {
 class: 'mg-progress mgq-bar', role: 'progressbar', 'aria-label': 'Answers given',
 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': review ? '100' : '0'
 }, fillEl);
-var statEl = review ? null : h('span', { class: 'mgq-stat', text: '0 answered, 0 to go' });
+var statEl = review ? null : h('span', { class: 'mgq-stat', text: '0 đã trả lời, 0 còn lại' });
 var barRow = h('div', { class: 'mgq-barrow' }, barEl, statEl);
 var side = h('div', { class: 'mgq-side' });
 var eqCard = h('div', { class: 'mg-card mg-card--question mgq-eq-card' });
@@ -26889,23 +26937,23 @@ var gridEl = h('div', { class: 'mg-grid mgq-grid mg-grid--2x3' });
 var buildHint = makeHintPanel(hintBuild, revealBuild);
 var feedbackEl = h('p', { class: 'mgq-feedback', role: 'status' });
 var readoutEl = h('p', { class: 'mgq-readout' });
-var nextBtn = h('button', { type: 'button', class: 'mg-btn mg-btn--ghost mgq-next', on: { click: nextEmpty } }, 'Next empty slot');
+var nextBtn = h('button', { type: 'button', class: 'mg-btn mg-btn--ghost mgq-next', on: { click: nextEmpty } }, 'Ô trống tiếp theo');
 var mapCard = h('div', { class: 'mg-card mg-card--question mgq-map-card' },
 h('div', { class: 'mgq-map-card__text' },
 h('h2', { class: 'mgq-prompt', text: mode === 'pick' ? 'Fill the Map' : 'Fill in the Blank' }),
 h('p', {
 class: 'mgq-context',
-text: mode === 'pick' ? 'Tap an empty slot on the map, then pick the answer from six choices.' : 'Tap an empty slot on the map, then type the answer.'
+text: mode === 'pick' ? 'Chạm vào ô trống trên bản đồ, rồi chọn đáp án từ 6 phương án.' : 'Chạm vào ô trống trên bản đồ, rồi gõ tên đáp án.'
 })),
 readoutEl, nextBtn);
 var reviewCard = h('div', { class: 'mg-card mg-card--question mgq-map-card' },
 h('div', { class: 'mgq-map-card__text' },
-h('h2', { class: 'mgq-prompt', text: 'Finished map' }),
+h('h2', { class: 'mgq-prompt', text: 'Bản đồ hoàn chỉnh' }),
 h('p', { class: 'mgq-context', text: Object.keys(enzWords).length > 1 ? 'Tap a molecule, an enzyme or a protein on the map for its details.'
 : 'Tap a molecule or ' + (Object.keys(enzWords)[0] === 'enzyme' ? 'an enzyme' : 'a ' + Object.keys(enzWords)[0]) + ' on the map for its details.' })));
-var whyLabel = h('span', { class: 'mgq-why__label', text: 'Why' });
+var whyLabel = h('span', { class: 'mgq-why__label', text: 'Giải thích' });
 var whyText = h('span', { class: 'mgq-why__text' });
-var whyNext = !review && mode === 'build' ? h('button', { type: 'button', class: 'mg-btn mg-btn--ghost mgq-why__next', on: { click: skipWhy } }, 'Next') : null;
+var whyNext = !review && mode === 'build' ? h('button', { type: 'button', class: 'mg-btn mg-btn--ghost mgq-why__next', on: { click: skipWhy } }, 'Tiếp') : null;
 var whyEl = h('div', { class: 'mgq-why', role: 'status', hidden: true }, h('p', { class: 'mgq-why__body' }, whyLabel, ' ', whyText), whyNext);
 if (review) {
 side.appendChild(reviewCard);
@@ -26923,24 +26971,24 @@ var coach = null;
 if (!review && MG.store && typeof MG.store.getSettings === 'function' && MG.store.getSettings().introSeen === false) {
 coach = h('div', { class: 'mgq-coach', role: 'note' },
 h('p', { class: 'mgq-coach__text', text: (mode === 'build'
-? 'Dashed boxes are blanks. Pick the answer the yellow card asks for. '
-: 'Dashed boxes are blanks. Tap one, then ' + (mode === 'type' ? 'type' : 'choose') + ' its answer. ')
-+ 'Hint gives a clue; Reveal shows the answer and counts as a miss.' }),
+? 'Các ô nét đứt là ô trống. Hãy chọn đáp án theo yêu cầu trên thẻ màu vàng. '
+: 'Các ô nét đứt là ô trống. Chạm vào một ô, rồi ' + (mode === 'type' ? 'gõ' : 'chọn') + ' đáp án. ')
++ 'Gợi ý đưa ra manh mối; Tiết lộ hiển thị đáp án và tính là 1 lỗi.' }),
 h('button', {
 type: 'button', class: 'mg-btn mg-btn--ghost mgq-coach__ok', on: { click: function () {
 if (coach.parentNode) { coach.parentNode.removeChild(coach); }
 try { MG.store.setSettings({ introSeen: true }); } catch (err) { console.error(err); }
 } }
-}, 'Got it'));
+}, 'Đã hiểu'));
 side.insertBefore(coach, side.firstChild);
 }
 var host = h('div', { class: 'mgq-chart' });
 var expandBtn = review || mode !== 'build' ? null : h('button', {
-type: 'button', class: 'mgq-expand', 'aria-label': 'Enlarge the map', 'aria-expanded': 'false',
+type: 'button', class: 'mgq-expand', 'aria-label': 'Phóng to bản đồ', 'aria-expanded': 'false',
 on: { click: function () { setExpanded(true); } }
-}, h('span', { class: 'mgq-expand__label', text: 'Tap to enlarge' }));
+}, h('span', { class: 'mgq-expand__label', text: 'Chạm để phóng to' }));
 var closeChartBtn = expandBtn ? h('button', {
-type: 'button', class: 'mg-btn mg-btn--icon mgq-chart-close', 'aria-label': 'Close the map', title: 'Close the map',
+type: 'button', class: 'mg-btn mg-btn--icon mgq-chart-close', 'aria-label': 'Đóng bản đồ', title: 'Đóng bản đồ',
 on: { click: function () { setExpanded(false); } }
 }, MG.ui.icon('close')) : null;
 var panel = h('div', { class: 'mgq-panel' }, host, expandBtn, closeChartBtn);
@@ -27081,9 +27129,9 @@ var list = h('div', { class: 'mgq-hints__list', on: { scroll: function () { mark
 var say = h('p', { class: 'mgq-sr-only', 'aria-live': 'polite' });
 var cls = 'mgq-hints' + (bare ? ' mgq-hints--bare' : '');
 var el = bare
-? h('div', { class: cls, role: 'region', 'aria-label': 'Hints' }, list, say)
-: h('div', { class: cls, role: 'region', 'aria-label': 'Hints' },
-h('div', { class: 'mgq-hints__bar' }, h('span', { class: 'mgq-hints__title', text: 'Hints' }), btn, reveal),
+? h('div', { class: cls, role: 'region', 'aria-label': 'Gợi ý' }, list, say)
+: h('div', { class: cls, role: 'region', 'aria-label': 'Gợi ý' },
+h('div', { class: 'mgq-hints__bar' }, h('span', { class: 'mgq-hints__title', text: 'Gợi ý' }), btn, reveal),
 list, say);
 return { el: el, btn: btn, reveal: reveal, list: list, say: say, st: null, open: {}, shown: 0 };
 }
@@ -27096,10 +27144,10 @@ p.list.innerHTML = '';
 p.list.classList.toggle('is-empty', !lines.length);
 p.el.classList.toggle('is-empty', !lines.length);
 if (!lines.length) {
-p.list.appendChild(h('p', { class: 'mgq-hints__empty', text: st && st.more === false ? 'No hints for this one.' : 'Tap Hint for a clue.' }));
+p.list.appendChild(h('p', { class: 'mgq-hints__empty', text: st && st.more === false ? 'Không có gợi ý cho bước này.' : 'Chạm Gợi ý để xem manh mối.' }));
 } else if (lines.length > 1) {
 var earlier = lines.length - 1;
-p.list.appendChild(h('p', { class: 'mgq-hints__earlier', text: earlier + (earlier === 1 ? ' earlier hint' : ' earlier hints') }));
+p.list.appendChild(h('p', { class: 'mgq-hints__earlier', text: earlier + ' gợi ý trước đó' }));
 }
 lines.forEach(function (ln, i) {
 var last = i === lines.length - 1;
@@ -27109,7 +27157,7 @@ if (phone && !last) {
 toggle = h('button', {
 type: 'button', class: 'mgq-hint-line__toggle', 'aria-expanded': folded ? 'false' : 'true',
 on: { click: function () { p.open[i] = !p.open[i]; renderHintPanel(p); } }
-}, folded ? 'Show' : 'Hide');
+}, folded ? 'Hiện' : 'Ẩn');
 }
 p.list.appendChild(h('div', { class: 'mgq-hint-line' + (folded ? ' is-folded' : '') },
 h('p', { class: 'mgq-hint-line__text' },
@@ -27546,7 +27594,7 @@ var pct = st.total ? Math.round((st.filled / st.total) * 100) : 100;
 fillEl.style.width = pct + '%';
 barEl.setAttribute('aria-valuenow', String(pct));
 var left = Math.max(0, st.total - st.filled);
-statEl.textContent = st.filled + ' answered, ' + left + ' to go';
+statEl.textContent = st.filled + ' đã trả lời, ' + left + ' còn lại';
 statEl.title = st.filled + ' of ' + st.total + ' answered';
 readoutEl.textContent = st.filled + ' of ' + st.total + ' answered';
 tick();
@@ -28476,7 +28524,7 @@ if (destroyed || !run) { return; }
 var total = run.prompts.length;
 var clean = run.results.filter(function (r) { return r === 'clean'; }).length;
 var facts = [h('p', { class: 'mg-atp-score__line', text: 'Right first time: ' + clean + ' of ' + total })];
-if (run.hintsTaken) { facts.push(h('p', { class: 'mg-atp-score__more', text: 'Hints used: ' + run.hintsTaken })); }
+if (run.hintsTaken) { facts.push(h('p', { class: 'mg-atp-score__more', text: 'Gợi ý đã dùng: ' + run.hintsTaken })); }
 if (run.shown) { facts.push(h('p', { class: 'mg-atp-score__more', text: 'Answers shown: ' + run.shown })); }
 if (typeof run.best === 'number') { facts.push(h('p', { class: 'mg-atp-score__more', text: 'Best ' + run.best + '%' })); }
 var score = h('section', { class: 'mg-card mg-card--option mg-atp-score' },
@@ -29116,7 +29164,7 @@ if (destroyed || !run) { return; }
 var total = run.prompts.length;
 var clean = run.results.filter(function (r) { return r === 'clean'; }).length;
 var facts = [h('p', { class: 'mg-gm-score__line', text: 'Right first time: ' + clean + ' of ' + total })];
-if (run.hintsTaken) { facts.push(h('p', { class: 'mg-gm-score__more', text: 'Hints used: ' + run.hintsTaken })); }
+if (run.hintsTaken) { facts.push(h('p', { class: 'mg-gm-score__more', text: 'Gợi ý đã dùng: ' + run.hintsTaken })); }
 if (run.shown) { facts.push(h('p', { class: 'mg-gm-score__more', text: 'Answers shown: ' + run.shown })); }
 if (typeof run.best === 'number') { facts.push(h('p', { class: 'mg-gm-score__more', text: 'Best ' + run.best + '%' })); }
 var score = h('section', { class: 'mg-card mg-card--option mg-gm-score' }, ring(run.pct), h('div', { class: 'mg-gm-score__text' }, facts));
@@ -29852,7 +29900,7 @@ if (destroyed || !run) { return; }
 var total = run.prompts.length;
 var clean = run.results.filter(function (r) { return r === 'clean'; }).length;
 var facts = [h('p', { class: 'mg-gm-score__line', text: 'Right first time: ' + clean + ' of ' + total })];
-if (run.hintsTaken) { facts.push(h('p', { class: 'mg-gm-score__more', text: 'Hints used: ' + run.hintsTaken })); }
+if (run.hintsTaken) { facts.push(h('p', { class: 'mg-gm-score__more', text: 'Gợi ý đã dùng: ' + run.hintsTaken })); }
 if (run.shown) { facts.push(h('p', { class: 'mg-gm-score__more', text: 'Answers shown: ' + run.shown })); }
 if (typeof run.best === 'number') { facts.push(h('p', { class: 'mg-gm-score__more', text: 'Best ' + run.best + '%' })); }
 var score = h('section', { class: 'mg-card mg-card--option mg-gm-score' }, ring(run.pct), h('div', { class: 'mg-gm-score__text' }, facts));
