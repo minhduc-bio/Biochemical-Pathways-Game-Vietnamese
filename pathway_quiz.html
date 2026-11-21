@@ -31935,7 +31935,7 @@ el('p', { class: 'mg-empty__title', text: course ? 'Chưa chọn chặng nào' :
 el('p', { class: 'mg-empty__text', text: course ? 'Chạm vào một chặng để xem các bước.' : 'Chạm vào một con đường để xem các bước, hoặc chọn nhiều con đường để chơi chung một bản đồ.' }));
 var isMix = !!pathway && !!MG.custom && MG.custom.isMix(pathway.id);
 var everything = (!!pathway && !!pathway.hidden && !isMix) || isEverythingPicked(s) || (!!course && !!course.everything && s.pathwayId === course.everything);
-var hint = pathway ? 'Chạm vào một bước để đọc thông tin.' : null;
+var hint = pathway ? 'Mỗi thẻ dưới đây là một bước chuyển hóa, ấn vào để tìm hiểu thông tin về các bước chuyển hóa' : null;
 var startLabel = none ? (course ? 'Chọn một chặng' : 'Chọn một con đường') : (everything ? 'Bắt đầu tất cả' : (ctx ? 'Bắt đầu chặng ' + (ctx.index + 1) : 'Bắt đầu Quiz'));
 var scored = pathway ? hasHistory(pathway) : false;
 var wipe = confirmButton('mg-history__link', 'Xóa lịch sử bước này', 'Chạm lần nữa để xác nhận xóa', function () {

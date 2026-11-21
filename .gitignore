@@ -1,3 +1,16 @@
 scratch/
 screenshots/
 FX-Cute-Dino.ttf
+
+# Local translation GUI, mockups & compiler artifacts
+translation_gui_mockup.html
+*_mockup.html
+TRANSLATION_GUI_PLAN.md
+run_translation_studio.bat
+tools/
+*.bak
+*.base.html
+*_extracted_strings.json
+*_report.json
+
+
