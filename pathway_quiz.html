@@ -10879,7 +10879,896 @@ nodes: glParts.nodes, reactions: glParts.reactions, order: glParts.order, start:
 regions: glParts.regions, notes: glParts.notes, summary: SUMMARY_GLUALA,
 region: ['urea', 'tca', 'both', 'all'], noDistractor: ['hplus', 'mg']
 };
+var lipidMolecules = {
+    malonylcoa: {
+      name: 'Malonyl-CoA', short: 'Mal-CoA', family: 'lipid', lines: ['Malonyl-CoA'],
+      aliases: ['malonyl-coa', 'malonyl coa', 'mal-coa', 'malonyl-coenzyme a'],
+      note: 'Sản phẩm carboxyl hóa của acetyl-CoA, chất cho 2C trong mỗi vòng kéo dài mạch acid béo và là chất ức chế CAT I.'
+    },
+    acetoacetylacp: {
+      name: 'β-Ketobutyryl-ACP', short: 'AcAc-ACP', family: 'lipid', lines: ['β-Ketobutyryl-', 'ACP'],
+      aliases: ['acetoacetyl-acp', 'acetoacetyl acp', 'b-ketobutyryl-acp', 'beta-ketobutyryl-acp', 'acetoacetylacp'],
+      note: 'Sản phẩm ngưng tụ đầu tiên giữa gốc acetyl và malonyl-ACP trên phức hệ FAS, giải phóng CO₂.'
+    },
+    hydroxybutyrylacp: {
+      name: 'D-β-Hydroxybutyryl-ACP', short: 'OH-But-ACP', family: 'lipid', lines: ['D-β-Hydroxy-', 'butyryl-ACP'],
+      aliases: ['d-b-hydroxybutyryl-acp', 'hydroxybutyryl-acp', 'beta-hydroxybutyryl-acp', 'hydroxybutyrylacp'],
+      note: 'Đồng phân D-hydroxy tạo thành nhờ phản ứng khử nhóm keto bởi NADPH.'
+    },
+    butenoylacp: {
+      name: 'trans-Δ²-Butenoyl-ACP', short: 'Enoyl-ACP', family: 'lipid', lines: ['trans-Δ²-', 'Butenoyl-ACP'],
+      aliases: ['trans-d2-butenoyl-acp', 'butenoyl-acp', 'crotonyl-acp', 'trans-butenoyl-acp'],
+      note: 'Chất trung gian có liên kết đôi trans tạo ra sau phản ứng khử nước.'
+    },
+    butyrylacp: {
+      name: 'Butyryl-ACP', short: 'But-ACP', family: 'lipid', lines: ['Butyryl-ACP'],
+      aliases: ['butyryl-acp', 'butyryl acp', 'butyrylacp'],
+      note: 'Sản phẩm 4C bão hòa kết thúc vòng 1 của phức hệ FAS, sẵn sàng chuyển sang KS để lặp vòng tiếp theo.'
+    },
+    palmitoylacp: {
+      name: 'Palmitoyl-ACP', short: 'Palm-ACP', family: 'lipid', lines: ['Palmitoyl-ACP', '(C16)'],
+      aliases: ['palmitoyl-acp', 'palmitoyl acp', 'palmitoylacp'],
+      note: 'Acyl-ACP 16 carbon hoàn chỉnh sau 7 vòng lặp của phức hệ FAS, cơ chất cho thioesterase.'
+    },
+    palmitate: {
+      name: 'Palmitate', short: 'Palm (16:0)', family: 'lipid', lines: ['Palmitate', '(16:0)'],
+      aliases: ['palmitate', 'palmitic acid', '16:0', 'hexadecanoate'],
+      note: 'Acid béo bão hòa 16 carbon, sản phẩm chính giải phóng từ phức hệ FAS ở động vật.'
+    },
+    palmitoleate: {
+      name: 'Palmitoleate', short: '16:1(Δ⁹)', family: 'lipid', lines: ['Palmitoleate', '16:1(Δ⁹)'],
+      aliases: ['palmitoleate', 'palmitoleic acid', '16:1', 'cis-9-hexadecenoate'],
+      note: 'Acid béo không no một nối đôi (cis-Δ⁹) tạo ra từ palmitate nhờ Δ⁹-desaturase.'
+    },
+    stearate: {
+      name: 'Stearate', short: 'Ste (18:0)', family: 'lipid', lines: ['Stearate', '(18:0)'],
+      aliases: ['stearate', 'stearic acid', '18:0', 'octadecanoate'],
+      note: 'Acid béo bão hòa 18 carbon tạo thành khi kéo dài chuỗi palmitate thêm 2 carbon tại màng ER/ty thể.'
+    },
+    lsf: {
+      name: 'Longer saturated fatty acids', short: 'LSFA (≥20C)', family: 'lipid', lines: ['Longer Saturated', 'Fatty Acids'],
+      aliases: ['longer saturated fatty acids', 'lsf', 'lsfa', 'arachidate', 'lignocerate', 'behenate'],
+      note: 'Các acid béo no chuỗi rất dài (C20, C22, C24...) được tổng hợp qua các bước kéo dài liên tiếp tại ER.'
+    },
+    oleate: {
+      name: 'Oleate', short: 'Ole (18:1)', family: 'lipid', lines: ['Oleate', '18:1(Δ⁹)'],
+      aliases: ['oleate', 'oleic acid', '18:1', 'cis-9-octadecenoate'],
+      note: 'Acid béo không no một nối đôi 18 carbon (cis-Δ⁹) phổ biến nhất trong lipid màng và dự trữ.'
+    },
+    linoleate: {
+      name: 'Linoleate', short: 'Lin (18:2)', family: 'lipid', lines: ['Linoleate', '18:2(Δ⁹,¹²)'],
+      aliases: ['linoleate', 'linoleic acid', '18:2', 'omega-6'],
+      note: 'Acid béo thiết yếu omega-6 có hai nối đôi, động vật không tự tổng hợp được mà phải thu nhận từ thực vật.'
+    },
+    alinolenate: {
+      name: 'α-Linolenate', short: 'ALA (18:3)', family: 'lipid', lines: ['α-Linolenate', '18:3(Δ⁹,¹²,¹⁵)'],
+      aliases: ['a-linolenate', 'alpha-linolenate', 'ala', '18:3', 'omega-3'],
+      note: 'Acid béo thiết yếu omega-3 có ba nối đôi ở thực vật, tiền chất tổng hợp EPA và DHA.'
+    },
+    pufa: {
+      name: 'Other PUFAs (EPA, DHA)', short: 'PUFA (ω-3)', family: 'lipid', lines: ['Other PUFAs', '(EPA, DHA)'],
+      aliases: ['pufa', 'other polyunsaturated fatty acids', 'epa', 'dha', 'polyunsaturated fatty acids'],
+      note: 'Các acid béo không no nhiều nối đôi chuỗi dài omega-3 đóng vai trò quan trọng trong não bộ và màng tế bào.'
+    },
+    glinolenate: {
+      name: 'γ-Linolenate', short: 'GLA (18:3)', family: 'lipid', lines: ['γ-Linolenate', '18:3(Δ⁶,⁹,¹²)'],
+      aliases: ['g-linolenate', 'gamma-linolenate', 'gla', 'gamma-linolenic acid'],
+      note: 'Sản phẩm của phản ứng khử bão hòa linoleate bởi Δ⁶-desaturase trên con đường tạo arachidonate.'
+    },
+    eicosatrienoate: {
+      name: 'Eicosatrienoate', short: '20:3', family: 'lipid', lines: ['Eicosatrienoate', '20:3(Δ⁸,¹¹,¹⁴)'],
+      aliases: ['eicosatrienoate', 'dihomo-gamma-linolenate', 'dgla', '20:3'],
+      note: 'Chất trung gian 20 carbon có 3 nối đôi sau khi kéo dài chuỗi γ-linolenate.'
+    },
+    arachidonate: {
+      name: 'Arachidonate', short: 'Ara (20:4)', family: 'lipid', lines: ['Arachidonate', '20:4(Δ⁵,⁸,¹¹,¹⁴)'],
+      aliases: ['arachidonate', 'arachidonic acid', 'ara', '20:4', 'omega-6 ara'],
+      note: 'Acid béo omega-6 có 4 nối đôi (20:4), tiền chất chính để sinh tổng hợp eicosanoid (prostaglandin, leukotriene).'
+    },
+    pcoleate: {
+      name: 'PC-Oleate (18:1)', short: 'PC-Oleate', family: 'lipid', lines: ['PC-Oleate', '18:1(Δ⁹)'],
+      aliases: ['pc-oleate', 'phosphatidylcholine oleate'],
+      note: 'Phosphatidylcholine gắn gốc oleate trên màng, nơi diễn ra phản ứng khử bão hòa trực tiếp.'
+    },
+    pclinoleate: {
+      name: 'PC-Linoleate (18:2)', short: 'PC-Linoleate', family: 'lipid', lines: ['PC-Linoleate', '18:2(Δ⁹,¹²)'],
+      aliases: ['pc-linoleate', 'phosphatidylcholine linoleate'],
+      note: 'Phosphatidylcholine chứa gốc linoleate tạo ra bởi desaturase màng ở thực vật.'
+    },
+    pclinolenate: {
+      name: 'PC-Linolenate (18:3)', short: 'PC-Linolenate', family: 'lipid', lines: ['PC-Linolenate', '18:3(Δ⁹,¹²,¹⁵)'],
+      aliases: ['pc-linolenate', 'phosphatidylcholine linolenate'],
+      note: 'Phosphatidylcholine chứa gốc linolenate giàu PUFA trên màng tế bào.'
+    },
+    cytb5red: {
+      name: 'Cyt b₅ reductase', short: 'b₅ Reductase', family: 'redox', lines: ['Cyt b₅', 'reductase'],
+      aliases: ['cyt b5 reductase', 'cytochrome b5 reductase'],
+      note: 'Flavoprotein chứa FAD nhận 2 electron từ NADPH để khử cytochrome b₅.'
+    },
+    cytb5: {
+      name: 'Cytochrome b₅', short: 'Cyt b₅', family: 'redox', lines: ['Cytochrome', 'b₅ (Fe²⁺/Fe³⁺)'],
+      aliases: ['cyt b5', 'cytochrome b5'],
+      note: 'Protein chứa nhân heme truyền electron từ reductase sang phức hệ acyl-CoA desaturase.'
+    },
+    desatcomp: {
+      name: 'Acyl-CoA desaturase', short: 'Desaturase', family: 'lipid', lines: ['Acyl-CoA', 'desaturase'],
+      aliases: ['acyl-coa desaturase', 'fatty acyl-coa desaturase'],
+      note: 'Enzyme gắn màng ER xúc tác phản ứng tạo liên kết đôi cis đồng thời khử O₂ thành 2 H₂O.'
+    },
+    gly3p: {
+      name: 'L-Glycerol 3-phosphate', short: 'Gly-3-P', family: 'lipid', lines: ['L-Glycerol', '3-phosphate'],
+      aliases: ['gly3p', 'l-glycerol 3-phosphate', 'glycerol 3-phosphate', 'glycerol-3-p', 'gly-3-p', 'alpha-glycerophosphate'],
+      note: 'Khung 3 carbon khởi đầu cho quá trình este hóa tổng hợp phosphatidic acid, TAG và phospholipid.'
+    },
+    fattyacid: {
+      name: 'Fatty acid', short: 'R-COO⁻', family: 'lipid', lines: ['Fatty Acid', '(R-COO⁻)'],
+      aliases: ['fatty acid', 'fatty acids', 'r-coo-', 'free fatty acid', 'ffa'],
+      note: 'Acid béo tự do cần được hoạt hóa thành acyl-CoA trước khi tham gia phản ứng este hóa.'
+    },
+    fattyacylcoa: {
+      name: 'Fatty acyl-CoA', short: 'Acyl-CoA', family: 'lipid', lines: ['Fatty Acyl-CoA', '(R-CO-S-CoA)'],
+      aliases: ['fatty acyl-coa', 'acyl-coa', 'fatty acyl coa', 'acyl coa'],
+      note: 'Dạng hoạt hóa của acid béo mang liên kết thioester giàu năng lượng.'
+    },
+    dag: {
+      name: '1,2-Diacylglycerol (DAG)', short: 'DAG', family: 'lipid', lines: ['1,2-Diacylglycerol', '(DAG)'],
+      aliases: ['dag', 'diacylglycerol', '1,2-diacylglycerol', 'diglyceride', '1,2-dag'],
+      note: 'Chất trung gian mang hai gốc acyl và một nhóm OH tự do, tiền chất trực tiếp để tổng hợp TAG.'
+    },
+    lysopa: {
+      name: 'Lysophosphatidic acid', short: 'LPA', family: 'lipid', lines: ['Lysophosphatidic', 'acid (1-Acyl-G3P)'],
+      aliases: ['lysophosphatidic acid', 'lpa', 'lysophosphatidate', '1-acyl-glycerol 3-phosphate'],
+      note: 'Sản phẩm este hóa nhóm OH ở C1 của glycerol 3-phosphate với gốc acyl thứ nhất.'
+    },
+    pa: {
+      name: 'Phosphatidic acid', short: 'PA', family: 'lipid', lines: ['Phosphatidic', 'acid (PA)'],
+      aliases: ['phosphatidic acid', 'pa', 'phosphatidate', '1,2-diacylglycerol 3-phosphate'],
+      note: 'Tiền chất trung tâm có 2 gốc acyl và 1 nhóm phosphat, rẽ nhánh sang TAG và glycerophospholipid.'
+    },
+    gpl: {
+      name: 'Glycerophospholipid', short: 'GPL', family: 'lipid', lines: ['Glycerophospho-', 'lipid (Lipid màng)'],
+      aliases: ['glycerophospholipid', 'gpl', 'phospholipid', 'glycerophospholipids'],
+      note: 'Thành phần lipid chính tạo nên lớp kép màng tế bào (phosphatidylcholine, phosphatidylethanolamine...).'
+    },
+    accact: {
+      name: 'ACC (Active)', short: 'ACC (Active)', family: 'enzyme', lines: ['ACC (Active)', 'Dephosphorylated'],
+      aliases: ['acc active', 'active acc', 'acc-active', 'acc'],
+      note: 'Dạng hoạt động của Acetyl-CoA carboxylase khi được phosphatase khử nhóm phosphate (kích thích bởi insulin).'
+    },
+    accinact: {
+      name: 'ACC (Inactive)', short: 'ACC (Inactive)', family: 'enzyme', lines: ['ACC (Inactive)', 'Phosphorylated'],
+      aliases: ['acc inactive', 'inactive acc', 'acc-inactive', 'p-acc'],
+      note: 'Dạng bất hoạt của Acetyl-CoA carboxylase bị PKA/AMPK gắn nhóm phosphate khi đường huyết thấp (glucagon).'
+    },
+    insulin: {
+      name: 'Insulin (High Glucose)', short: 'Insulin', family: 'messenger', lines: ['Insulin', '(Đường huyết cao)'],
+      aliases: ['insulin', 'high glucose', 'high blood glucose'],
+      note: 'Hormone kích thích protein phosphatase khử phosphate hoạt hóa ACC, thúc đẩy tổng hợp lipid.'
+    },
+    glucagon: {
+      name: 'Glucagon (Low Glucose)', short: 'Glucagon', family: 'messenger', lines: ['Glucagon / PKA', '(Đường huyết thấp)'],
+      aliases: ['glucagon', 'low glucose', 'low blood glucose', 'pka'],
+      note: 'Hormone dị hóa báo hiệu đói, hoạt hóa PKA phosphoryl hóa bất hoạt ACC, tắt tổng hợp acid béo.'
+    },
+    facylcoacyt: {
+      name: 'Fatty acyl-CoA (Cytosol)', short: 'Acyl-CoA (Cyt)', family: 'lipid', lines: ['Fatty Acyl-CoA', '(Cytosol)'],
+      aliases: ['fatty acyl-coa (cytosol)', 'acyl-coa cytosol', 'facylcoacyt'],
+      note: 'Acyl-CoA ở bào tương cần carnitine để được vận chuyển qua màng ty thể.'
+    },
+    facylcarn: {
+      name: 'Fatty acyl-carnitine', short: 'Acyl-Carnitine', family: 'lipid', lines: ['Fatty Acyl-', 'carnitine'],
+      aliases: ['fatty acyl-carnitine', 'acyl-carnitine', 'acylcarnitine'],
+      note: 'Sản phẩm của CPT1/CAT I tại màng ngoài ty thể, được đưa vào matrix qua carnitine-acylcarnitine translocase.'
+    },
+    facylcoamat: {
+      name: 'Fatty acyl-CoA (Matrix)', short: 'Acyl-CoA (Matrix)', family: 'lipid', lines: ['Fatty Acyl-CoA', '(Matrix ty thể)'],
+      aliases: ['fatty acyl-coa (matrix)', 'acyl-coa matrix', 'facylcoamat'],
+      note: 'Tái tạo trong chất nền ty thể nhờ CPT2, sẵn sàng đi vào con đường beta-oxy hóa.'
+    },
+    acetylcoamat: {
+      name: 'Acetyl-CoA (Matrix)', short: 'AcCoA (Matrix)', family: 'coa', lines: ['Acetyl-CoA', '(Matrix ty thể)'],
+      aliases: ['acetyl-coa (matrix)', 'acetyl coa matrix', 'accoamat'],
+      note: 'Sản phẩm cuối cùng của chu trình beta-oxy hóa trong ty thể.'
+    }
+  };
+
+  // --------------------------------------------------------------------------
+  // 2. KHAI BÁO CÁC ENZYME MỚI (NEW ENZYMES)
+  // --------------------------------------------------------------------------
+  var lipidEnzymes = {
+    mat: {
+      name: 'Malonyl/acetyl-CoA-ACP transferase', short: 'MAT', ec: '2.3.1.39', family: 'transferase',
+      aliases: ['mat', 'at', 'mt', 'malonyl/acetyl transferase'],
+      note: 'Nạp các gốc acetyl và malonyl từ CoA lên các nhóm -SH của KS và ACP trên phức hệ FAS.'
+    },
+    ks: {
+      name: 'β-Ketoacyl-ACP synthase', short: 'KS', ec: '2.3.1.41', family: 'synthase',
+      aliases: ['ks', 'beta-ketoacyl-acp synthase', 'ketoacyl synthase'],
+      note: 'Ngưng tụ gốc acyl với malonyl-ACP, giải phóng CO₂ để kéo dài chuỗi thêm 2 carbon.'
+    },
+    kr: {
+      name: 'β-Ketoacyl-ACP reductase', short: 'KR', ec: '1.1.1.100', family: 'oxidoreductase',
+      aliases: ['kr', 'beta-ketoacyl-acp reductase', 'ketoacyl reductase'],
+      note: 'Khử nhóm β-keto thành nhóm hydroxyl sử dụng lực khử từ NADPH.'
+    },
+    dhfas: {
+      name: 'β-Hydroxyacyl-ACP dehydratase', short: 'DH', ec: '4.2.1.59', family: 'lyase',
+      aliases: ['dh', 'hd', 'hydroxyacyl dehydratase', 'dehydratase'],
+      note: 'Khử nước tạo liên kết đôi trans-Δ² trên mạch acyl gắn ACP.'
+    },
+    er: {
+      name: 'Enoyl-ACP reductase', short: 'ER', ec: '1.3.1.9', family: 'oxidoreductase',
+      aliases: ['er', 'enoyl-acp reductase', 'enoyl reductase'],
+      note: 'Khử liên kết đôi trans-Δ² thành liên kết đơn bão hòa bằng NADPH.'
+    },
+    te: {
+      name: 'Thioesterase', short: 'TE', ec: '3.1.2.14', family: 'hydrolase',
+      aliases: ['te', 'thioesterase', 'palmitoyl thioesterase'],
+      note: 'Thủy phân liên kết thioester giải phóng palmitate tự do khi chuỗi đạt độ dài 16 carbon.'
+    },
+    elongase: {
+      name: 'Fatty acid elongase', short: 'Elongase', ec: '2.3.1.199', family: 'transferase',
+      aliases: ['elongase', 'fatty acid elongase', 'elovl'],
+      note: 'Hệ thống kéo dài chuỗi tại màng lưới nội chất và ty thể, thêm 2 carbon từ malonyl-CoA.'
+    },
+    desat9: {
+      name: 'Stearoyl-CoA desaturase (Δ⁹)', short: 'Δ⁹-Desat', ec: '1.14.19.1', family: 'oxidoreductase',
+      aliases: ['desaturase', 'd9-desaturase', 'stearoyl-coa desaturase', 'scd', 'delta 9 desaturase'],
+      note: 'Tạo liên kết đôi cis tại vị trí carbon 9 trên palmitate và stearate.'
+    },
+    desat12: {
+      name: 'Δ¹²-Fatty acid desaturase (Thực vật)', short: 'Δ¹²-Desat', ec: '1.14.19.6', family: 'oxidoreductase',
+      aliases: ['d12-desaturase', 'delta 12 desaturase', 'fad2'],
+      note: 'Tạo liên kết đôi cis tại vị trí carbon 12 (chỉ có ở tế bào thực vật).'
+    },
+    desat15: {
+      name: 'Δ¹⁵-Fatty acid desaturase (Thực vật)', short: 'Δ¹⁵-Desat', ec: '1.14.19.7', family: 'oxidoreductase',
+      aliases: ['d15-desaturase', 'delta 15 desaturase', 'fad3'],
+      note: 'Tạo liên kết đôi cis tại vị trí carbon 15 tổng hợp acid béo omega-3 (chỉ có ở thực vật).'
+    },
+    desat6: {
+      name: 'Δ⁶-Fatty acid desaturase', short: 'Δ⁶-Desat', ec: '1.14.19.3', family: 'oxidoreductase',
+      aliases: ['d6-desaturase', 'delta 6 desaturase', 'fads2'],
+      note: 'Khử bão hòa linoleate thành gamma-linolenate ở động vật.'
+    },
+    desat5: {
+      name: 'Δ⁵-Fatty acid desaturase', short: 'Δ⁵-Desat', ec: '1.14.19.34', family: 'oxidoreductase',
+      aliases: ['d5-desaturase', 'delta 5 desaturase', 'fads1'],
+      note: 'Khử bão hòa eicosatrienoate thành arachidonate (20:4) ở động vật.'
+    },
+    cb5r: {
+      name: 'Cytochrome b₅ reductase', short: 'Cyt b₅ Red', ec: '1.6.2.2', family: 'oxidoreductase',
+      aliases: ['cyt b5 reductase', 'cytochrome b5 reductase', 'cb5r'],
+      note: 'Chuyển electron từ NADPH qua FAD tới cytochrome b₅.'
+    },
+    gpdh: {
+      name: 'Glycerol-3-phosphate dehydrogenase', short: 'GPDH', ec: '1.1.1.8', family: 'oxidoreductase',
+      aliases: ['gpdh', 'glycerol-3-phosphate dehydrogenase', 'gpd1'],
+      note: 'Khử dihydroxyacetone phosphate (DHAP) thành L-glycerol 3-phosphate bằng NADH.'
+    },
+    gk: {
+      name: 'Glycerol kinase', short: 'GK', ec: '2.7.1.30', family: 'kinase',
+      aliases: ['gk', 'glycerol kinase'],
+      note: 'Phosphoryl hóa glycerol tự do bằng ATP tại gan.'
+    },
+    facs: {
+      name: 'Fatty acyl-CoA synthetase', short: 'FACS', ec: '6.2.1.3', family: 'ligase',
+      aliases: ['facs', 'acyl-coa synthetase', 'fatty acid thiokinase'],
+      note: 'Hoạt hóa acid béo tự do thành fatty acyl-CoA tiêu tốn 2 liên kết phosphate giàu năng lượng (ATP -> AMP + PPi).'
+    },
+    gpat: {
+      name: 'Glycerol-3-phosphate acyltransferase', short: 'GPAT', ec: '2.3.1.15', family: 'transferase',
+      aliases: ['gpat', 'glycerol-3-phosphate acyltransferase'],
+      note: 'Gắn gốc acyl thứ nhất vào vị trí C1 của L-glycerol 3-phosphate tạo lysophosphatidic acid.'
+    },
+    agpat: {
+      name: '1-Acylglycerol-3-phosphate acyltransferase', short: 'AGPAT', ec: '2.3.1.51', family: 'transferase',
+      aliases: ['agpat', 'acylglycerol-3-phosphate acyltransferase'],
+      note: 'Gắn gốc acyl thứ hai vào vị trí C2 của lysophosphatidic acid tạo phosphatidic acid.'
+    },
+    pap: {
+      name: 'Phosphatidic acid phosphatase (Lipin)', short: 'PAP', ec: '3.1.3.4', family: 'hydrolase',
+      aliases: ['pap', 'lipin', 'phosphatidate phosphatase'],
+      note: 'Thủy phân nhóm phosphate của phosphatidic acid tạo thành 1,2-diacylglycerol (DAG).'
+    },
+    dgat: {
+      name: 'Diacylglycerol acyltransferase', short: 'DGAT', ec: '2.3.1.20', family: 'transferase',
+      aliases: ['dgat', 'diacylglycerol acyltransferase'],
+      note: 'Bước cam kết gắn gốc acyl thứ ba vào DAG tạo triacylglycerol (TAG) dự trữ.'
+    },
+    cdpdags: {
+      name: 'CDP-DAG synthase / Head group transferase', short: 'GPL Synth', ec: '2.7.7.41', family: 'transferase',
+      aliases: ['cdpdags', 'phospholipid synthase', 'head group transferase'],
+      note: 'Hoạt hóa phosphatidic acid hoặc DAG và gắn nhóm đầu ưa nước để tổng hợp glycerophospholipid màng.'
+    },
+    pphosphatase: {
+      name: 'Protein phosphatase', short: 'Phosphatase', ec: '3.1.3.16', family: 'hydrolase',
+      aliases: ['protein phosphatase', 'phosphatase', 'pp2a'],
+      note: 'Khử nhóm phosphate gắn trên ACC dưới kích thích của insulin, chuyển ACC sang trạng thái hoạt động.'
+    },
+    pka: {
+      name: 'Protein kinase A', short: 'PKA', ec: '2.7.11.11', family: 'kinase',
+      aliases: ['pka', 'protein kinase a', 'ampk'],
+      note: 'Gắn nhóm phosphate vào ACC dưới kích thích của glucagon, ức chế tổng hợp acid béo khi đói.'
+    },
+    cact: {
+      name: 'Carnitine-acylcarnitine translocase', short: 'CACT', ec: '2.3.1.21', family: 'translocase',
+      aliases: ['cact', 'carnitine translocase', 'translocase'],
+      note: 'Vận chuyển đối cảng fatty acyl-carnitine vào chất nền ty thể và đưa carnitine tự do ra ngoài.'
+    },
+    cpt2: {
+      name: 'Carnitine palmitoyltransferase II', short: 'CPT2', ec: '2.3.1.21', family: 'transferase',
+      aliases: ['cpt2', 'cpt-2', 'carnitine acyltransferase ii'],
+      note: 'Tái tạo fatty acyl-CoA từ fatty acyl-carnitine bên trong matrix ty thể.'
+    },
+    betaoxenz: {
+      name: 'Hệ enzyme β-oxidation', short: 'β-Oxidation', ec: '1.1.1.35', family: 'oxidoreductase',
+      aliases: ['beta-oxidation', 'beta oxidation', 'fao'],
+      note: 'Bốn phản ứng thoái hóa acid béo sinh FADH₂, NADH và giải phóng acetyl-CoA trong ty thể.'
+    }
+  };
+
+  // Nạp vào từ điển chính MG.entities
+  Object.keys(lipidMolecules).forEach(function (id) {
+    lipidMolecules[id].id = id; lipidMolecules[id].kind = 'molecule';
+    MG.entities.molecule[id] = lipidMolecules[id];
+  });
+  Object.keys(lipidEnzymes).forEach(function (id) {
+    lipidEnzymes[id].id = id; lipidEnzymes[id].kind = 'enzyme';
+    MG.entities.enzyme[id] = lipidEnzymes[id];
+  });
+
+  // Hỗ trợ hàm node
+  function nNode(mol, x, y) { return { mol: mol, x: x, y: y }; }
+  var LEFT_RIGHT = { 'in': 'west', out: 'east' };
+  var TOP_BOTTOM = { 'in': 'north', out: 'south' };
+
+  // --------------------------------------------------------------------------
+  // 3. ĐỊNH NGHĨA PATHWAY 1: fas (Tổng hợp Malonyl-CoA & Phức hệ FAS)
+  // --------------------------------------------------------------------------
+  function fasPathway() {
+    var nodes = {
+      acetylcoa: nNode('acetylcoa', 400, 150),
+      malonylcoa: nNode('malonylcoa', 400, 380),
+      acetoacetylacp: nNode('acetoacetylacp', 750, 380),
+      hydroxybutyrylacp: nNode('hydroxybutyrylacp', 1050, 530),
+      butenoylacp: nNode('butenoylacp', 750, 680),
+      butyrylacp: nNode('butyrylacp', 450, 530),
+      palmitoylacp: nNode('palmitoylacp', 450, 780),
+      palmitate: nNode('palmitate', 450, 960)
+    };
+
+    var reactions = [
+      {
+        id: 'acc1', step: 1, enzyme: 'acc',
+        substrates: ['acetylcoa'], products: ['malonylcoa'],
+        ins: ['atp', 'hco3'], outs: ['adp', 'pi'],
+        arrows: [{ from: 'acetylcoa', to: 'malonylcoa' }],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Carboxylation (Biotin-dependent)',
+        equation: 'Acetyl-CoA + ATP + HCO₃⁻ → Malonyl-CoA + ADP + Pᵢ + H⁺',
+        hint: 'Bước cam kết đầu tiên: acetyl-CoA được carboxyl hóa tiêu tốn 1 ATP tạo malonyl-CoA 3 carbon.'
+      },
+      {
+        id: 'mat1', step: 2, enzyme: 'mat',
+        substrates: ['acetylcoa', 'malonylcoa'], products: ['acetoacetylacp'],
+        ins: [], outs: ['co2', 'coa'],
+        arrows: [
+          { from: 'malonylcoa', to: 'acetoacetylacp' },
+          { from: 'acetylcoa', to: 'acetoacetylacp', via: [{ x: 750, y: 150 }] }
+        ],
+        cof: TOP_BOTTOM, irreversible: true, type: 'Priming & Condensation',
+        equation: 'Acetyl-CoA + Malonyl-CoA + FAS → β-Ketobutyryl-ACP + CO₂ + 2 CoA-SH',
+        hint: 'Nạp gốc acetyl vào KS và malonyl vào ACP, ngưng tụ giải phóng CO₂ tạo phân tử 4 carbon đầu tiên.'
+      },
+      {
+        id: 'kr1', step: 3, enzyme: 'kr',
+        substrates: ['acetoacetylacp'], products: ['hydroxybutyrylacp'],
+        ins: ['nadph'], outs: ['nadp'],
+        arrows: [{ from: 'acetoacetylacp', to: 'hydroxybutyrylacp' }],
+        cof: LEFT_RIGHT, twoWay: true, type: 'Reduction',
+        equation: 'β-Ketobutyryl-ACP + NADPH + H⁺ ⇌ D-β-Hydroxybutyryl-ACP + NADP⁺',
+        hint: 'Khử nhóm β-keto thành nhóm hydroxyl bậc hai sử dụng lực khử từ NADPH.'
+      },
+      {
+        id: 'dh1', step: 4, enzyme: 'dhfas',
+        substrates: ['hydroxybutyrylacp'], products: ['butenoylacp'],
+        ins: [], outs: ['h2o'],
+        arrows: [{ from: 'hydroxybutyrylacp', to: 'butenoylacp' }],
+        cof: LEFT_RIGHT, twoWay: true, type: 'Dehydration',
+        equation: 'D-β-Hydroxybutyryl-ACP ⇌ trans-Δ²-Butenoyl-ACP + H₂O',
+        hint: 'Khử một phân tử nước tạo liên kết đôi trans giữa carbon 2 và carbon 3.'
+      },
+      {
+        id: 'er1', step: 5, enzyme: 'er',
+        substrates: ['butenoylacp'], products: ['butyrylacp'],
+        ins: ['nadph'], outs: ['nadp'],
+        arrows: [{ from: 'butenoylacp', to: 'butyrylacp' }],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Reduction',
+        equation: 'trans-Δ²-Butenoyl-ACP + NADPH + H⁺ → Butyryl-ACP + NADP⁺',
+        hint: 'Khử liên kết đôi tạo chuỗi acyl 4 carbon bão hòa hoàn chỉnh nhờ NADPH thứ hai.'
+      },
+      {
+        id: 'loop1', step: 6, enzyme: 'ks',
+        substrates: ['butyrylacp', 'malonylcoa'], products: ['palmitoylacp'],
+        ins: [], outs: ['co2'],
+        arrows: [
+          { from: 'butyrylacp', to: 'palmitoylacp' },
+          { from: 'butyrylacp', to: 'acetoacetylacp', link: true, via: [{ x: 300, y: 530 }, { x: 300, y: 320 }, { x: 750, y: 320 }] }
+        ],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Chain elongation (7 cycles)',
+        equation: 'Butyryl-ACP + 6 Malonyl-CoA + 12 NADPH → Palmitoyl-ACP + 6 CO₂ + 12 NADP⁺',
+        hint: 'Gốc butyryl chuyển vị sang KS, lặp lại chu kỳ 4 bước thêm 6 lần nữa tạo palmitoyl-ACP (C16).'
+      },
+      {
+        id: 'te1', step: 7, enzyme: 'te',
+        substrates: ['palmitoylacp'], products: ['palmitate'],
+        ins: ['h2o'], outs: [],
+        arrows: [{ from: 'palmitoylacp', to: 'palmitate' }],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Thioester hydrolysis',
+        equation: 'Palmitoyl-ACP + H₂O → Palmitate + ACP-SH',
+        hint: 'Thioesterase giải phóng acid béo tự do 16 carbon khỏi phức hệ FAS.'
+      }
+    ];
+
+    return {
+      id: 'fas',
+      title: 'Tổng hợp Palmitate & Phức hệ FAS (Fatty Acid Synthase)',
+      subtitle: 'Tạo tiền chất malonyl-CoA và chu trình kéo dài mạch 7 vòng của phức hệ FAS',
+      tag: 'FAS', location: 'Cytosol', color: '#B8CC8A',
+      nodes: nodes, reactions: reactions,
+      order: ['acc1', 'mat1', 'kr1', 'dh1', 'er1', 'loop1', 'te1'],
+      start: ['acetylcoa'],
+      regions: [
+        { type: 'rect', label: 'Tế bào chất: Phức hệ Fatty Acid Synthase (FAS)', color: '#F1F4E4', x: 230, y: 60, w: 920, h: 970 }
+      ],
+      notes: [
+        { text: 'Tiền chất Malonyl-CoA (3C)', x: 400, y: 440, size: 16, color: '#6b5d3a', anchor: 'middle' },
+        { text: 'Chu trình lặp 7 vòng (C4 → C16)', x: 750, y: 530, size: 18, color: '#6b5d3a', anchor: 'middle' },
+        { text: 'Tổng cộng tiêu tốn: 8 Acetyl-CoA + 7 ATP + 14 NADPH → Palmitate (16:0)', x: 450, y: 1015, size: 16, color: '#6b5d3a', anchor: 'middle' }
+      ],
+      summary: [
+        'Acetyl-CoA Carboxylase (ACC) là enzyme điều hòa chính, biến acetyl-CoA thành malonyl-CoA tiêu tốn 1 ATP.',
+        'Phức hệ FAS thực hiện 4 phản ứng liên hoàn: Ngưng tụ (KS) → Khử (KR) → Khử nước (DH) → Khử (ER).',
+        'Mỗi vòng kéo dài mạch thêm 2 carbon, tiêu tốn 2 NADPH; sau 7 vòng giải phóng palmitate (16:0).'
+      ],
+      region: ['lipid', 'all'], noDistractor: ['hplus', 'mg']
+    };
+  }
+
+  // --------------------------------------------------------------------------
+  // 4. ĐỊNH NGHĨA PATHWAY 2: faelong (Kéo dài mạch & Khử bão hòa)
+  // --------------------------------------------------------------------------
+  function faelongPathway() {
+    var nodes = {
+      // Cây chuyển hóa từ Palmitate
+      palmitate: nNode('palmitate', 200, 250),
+      palmitoleate: nNode('palmitoleate', 200, 480),
+      stearate: nNode('stearate', 480, 250),
+      lsf: nNode('lsf', 480, 480),
+      oleate: nNode('oleate', 760, 250),
+      linoleate: nNode('linoleate', 1040, 250),
+      alinolenate: nNode('alinolenate', 1320, 250),
+      pufa: nNode('pufa', 1580, 250),
+      glinolenate: nNode('glinolenate', 1040, 480),
+      eicosatrienoate: nNode('eicosatrienoate', 1040, 700),
+      arachidonate: nNode('arachidonate', 1320, 700),
+      // Nhánh khử bão hòa trên màng Phosphatidylcholine
+      pcoleate: nNode('pcoleate', 760, 60),
+      pclinoleate: nNode('pclinoleate', 1040, 60),
+      pclinolenate: nNode('pclinolenate', 1320, 60),
+      // Chuỗi truyền electron desaturase
+      cytb5red: nNode('cytb5red', 850, 930),
+      cytb5: nNode('cytb5', 1100, 930),
+      desatcomp: nNode('desatcomp', 1350, 930)
+    };
+
+    var reactions = [
+      {
+        id: 'des9a', step: 1, enzyme: 'desat9',
+        substrates: ['palmitate'], products: ['palmitoleate'],
+        ins: ['o2', 'nadph'], outs: ['h2o', 'nadp'],
+        arrows: [{ from: 'palmitate', to: 'palmitoleate' }],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Desaturation (cis-Δ⁹)',
+        equation: 'Palmitate (16:0) + NADPH + H⁺ + O₂ → Palmitoleate (16:1 Δ⁹) + NADP⁺ + 2 H₂O',
+        hint: 'Tạo liên kết đôi cis tại vị trí carbon 9 của palmitate nhờ hệ mixed-function oxidase.'
+      },
+      {
+        id: 'elo1', step: 2, enzyme: 'elongase',
+        substrates: ['palmitate'], products: ['stearate'],
+        ins: ['nadph'], outs: ['co2', 'nadp'],
+        arrows: [{ from: 'palmitate', to: 'stearate' }],
+        cof: TOP_BOTTOM, irreversible: true, type: 'Elongation (+2C)',
+        equation: 'Palmitate (16:0) + Malonyl-CoA + 2 NADPH → Stearate (18:0) + CO₂ + 2 NADP⁺ + CoA-SH',
+        hint: 'Hệ elongase tại màng ER kéo dài thêm 2 carbon từ malonyl-CoA.'
+      },
+      {
+        id: 'des9b', step: 3, enzyme: 'desat9',
+        substrates: ['stearate'], products: ['oleate'],
+        ins: ['o2', 'nadph'], outs: ['h2o', 'nadp'],
+        arrows: [{ from: 'stearate', to: 'oleate' }],
+        cof: TOP_BOTTOM, irreversible: true, type: 'Desaturation (cis-Δ⁹)',
+        equation: 'Stearate (18:0) + NADPH + H⁺ + O₂ → Oleate (18:1 Δ⁹) + NADP⁺ + 2 H₂O',
+        hint: 'Tạo liên kết đôi cis-Δ⁹ trên stearate tạo acid oleic phong phú nhất trong màng sinh học.'
+      },
+      {
+        id: 'elo2', step: 4, enzyme: 'elongase',
+        substrates: ['stearate'], products: ['lsf'],
+        ins: ['nadph'], outs: ['co2', 'nadp'],
+        arrows: [{ from: 'stearate', to: 'lsf' }],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Elongation',
+        equation: 'Stearate (18:0) → Longer saturated fatty acids (20:0, 22:0, 24:0)',
+        hint: 'Kéo dài liên tiếp tạo các acid béo bão hòa chuỗi rất dài (LSFA).'
+      },
+      {
+        id: 'des12', step: 5, enzyme: 'desat12',
+        substrates: ['oleate'], products: ['linoleate'],
+        ins: ['o2'], outs: ['h2o'],
+        arrows: [{ from: 'oleate', to: 'linoleate' }],
+        cof: TOP_BOTTOM, irreversible: true, type: 'Plant desaturation (cis-Δ¹²)',
+        equation: 'Oleate (18:1 Δ⁹) → Linoleate (18:2 Δ⁹,¹²) [Chỉ ở thực vật]',
+        hint: 'Tạo liên kết đôi thứ hai tại vị trí Δ¹²; động vật không có enzyme này.'
+      },
+      {
+        id: 'des15', step: 6, enzyme: 'desat15',
+        substrates: ['linoleate'], products: ['alinolenate'],
+        ins: ['o2'], outs: ['h2o'],
+        arrows: [{ from: 'linoleate', to: 'alinolenate' }],
+        cof: TOP_BOTTOM, irreversible: true, type: 'Plant desaturation (cis-Δ¹⁵)',
+        equation: 'Linoleate (18:2) → α-Linolenate (18:3 Δ⁹,¹²,¹⁵) [Chỉ ở thực vật]',
+        hint: 'Tạo acid béo thiết yếu omega-3 có 3 liên kết đôi tại thực vật.'
+      },
+      {
+        id: 'pufastep', step: 7, enzyme: 'elongase',
+        substrates: ['alinolenate'], products: ['pufa'],
+        ins: [], outs: [],
+        arrows: [{ from: 'alinolenate', to: 'pufa' }],
+        type: 'Elongation & Desaturation',
+        equation: 'α-Linolenate → Other PUFAs (EPA 20:5, DHA 22:6)',
+        hint: 'Kéo dài và khử bão hòa liên tiếp tạo EPA và DHA cho não bộ.'
+      },
+      {
+        id: 'des6', step: 8, enzyme: 'desat6',
+        substrates: ['linoleate'], products: ['glinolenate'],
+        ins: ['o2', 'nadph'], outs: ['h2o', 'nadp'],
+        arrows: [{ from: 'linoleate', to: 'glinolenate' }],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Animal desaturation (cis-Δ⁶)',
+        equation: 'Linoleate (18:2) + O₂ + NADPH → γ-Linolenate (18:3 Δ⁶,⁹,¹²) + 2 H₂O + NADP⁺',
+        hint: 'Động vật bắt đầu chuyển hóa linoleate thức ăn bằng cách tạo thêm nối đôi ở carbon 6.'
+      },
+      {
+        id: 'elo3', step: 9, enzyme: 'elongase',
+        substrates: ['glinolenate'], products: ['eicosatrienoate'],
+        ins: ['nadph'], outs: ['co2', 'nadp'],
+        arrows: [{ from: 'glinolenate', to: 'eicosatrienoate' }],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Elongation (+2C)',
+        equation: 'γ-Linolenate (18:3) + Malonyl-CoA → Eicosatrienoate (20:3 Δ⁸,¹¹,¹⁴) + CO₂',
+        hint: 'Kéo dài mạch 18C thành 20C trong lưới nội chất.'
+      },
+      {
+        id: 'des5', step: 10, enzyme: 'desat5',
+        substrates: ['eicosatrienoate'], products: ['arachidonate'],
+        ins: ['o2', 'nadph'], outs: ['h2o', 'nadp'],
+        arrows: [{ from: 'eicosatrienoate', to: 'arachidonate' }],
+        cof: TOP_BOTTOM, irreversible: true, type: 'Animal desaturation (cis-Δ⁵)',
+        equation: 'Eicosatrienoate (20:3) + O₂ + NADPH → Arachidonate (20:4 Δ⁵,⁸,¹¹,¹⁴) + 2 H₂O + NADP⁺',
+        hint: 'Tạo nối đôi thứ tư tại carbon 5, hoàn thiện tiền chất arachidonate cho eicosanoid.'
+      },
+      {
+        id: 'pcdes1', step: 11, enzyme: 'desat12',
+        substrates: ['pcoleate'], products: ['pclinoleate'],
+        ins: [], outs: [],
+        arrows: [{ from: 'pcoleate', to: 'pclinoleate' }],
+        type: 'Phospholipid desaturation',
+        equation: 'PC-Oleate (18:1) → PC-Linoleate (18:2) trên màng',
+        hint: 'Khử bão hòa trực tiếp gốc acyl gắn trên phân tử phosphatidylcholine màng.'
+      },
+      {
+        id: 'pcdes2', step: 12, enzyme: 'desat15',
+        substrates: ['pclinoleate'], products: ['pclinolenate'],
+        ins: [], outs: [],
+        arrows: [{ from: 'pclinoleate', to: 'pclinolenate' }],
+        type: 'Phospholipid desaturation',
+        equation: 'PC-Linoleate (18:2) → PC-Linolenate (18:3) trên màng',
+        hint: 'Tạo lipid màng chứa nhiều acid béo không no đa nối đôi.'
+      },
+      {
+        id: 'etcchain', step: 13, enzyme: 'cb5r',
+        substrates: ['cytb5red'], products: ['cytb5'],
+        ins: ['nadph'], outs: ['nadp'],
+        arrows: [
+          { from: 'cytb5red', to: 'cytb5' },
+          { from: 'cytb5', to: 'desatcomp' }
+        ],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Electron transfer',
+        equation: 'NADPH + H⁺ → Cyt b₅ reductase (FAD) → 2 Cyt b₅ (Fe³⁺ → Fe²⁺) → Desaturase',
+        hint: 'Chuỗi vận chuyển electron cung cấp 2e- cho phản ứng khử O₂ tại trung tâm hoạt động của desaturase.'
+      }
+    ];
+
+    return {
+      id: 'faelong',
+      title: 'Kéo dài & Khử bão hòa Acid béo (Elongation & Desaturation)',
+      subtitle: 'Sinh tổng hợp acid béo no chuỗi dài, acid béo không no và chuỗi truyền electron desaturase',
+      tag: 'ELO', location: 'Endoplasmic reticulum and mitochondrion', color: '#9CCBEA',
+      nodes: nodes, reactions: reactions,
+      order: ['des9a', 'elo1', 'des9b', 'elo2', 'des12', 'des15', 'pufastep', 'des6', 'elo3', 'des5', 'pcdes1', 'pcdes2', 'etcchain'],
+      start: ['palmitate'],
+      regions: [
+        { type: 'rect', label: 'Khử bão hòa lipid màng (Phosphatidylcholine)', color: '#F1F4E4', x: 650, y: 10, w: 790, h: 120 },
+        { type: 'rect', label: 'Mạng lưới nội chất: Biến đổi Acid béo & Hệ Acyl-CoA Desaturase', color: '#E2F0F9', x: 80, y: 150, w: 1580, h: 860 }
+      ],
+      notes: [
+        { text: 'Chỉ xảy ra ở tế bào thực vật (Acid béo thiết yếu)', x: 1180, y: 320, size: 16, color: '#6b5d3a', anchor: 'middle' },
+        { text: 'Con đường ở động vật tạo Arachidonate (tiền chất Eicosanoid)', x: 1180, y: 770, size: 16, color: '#6b5d3a', anchor: 'middle' },
+        { text: 'Chuỗi truyền electron cấp e⁻ cho Desaturase (Màng ER)', x: 1100, y: 990, size: 16, color: '#6b5d3a', anchor: 'middle' }
+      ],
+      summary: [
+        'Hệ thống elongase sử dụng malonyl-CoA và NADPH để kéo dài chuỗi thêm 2 carbon mỗi lần.',
+        'Động vật có Δ⁹, Δ⁶, Δ⁵ desaturase nhưng thiếu Δ¹² và Δ¹⁵, vì vậy linoleate và α-linolenate là acid béo thiết yếu.',
+        'Hệ Acyl-CoA desaturase ghép cặp chuỗi truyền e⁻ từ NADPH qua Cyt b₅ reductase và Cyt b₅ đến O₂ tạo 2 H₂O.'
+      ],
+      region: ['lipid', 'all'], noDistractor: ['hplus', 'mg']
+    };
+  }
+
+  // --------------------------------------------------------------------------
+  // 5. ĐỊNH NGHĨA PATHWAY 3: tag (Sinh tổng hợp Triacylglycerol & Phospholipid)
+  // --------------------------------------------------------------------------
+  function tagPathway() {
+    var nodes = {
+      dhap: nNode('dhap', 200, 150),
+      glycerol: nNode('glycerol', 50, 380),
+      gly3p: nNode('gly3p', 200, 380),
+      fattyacid: nNode('fattyacid', 800, 150),
+      fattyacylcoa: nNode('fattyacylcoa', 800, 380),
+      lysopa: nNode('lysopa', 500, 550),
+      pa: nNode('pa', 500, 750),
+      dag: nNode('dag', 320, 950),
+      tag: nNode('tag', 320, 1180),
+      gpl: nNode('gpl', 680, 950)
+    };
+
+    var reactions = [
+      {
+        id: 'gpdh1', step: 1, enzyme: 'gpdh',
+        substrates: ['dhap'], products: ['gly3p'],
+        ins: ['nadh'], outs: ['nad'],
+        arrows: [{ from: 'dhap', to: 'gly3p' }],
+        cof: LEFT_RIGHT, twoWay: true, type: 'Dehydrogenation',
+        equation: 'Dihydroxyacetone phosphate + NADH + H⁺ ⇌ L-Glycerol 3-phosphate + NAD⁺',
+        hint: 'Tạo khung glycerol 3-phosphate từ chất trung gian đường phân DHAP.'
+      },
+      {
+        id: 'gk1', step: 2, enzyme: 'gk',
+        substrates: ['glycerol'], products: ['gly3p'],
+        ins: ['atp'], outs: ['adp'],
+        arrows: [{ from: 'glycerol', to: 'gly3p' }],
+        cof: TOP_BOTTOM, irreversible: true, type: 'Phosphorylation',
+        equation: 'Glycerol + ATP → L-Glycerol 3-phosphate + ADP',
+        hint: 'Phosphoryl hóa glycerol tự do tại gan.'
+      },
+      {
+        id: 'facs1', step: 3, enzyme: 'facs',
+        substrates: ['fattyacid'], products: ['fattyacylcoa'],
+        ins: ['atp', 'coa'], outs: ['amp', 'ppi'],
+        arrows: [{ from: 'fattyacid', to: 'fattyacylcoa' }],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Acyl activation',
+        equation: 'Fatty acid + CoA-SH + ATP → Fatty acyl-CoA + AMP + PPᵢ',
+        hint: 'Hoạt hóa acid béo tự do thành thioester giàu năng lượng tiêu tốn 2 liên kết phosphate.'
+      },
+      {
+        id: 'gpat1', step: 4, enzyme: 'gpat',
+        substrates: ['gly3p', 'fattyacylcoa'], products: ['lysopa'],
+        ins: [], outs: ['coa'],
+        arrows: [
+          { from: 'gly3p', to: 'lysopa' },
+          { from: 'fattyacylcoa', to: 'lysopa' }
+        ],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Acyl transfer',
+        equation: 'L-Glycerol 3-phosphate + R₁-CO-S-CoA → Lysophosphatidic acid + CoA-SH',
+        hint: 'Gắn gốc acyl thứ nhất vào carbon 1 của glycerol 3-phosphate.'
+      },
+      {
+        id: 'agpat1', step: 5, enzyme: 'agpat',
+        substrates: ['lysopa', 'fattyacylcoa'], products: ['pa'],
+        ins: [], outs: ['coa'],
+        arrows: [
+          { from: 'lysopa', to: 'pa' },
+          { from: 'fattyacylcoa', to: 'pa', via: [{ x: 800, y: 750 }] }
+        ],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Acyl transfer',
+        equation: 'Lysophosphatidic acid + R₂-CO-S-CoA → Phosphatidic acid + CoA-SH',
+        hint: 'Gắn gốc acyl thứ hai vào carbon 2 tạo phosphatidic acid (PA).'
+      },
+      {
+        id: 'pap1', step: 6, enzyme: 'pap',
+        substrates: ['pa'], products: ['dag'],
+        ins: ['h2o'], outs: ['pi'],
+        arrows: [{ from: 'pa', to: 'dag' }],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Dephosphorylation',
+        equation: 'Phosphatidic acid + H₂O → 1,2-Diacylglycerol + Pᵢ',
+        hint: 'Khử nhóm phosphate giải phóng DAG để đi vào tổng hợp triacylglycerol.'
+      },
+      {
+        id: 'dgat1', step: 7, enzyme: 'dgat',
+        substrates: ['dag', 'fattyacylcoa'], products: ['tag'],
+        ins: [], outs: ['coa'],
+        arrows: [
+          { from: 'dag', to: 'tag' },
+          { from: 'fattyacylcoa', to: 'tag', via: [{ x: 800, y: 1180 }] }
+        ],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Acyl transfer',
+        equation: '1,2-Diacylglycerol + R₃-CO-S-CoA → Triacylglycerol + CoA-SH',
+        hint: 'Bước cam kết cuối cùng gắn gốc acyl thứ ba tạo chất béo trung tính dự trữ (TAG).'
+      },
+      {
+        id: 'gpl1', step: 8, enzyme: 'cdpdags',
+        substrates: ['pa'], products: ['gpl'],
+        ins: [], outs: [],
+        arrows: [{ from: 'pa', to: 'gpl' }],
+        type: 'Head group addition',
+        equation: 'Phosphatidic acid + Head group (Serine/Choline/Ethanolamine) → Glycerophospholipid',
+        hint: 'Gắn nhóm đầu phân cực tạo các phospholipid cấu trúc chính của màng sinh học.'
+      }
+    ];
+
+    return {
+      id: 'tag',
+      title: 'Sinh tổng hợp Triacylglycerol & Glycerophospholipid',
+      subtitle: 'Từ glycerol 3-phosphate và fatty acyl-CoA tạo phosphatidic acid, rẽ nhánh tạo TAG và lipid màng',
+      tag: 'TAG', location: 'Endoplasmic reticulum (liver and adipose tissue)', color: '#F0C987',
+      nodes: nodes, reactions: reactions,
+      order: ['gpdh1', 'gk1', 'facs1', 'gpat1', 'agpat1', 'pap1', 'dgat1', 'gpl1'],
+      start: ['dhap', 'fattyacid'],
+      regions: [
+        { type: 'rect', label: 'Tế bào chất & Lưới nội chất: Sinh tổng hợp TAG & Glycerophospholipid', color: '#F7EAD5', x: 20, y: 60, w: 900, h: 1180 }
+      ],
+      notes: [
+        { text: 'Khung Glycerol', x: 200, y: 440, size: 16, color: '#6b5d3a', anchor: 'middle' },
+        { text: 'Acid béo hoạt hóa', x: 800, y: 440, size: 16, color: '#6b5d3a', anchor: 'middle' },
+        { text: 'Điểm rẽ nhánh trung tâm: Phosphatidic acid (PA)', x: 500, y: 810, size: 16, color: '#6b5d3a', anchor: 'middle' },
+        { text: 'Dự trữ mỡ (Adipose tissue)', x: 320, y: 1235, size: 16, color: '#6b5d3a', anchor: 'middle' },
+        { text: 'Lipid màng tế bào', x: 680, y: 1010, size: 16, color: '#6b5d3a', anchor: 'middle' }
+      ],
+      summary: [
+        'L-Glycerol 3-phosphate có nguồn gốc từ DHAP (đường phân) hoặc glycerol tự do (tại gan).',
+        'Phosphatidic acid (PA) là tiền chất chung được tạo thành qua 2 bước gắn gốc acyl (GPAT và AGPAT).',
+        'PAP (Lipin) khử phosphate biến PA thành DAG để DGAT gắn tiếp gốc acyl thứ 3 tạo Triacylglycerol (TAG).'
+      ],
+      region: ['lipid', 'all'], noDistractor: ['hplus', 'mg']
+    };
+  }
+
+  // --------------------------------------------------------------------------
+  // 6. ĐỊNH NGHĨA PATHWAY 4: lipidsreg (Điều hòa đối kháng ACC - CAT I)
+  // --------------------------------------------------------------------------
+  function lipidsregPathway() {
+    var nodes = {
+      // Nhánh nội tiết điều hòa ACC
+      insulin: nNode('insulin', 200, 200),
+      glucagon: nNode('glucagon', 640, 200),
+      accact: nNode('accact', 420, 320),
+      accinact: nNode('accinact', 420, 150),
+      // Nhánh tổng hợp lipid ở Cytosol
+      acetylcoar: nNode('acetylcoa', 200, 480),
+      malonylcoar: nNode('malonylcoa', 420, 480),
+      facylcoacyt: nNode('facylcoacyt', 420, 680),
+      // Nhánh vận chuyển qua màng ty thể & Beta-oxidation
+      facylcarn: nNode('facylcarn', 780, 680),
+      facylcoamat: nNode('facylcoamat', 1050, 680),
+      acetylcoamat: nNode('acetylcoamat', 1320, 680)
+    };
+
+    var reactions = [
+      {
+        id: 'regacc1', step: 1, enzyme: 'pphosphatase',
+        substrates: ['accinact'], products: ['accact'],
+        ins: [], outs: ['pi'],
+        arrows: [
+          { from: 'accinact', to: 'accact' },
+          { from: 'insulin', to: 'accact', link: true }
+        ],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Dephosphorylation',
+        equation: 'ACC-P (Inactive) + H₂O → ACC (Active) + Pᵢ (Kích thích bởi Insulin)',
+        hint: 'Khi no (insulin cao), phosphatase khử phosphate kích hoạt enzyme ACC.'
+      },
+      {
+        id: 'regacc2', step: 2, enzyme: 'pka',
+        substrates: ['accact'], products: ['accinact'],
+        ins: ['atp'], outs: ['adp'],
+        arrows: [
+          { from: 'accact', to: 'accinact', via: [{ x: 500, y: 235 }] },
+          { from: 'glucagon', to: 'accinact', link: true }
+        ],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Phosphorylation',
+        equation: 'ACC (Active) + ATP → ACC-P (Inactive) + ADP (Kích thích bởi Glucagon/PKA)',
+        hint: 'Khi đói (glucagon cao), PKA phosphoryl hóa làm bất hoạt enzyme ACC.'
+      },
+      {
+        id: 'regacc3', step: 3, enzyme: 'acc',
+        substrates: ['acetylcoar'], products: ['malonylcoar'],
+        ins: ['atp', 'hco3'], outs: ['adp', 'pi'],
+        arrows: [{ from: 'acetylcoar', to: 'malonylcoar' }],
+        cof: LEFT_RIGHT, irreversible: true, type: 'Carboxylation',
+        equation: 'Acetyl-CoA + ATP + HCO₃⁻ → Malonyl-CoA + ADP + Pᵢ',
+        hint: 'ACC hoạt động biến acetyl-CoA thành malonyl-CoA.'
+      },
+      {
+        id: 'regcpt1', step: 4, enzyme: 'cpt1',
+        substrates: ['facylcoacyt'], products: ['facylcarn'],
+        ins: [], outs: ['coa'],
+        arrows: [
+          { from: 'facylcoacyt', to: 'facylcarn' },
+          { from: 'malonylcoar', to: 'facylcarn', link: true, via: [{ x: 580, y: 550 }, { x: 700, y: 550 }] }
+        ],
+        cof: TOP_BOTTOM, irreversible: true, type: 'Carnitine acyltransfer (CPT1 / CAT I)',
+        equation: 'Fatty acyl-CoA + Carnitine → Fatty acyl-carnitine + CoA-SH (Bị ức chế bởi Malonyl-CoA)',
+        hint: 'CPT1 trên màng ngoài ty thể chuyển gốc acyl sang carnitine; bị malonyl-CoA ức chế mạnh.'
+      },
+      {
+        id: 'regcact', step: 5, enzyme: 'cact',
+        substrates: ['facylcarn'], products: ['facylcoamat'],
+        ins: [], outs: [],
+        arrows: [{ from: 'facylcarn', to: 'facylcoamat' }],
+        type: 'Antiport Translocation & Re-esterification (CPT2)',
+        equation: 'Fatty acyl-carnitine (IMS) → Fatty acyl-CoA (Matrix) nhờ CACT và CPT2',
+        hint: 'Đưa acyl-carnitine qua màng trong ty thể và tái tạo fatty acyl-CoA trong chất nền.'
+      },
+      {
+        id: 'regbeta', step: 6, enzyme: 'betaoxenz',
+        substrates: ['facylcoamat'], products: ['acetylcoamat'],
+        ins: ['fad', 'nad'], outs: ['fadh2', 'nadh'],
+        arrows: [{ from: 'facylcoamat', to: 'acetylcoamat' }],
+        cof: TOP_BOTTOM, irreversible: true, type: 'β-Oxidation',
+        equation: 'Fatty acyl-CoA (Matrix) → Acetyl-CoA + FADH₂ + NADH (β-Oxy hóa)',
+        hint: 'Chu trình beta-oxy hóa phân giải acid béo thành acetyl-CoA trong matrix ty thể.'
+      }
+    ];
+
+    return {
+      id: 'lipidsreg',
+      title: 'Điều hòa trao đổi Lipid: Trục ACC & CAT I (CPT1)',
+      subtitle: 'Kiểm soát đối kháng giữa sinh tổng hợp (tế bào chất) và beta-oxy hóa (ty thể)',
+      tag: 'REG', location: 'Cytosol and mitochondrion', color: '#E56F6F',
+      nodes: nodes, reactions: reactions,
+      order: ['regacc1', 'regacc2', 'regacc3', 'regcpt1', 'regcact', 'regbeta'],
+      start: ['insulin', 'glucagon', 'acetylcoar'],
+      regions: [
+        { type: 'rect', label: 'Tế bào chất (Bào tương): Tổng hợp Acid béo & Điều hòa ACC', color: '#F1F4E4', x: 80, y: 70, w: 560, h: 720 },
+        { type: 'rect', label: 'Ty thể: Màng ty thể & Chất nền (β-Oxy hóa)', color: '#F7EAD5', x: 670, y: 70, w: 750, h: 720 }
+      ],
+      membranes: [
+        { x1: 670, y1: 80, x2: 670, y2: 780 },   // Màng ngoài ty thể (nơi có CPT1)
+        { x1: 930, y1: 80, x2: 930, y2: 780 }    // Màng trong ty thể
+      ],
+      notes: [
+        { text: 'Màng ngoài ty thể (CPT1 / CAT I)', x: 670, y: 795, size: 16, color: '#6b5d3a', anchor: 'middle' },
+        { text: 'Màng trong ty thể (CACT / CPT2)', x: 930, y: 795, size: 16, color: '#6b5d3a', anchor: 'middle' },
+        { text: 'Chất nền ty thể (Matrix)', x: 1180, y: 620, size: 16, color: '#6b5d3a', anchor: 'middle' },
+        { text: '✖ Malonyl-CoA ức chế CPT1 (Khóa β-oxy hóa khi đang tổng hợp)', x: 650, y: 530, size: 16, color: '#C0392B', anchor: 'middle' }
+      ],
+      summary: [
+        'Insulin (no) kích hoạt phosphatase khử phosphate để bật ACC; Glucagon (đói) kích hoạt PKA gắn phosphate để tắt ACC.',
+        'Malonyl-CoA là chất ức chế dị lập thể mạnh của Carnitine Palmitoyltransferase I (CPT1 / CAT I).',
+        'Sự ức chế này ngăn chặn chu trình vô ích (futile cycle), không cho acid béo vừa tổng hợp bị đưa vào ty thể thoái hóa.'
+      ],
+      region: ['lipid', 'all'], noDistractor: ['hplus', 'mg']
+    };
+  }
+
+var fas = fasPathway();
+var faelong = faelongPathway();
+var tag = tagPathway();
+var lipidsreg = lipidsregPathway();
+
+fas.stepNames = function (r) { return ['FAS bước ' + r.step, 'FAS ' + r.step]; };
+faelong.stepNames = function (r) { return ['Kéo dài/Khử bão hòa ' + r.step, 'ELO ' + r.step]; };
+tag.stepNames = function (r) { return ['Tổng hợp TAG/GPL ' + r.step, 'TAG ' + r.step]; };
+lipidsreg.stepNames = function (r) { return ['Điều hòa ACC-CAT1 ' + r.step, 'REG ' + r.step]; };
+
+
 MG.pathways = {
+fas: fas, faelong: faelong, tag: tag, lipidsreg: lipidsreg,
 glycolysis: glycolysis, lactate: lactate, ethanol: ethanol, gluconeogenesis: gluconeogenesis, glycogen: glycogen,
 pdhtca: pdhtca, tca: tca, full: full, betaox: betaox, boxsimple: boxsimple, etc: etc, etcsimple: etcsimple,
 etcpath: etcpath, gpshuttle: gpshuttle, masshuttle: masshuttle, antport: antport,
@@ -10908,7 +11797,7 @@ everything: 'everything-etc'
 },
 {
 id: 'lipids', title: 'Lipid', color: '#C5D58A',
-pathways: ['boxsimple', 'betaox'],
+pathways: ['boxsimple', 'betaox', 'fas', 'faelong', 'tag', 'lipidsreg', 'lipidssynth'],
 everything: 'everything-lipids'
 },
 {
@@ -11193,12 +12082,47 @@ blocks: [
 { from: 'gpshuttle', dx: 1800, dy: 900, key: 'gps', names: gpsNames }
 ]
 });
+var fasNames = numbered('Tổng hợp Palmitate', 'FAS');
+var eloNames = numbered('Kéo dài & khử bão hòa', 'ELO');
+var tagNames = numbered('Sinh tổng hợp TAG & GPL', 'TAG');
+var regNames = numbered('Điều hòa ACC & CAT I', 'REG');
+
+var lipidssynth = compose({
+id: 'lipidssynth', title: 'Toàn cảnh Sinh tổng hợp & Điều hòa Lipid',
+subtitle: 'Phức hệ FAS, kéo dài mạch, khử bão hòa, tổng hợp TAG và điều hòa đối kháng CAT I trên một bản đồ',
+tag: 'LIP', location: 'Cytosol, endoplasmic reticulum and mitochondrion', color: '#C5D58A',
+summary: [
+'Phức hệ FAS thực hiện 7 vòng lặp tạo Palmitate (16:0) từ Acetyl-CoA và Malonyl-CoA.',
+'Palmitate được kéo dài và khử bão hòa tại ER/ty thể tạo các acid béo no, không no và thiết yếu.',
+'Khung L-glycerol 3-phosphat gắn các gốc fatty acyl-CoA tạo phosphatidic acid rồi rẽ nhánh sang TAG và phospholipid màng.',
+'Malonyl-CoA ức chế CAT I ngăn beta-oxy hóa ở ty thể khi đang tổng hợp lipid ở bào tương.'
+],
+blocks: [
+{ from: 'fas', key: 'fas', names: fasNames },
+{ from: 'faelong', dx: 1100, key: 'elo', names: eloNames, share: { palmitate: 'palmitate' } },
+{ from: 'tag', dy: 1150, key: 'tag', names: tagNames },
+{ from: 'lipidsreg', dx: 1100, dy: 1150, key: 'reg', names: regNames, share: { malonylcoar: 'malonylcoa' } }
+]
+});
+MG.pathways.lipidssynth = lipidssynth;
+
 var lipids = compose({
 id: 'everything-lipids', title: 'Tất cả: Lipid',
-subtitle: 'Beta-oxidation trên một bản đồ',
-tag: 'ALL', location: 'Cytosol and mitochondrial matrix', color: '#B8CC8A',
-summary: MG.pathways.betaox.summary, scope: { type: 'category', id: 'lipids' },
-blocks: [{ from: 'betaox', key: 'fao', names: faoNames }]
+subtitle: 'Sinh tổng hợp và thoái hóa lipid trên một bản đồ',
+tag: 'ALL', location: 'Cytosol, endoplasmic reticulum and mitochondrion', color: '#B8CC8A',
+summary: [
+'Phức hệ FAS thực hiện 7 vòng lặp tạo Palmitate (16:0) từ Acetyl-CoA và Malonyl-CoA.',
+'Palmitate được kéo dài và khử bão hòa tại ER/ty thể tạo các acid béo no, không no và thiết yếu.',
+'Khung L-glycerol 3-phosphat gắn các gốc fatty acyl-CoA tạo phosphatidic acid rồi rẽ nhánh sang TAG và phospholipid màng.',
+'Malonyl-CoA ức chế CAT I ngăn beta-oxy hóa ở ty thể khi đang tổng hợp lipid ở bào tương.'
+], scope: { type: 'category', id: 'lipids' },
+blocks: [
+{ from: 'betaox', key: 'fao', names: faoNames },
+{ from: 'fas', dx: 1800, key: 'fas', names: fasNames },
+{ from: 'faelong', dx: 2900, key: 'elo', names: eloNames, share: { palmitate: 'palmitate' } },
+{ from: 'tag', dy: 1400, key: 'tag', names: tagNames },
+{ from: 'lipidsreg', dx: 1800, dy: 1400, key: 'reg', names: regNames, share: { malonylcoar: 'malonylcoa' } }
+]
 });
 var ureNames = numbered('Urea cycle', 'URE');
 var glaNames = numbered('Glutamate and alanine', 'GLA');
@@ -11289,7 +12213,7 @@ note('released through the Bax pores', CHAIN.x + 910 + 20, CHAIN.y - 30)
 });
 everything.start = everything.start.filter(function (n) { return n !== 'pyrm'; });
 MG.everything = {};
-[carbs, tcaMap, etcMap, lipids, aminoacids, cellbio, everything].forEach(function (p) {
+[carbs, tcaMap, etcMap, lipids, aminoacids, cellbio, everything, lipidssynth].forEach(function (p) {
 MG.everything[p.id] = p;
 Object.defineProperty(MG.pathways, p.id, { value: p, enumerable: false, writable: false, configurable: true });
 });
@@ -11297,7 +12221,8 @@ var NAMES = {
 glycolysis: glycolysisNames, lactate: lactateNames, ethanol: ethanolNames, gluconeogenesis: numbered('Gluconeogenesis', 'GNG'),
 glycogen: numbered('Glycogen', 'GLG'), pdhtca: oxidationNames, tca: tcaNames, full: oxidationNames, betaox: faoNames,
 etc: etcNames, etcsimple: etcSimpleNames, boxsimple: faoSimpleNames, etcpath: ecpNames, gpshuttle: gpsNames, masshuttle: masNames, antport: antNames, pyrentry: pyeNames,
-mitodyn: mdyNames, apopint: ainNames, apopext: aexNames, urea: ureNames, gluala: glaNames, fermentations: fermentationNames
+mitodyn: mdyNames, apopint: ainNames, apopext: aexNames, urea: ureNames, gluala: glaNames, fermentations: fermentationNames,
+fas: fasNames, faelong: eloNames, tag: tagNames, lipidsreg: regNames, lipidssynth: numbered("Sinh tổng hợp Lipid", "LIP")
 };
 function namesFor(pathwayId) {
 if (has(NAMES, pathwayId)) { return NAMES[pathwayId]; }
