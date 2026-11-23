@@ -8,6 +8,8 @@ translation_gui_mockup.html
 TRANSLATION_GUI_PLAN.md
 run_translation_studio.bat
 tools/
+backups/
+run_coordinate_studio.bat
 *.bak
 *.base.html
 *_extracted_strings.json
