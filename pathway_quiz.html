@@ -11338,27 +11338,27 @@ var lipidMolecules = {
   function faelongPathway() {
     var nodes = {
       // Hàng 0: Màng Phosphatidylcholine (y = 100)
-      pcoleate: nNode('pcoleate', 960, 100),
-      pclinoleate: nNode('pclinoleate', 1340, 100),
-      pclinolenate: nNode('pclinolenate', 1720, 100),
+      pcoleate: nNode('pcoleate', 800, 160),
+      pclinoleate: nNode('pclinoleate', 1320, 160),
+      pclinolenate: nNode('pclinolenate', 1840, 160),
       // Hàng 1: Trục Palmitate -> Stearate -> Oleate -> Linoleate -> aLinolenate -> PUFA (y = 420)
       palmitate: nNode('palmitate', 200, 420),
       stearate: nNode('stearate', 580, 420),
-      oleate: nNode('oleate', 960, 420),
-      linoleate: nNode('linoleate', 1340, 420),
-      alinolenate: nNode('alinolenate', 1720, 420),
-      pufa: nNode('pufa', 2100, 420),
+      oleate: nNode('oleate', 580, 420),
+      linoleate: nNode('linoleate', 1260, 420),
+      alinolenate: nNode('alinolenate', 1940, 420),
+      pufa: nNode('pufa', 2460, 420),
       // Hàng 2: Palmitoleate, LSFA, gLinolenate (y = 740)
-      palmitoleate: nNode('palmitoleate', 200, 740),
-      lsf: nNode('lsf', 580, 740),
-      glinolenate: nNode('glinolenate', 1340, 740),
+      palmitoleate: nNode('palmitoleate', -420, 740),
+      lsf: nNode('lsf', -80, 740),
+      glinolenate: nNode('glinolenate', 1260, 740),
       // Hàng 3: Eicosatrienoate -> Arachidonate (y = 1060)
-      eicosatrienoate: nNode('eicosatrienoate', 1340, 1060),
-      arachidonate: nNode('arachidonate', 1720, 1060),
+      eicosatrienoate: nNode('eicosatrienoate', 980, 1060),
+      arachidonate: nNode('arachidonate', 2060, 1060),
       // Hàng 4: Chuỗi truyền electron Desaturase (y = 1380)
-      cytb5red: nNode('cytb5red', 960, 1380),
-      cytb5: nNode('cytb5', 1340, 1380),
-      desatcomp: nNode('desatcomp', 1720, 1380)
+      cytb5red: nNode('cytb5red', 980, 1320),
+      cytb5: nNode('cytb5', 1600, 1320),
+      desatcomp: nNode('desatcomp', 2060, 1320)
     };
 
     var reactions = [
@@ -11493,13 +11493,31 @@ var lipidMolecules = {
       order: ['des9a', 'elo1', 'des9b', 'elo2', 'des12', 'des15', 'pufastep', 'des6', 'elo3', 'des5', 'pcdes1', 'pcdes2', 'etcchain'],
       start: ['palmitate'],
       regions: [
-        { type: 'rect', label: 'Khử bão hòa lipid màng (Phosphatidylcholine)', color: '#F1F4E4', x: 860, y: 10, w: 960, h: 180 },
-        { type: 'rect', label: 'Mạng lưới nội chất: Biến đổi Acid béo & Hệ Acyl-CoA Desaturase', color: '#E2F0F9', x: 80, y: 260, w: 2120, h: 1220 }
+        {
+          type: 'rect',
+          label: 'Khử bão hòa lipid màng (Phosphatidylcholine)',
+          color: '#F1F4E4',
+          nodes: ['pcoleate', 'pclinoleate', 'pclinolenate'],
+          padX: 60, padTop: 60, padBottom: 40,
+          x: 740, y: 80, w: 1200, h: 160
+        },
+        {
+          type: 'rect',
+          label: 'Mạng lưới nội chất: Biến đổi Acid béo & Hệ Acyl-CoA Desaturase',
+          color: '#E2F0F9',
+          nodes: [
+            'palmitate', 'stearate', 'oleate', 'linoleate', 'alinolenate', 'pufa',
+            'palmitoleate', 'lsf', 'glinolenate', 'eicosatrienoate', 'arachidonate',
+            'cytb5red', 'cytb5', 'desatcomp'
+          ],
+          padX: 70, padTop: 70, padBottom: 110,
+          x: -740, y: 280, w: 3340, h: 1220
+        }
       ],
       notes: [
         { text: 'Chỉ xảy ra ở tế bào thực vật (Acid béo thiết yếu)', x: 1530, y: 350, size: 16, color: '#6b5d3a', anchor: 'middle' },
         { text: 'Con đường ở động vật tạo Arachidonate (tiền chất Eicosanoid)', x: 1530, y: 1140, size: 16, color: '#6b5d3a', anchor: 'middle' },
-        { text: 'Chuỗi truyền electron cấp e⁻ cho Desaturase (Màng ER)', x: 1340, y: 1460, size: 16, color: '#6b5d3a', anchor: 'middle' }
+        { text: 'Chuỗi truyền electron cấp e⁻ cho Desaturase (Màng ER)', x: 1520, y: 1450, size: 16, color: '#6b5d3a', anchor: 'middle' }
       ],
       summary: [
         'Hệ thống elongase sử dụng malonyl-CoA và NADPH để kéo dài chuỗi thêm 2 carbon mỗi lần.',
@@ -11834,7 +11852,7 @@ function moved(item, dx, dy) {
 var c = clone(item);
 if (c.type === 'circle') { c.cx += dx; c.cy += dy; }
 else if (typeof c.x1 === 'number') { c.x1 += dx; c.y1 += dy; c.x2 += dx; c.y2 += dy; }
-else { c.x += dx; c.y += dy; }
+else if (typeof c.x === 'number') { c.x += dx; c.y += dy; }
 return c;
 }
 function renameHl(hl, map) {
@@ -11902,6 +11920,9 @@ if (b.regions !== false) {
 (src.regions || []).forEach(function (g) {
 if (b.dropRegions && b.dropRegions.indexOf(g.label) >= 0) { return; }
 var c = moved(g, dx, dy);
+if (g.nodes) {
+c.nodes = g.nodes.map(function (n) { return map[n] || n; });
+}
 if (b.renameRegions && has(b.renameRegions, g.label)) { c.label = b.renameRegions[g.label]; }
 var key = JSON.stringify(c);
 if (!seenShape[key]) { seenShape[key] = true; res.regions.push(c); }
@@ -26385,16 +26406,75 @@ bd.y = pick.y;
 fixed.push({ id: id, b: box(bd.x, bd.y, bd.w, bd.h) });
 });
 }
-function regionGeom(g) {
+function regionGeom(g, L) {
 if (g.type === 'circle') {
 return {
 type: 'circle', cx: g.cx, cy: g.cy, r: g.r, color: g.color, label: g.label,
 bbox: { x0: g.cx - g.r, y0: g.cy - g.r, x1: g.cx + g.r, y1: g.cy + g.r }
 };
 }
+var rx = g.x, ry = g.y, rw = g.w, rh = g.h;
+if ((g.auto || g.nodes) && L && L.cards) {
+var nids = Array.isArray(g.nodes) && g.nodes.length > 0 ? g.nodes : Object.keys(L.cards);
+var nodeSet = {};
+var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+var count = 0;
+nids.forEach(function (id) {
+nodeSet[id] = true;
+var c = L.cards[id];
+if (c) {
+count++;
+if (c.x < minX) minX = c.x;
+if (c.y < minY) minY = c.y;
+if (c.x + c.w > maxX) maxX = c.x + c.w;
+if (c.y + c.h > maxY) maxY = c.y + c.h;
+}
+});
+if (count > 0) {
+var rxnSet = {};
+if (L.arrows) {
+L.arrows.forEach(function (arr) {
+if (nodeSet[arr.from] && nodeSet[arr.to]) {
+rxnSet[arr.rxn] = true;
+var q = L.pills && L.pills[arr.rxn];
+if (q) {
+if (q.x < minX) minX = q.x;
+if (q.y < minY) minY = q.y;
+if (q.x + q.w > maxX) maxX = q.x + q.w;
+if (q.y + q.h > maxY) maxY = q.y + q.h;
+}
+var bd = L.badges && L.badges[arr.rxn];
+if (bd) {
+if (bd.x < minX) minX = bd.x;
+if (bd.y < minY) minY = bd.y;
+if (bd.x + bd.w > maxX) maxX = bd.x + bd.w;
+if (bd.y + bd.h > maxY) maxY = bd.y + bd.h;
+}
+}
+});
+}
+if (L.chips) {
+L.chips.forEach(function (ch) {
+if (rxnSet[ch.rxn]) {
+if (ch.x < minX) minX = ch.x;
+if (ch.y < minY) minY = ch.y;
+if (ch.x + ch.w > maxX) maxX = ch.x + ch.w;
+if (ch.y + ch.h > maxY) maxY = ch.y + ch.h;
+}
+});
+}
+var padX = g.padX != null ? g.padX : (g.pad != null ? g.pad : 60);
+var padTop = g.padTop != null ? g.padTop : (g.padY != null ? g.padY : (g.pad != null ? g.pad : 60));
+var padBottom = g.padBottom != null ? g.padBottom : (g.padY != null ? g.padY : (g.pad != null ? g.pad : 60));
+rx = minX - padX;
+ry = minY - padTop;
+rw = (maxX - minX) + padX * 2;
+rh = (maxY - minY) + padTop + padBottom;
+}
+}
 return {
-type: 'rect', x: g.x, y: g.y, w: g.w, h: g.h, color: g.color, label: g.label,
-bbox: { x0: g.x, y0: g.y, x1: g.x + g.w, y1: g.y + g.h }
+type: 'rect', x: rx, y: ry, w: rw, h: rh, color: g.color, label: g.label,
+bbox: { x0: rx, y0: ry, x1: rx + rw, y1: ry + rh }
 };
 }
 function regionLabel(g, solid) {
@@ -26435,8 +26515,8 @@ Object.keys(L.pills).forEach(function (id) { var q = L.pills[id]; solid.push(box
 Object.keys(L.badges).forEach(function (id) { var b = L.badges[id]; solid.push(box(b.x, b.y, b.w, b.h)); });
 L.chips.forEach(function (c) { solid.push(box(c.x, c.y, c.w, c.h)); });
 L.regions = (p.regions || []).map(function (g) {
-var rg = regionGeom(g);
-rg.labelBox = regionLabel(g, solid);
+var rg = regionGeom(g, L);
+rg.labelBox = regionLabel(rg, solid);
 return rg;
 });
 var noteList = (p.notes || []).map(function (n) {
