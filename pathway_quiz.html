@@ -11224,14 +11224,14 @@ var lipidMolecules = {
   // ==========================================================================
   function fasPathway() {
     var nodes = {
-      acetylcoa: nNode('acetylcoa', 350, 150),
-      malonylcoa: nNode('malonylcoa', 350, 470),
-      acetoacetylacp: nNode('acetoacetylacp', 850, 340),
-      hydroxybutyrylacp: nNode('hydroxybutyrylacp', 1120, 610),
-      butenoylacp: nNode('butenoylacp', 850, 880),
-      butyrylacp: nNode('butyrylacp', 580, 610),
-      palmitoylacp: nNode('palmitoylacp', 580, 930),
-      palmitate: nNode('palmitate', 580, 1250)
+      acetylcoa: nNode('acetylcoa', 140, 150),
+      malonylcoa: nNode('malonylcoa', 140, 640),
+      acetoacetylacp: nNode('acetoacetylacp', 1280, 150),
+      hydroxybutyrylacp: nNode('hydroxybutyrylacp', 1280, 620),
+      butenoylacp: nNode('butenoylacp', 1280, 1060),
+      butyrylacp: nNode('butyrylacp', 760, 780),
+      palmitoylacp: nNode('palmitoylacp', 340, 1060),
+      palmitate: nNode('palmitate', 0, 1320)
     };
 
     var reactions = [
@@ -11315,7 +11315,14 @@ var lipidMolecules = {
       order: ['acc1', 'mat1', 'kr1', 'dh1', 'er1', 'loop1', 'te1'],
       start: ['acetylcoa'],
       regions: [
-        { type: 'rect', label: 'Tế bào chất: Phức hệ Fatty Acid Synthase (FAS)', color: '#F1F4E4', x: 200, y: 50, w: 1040, h: 1290 }
+        {
+          type: 'rect',
+          label: 'Tế bào chất: Phức hệ Fatty Acid Synthase (FAS)',
+          color: '#F1F4E4',
+          nodes: ['acetylcoa', 'malonylcoa', 'acetoacetylacp', 'hydroxybutyrylacp', 'butenoylacp', 'butyrylacp', 'palmitoylacp', 'palmitate'],
+          padX: 70, padTop: 70, padBottom: 70,
+          x: 200, y: 50, w: 1040, h: 1290
+        }
       ],
       notes: [
         { text: 'Tiền chất Malonyl-CoA (3C)', x: 350, y: 550, size: 16, color: '#6b5d3a', anchor: 'middle' },
@@ -11338,9 +11345,9 @@ var lipidMolecules = {
   function faelongPathway() {
     var nodes = {
       // Hàng 0: Màng Phosphatidylcholine (y = 100)
-      pcoleate: nNode('pcoleate', 800, 160),
-      pclinoleate: nNode('pclinoleate', 1320, 160),
-      pclinolenate: nNode('pclinolenate', 1840, 160),
+      pcoleate: nNode('pcoleate', 780, 100),
+      pclinoleate: nNode('pclinoleate', 1320, 100),
+      pclinolenate: nNode('pclinolenate', 1860, 100),
       // Hàng 1: Trục Palmitate -> Stearate -> Oleate -> Linoleate -> aLinolenate -> PUFA (y = 420)
       palmitate: nNode('palmitate', 200, 420),
       stearate: nNode('stearate', 580, 420),
@@ -11349,15 +11356,15 @@ var lipidMolecules = {
       alinolenate: nNode('alinolenate', 1940, 420),
       pufa: nNode('pufa', 2460, 420),
       // Hàng 2: Palmitoleate, LSFA, gLinolenate (y = 740)
-      palmitoleate: nNode('palmitoleate', -420, 740),
-      lsf: nNode('lsf', -80, 740),
+      palmitoleate: nNode('palmitoleate', -800, 740),
+      lsf: nNode('lsf', -40, 740),
       glinolenate: nNode('glinolenate', 1260, 740),
       // Hàng 3: Eicosatrienoate -> Arachidonate (y = 1060)
       eicosatrienoate: nNode('eicosatrienoate', 980, 1060),
       arachidonate: nNode('arachidonate', 2060, 1060),
       // Hàng 4: Chuỗi truyền electron Desaturase (y = 1380)
       cytb5red: nNode('cytb5red', 980, 1320),
-      cytb5: nNode('cytb5', 1600, 1320),
+      cytb5: nNode('cytb5', 1520, 1320),
       desatcomp: nNode('desatcomp', 2060, 1320)
     };
 
@@ -11536,18 +11543,18 @@ var lipidMolecules = {
     var nodes = {
       // Nhánh Glycerol bên trái
       dhap: nNode('dhap', 530, 150),
-      glycerol: nNode('glycerol', 150, 150),
-      gly3p: nNode('gly3p', 340, 470),
+      glycerol: nNode('glycerol', -120, 150),
+      gly3p: nNode('gly3p', 200, 460),
       // Nhánh Acid béo hoạt hóa bên phải
       fattyacid: nNode('fattyacid', 910, 150),
-      fattyacylcoa: nNode('fattyacylcoa', 910, 470),
+      fattyacylcoa: nNode('fattyacylcoa', 910, 460),
       // Trục trung tâm gắn Acyl
-      lysopa: nNode('lysopa', 340, 790),
-      pa: nNode('pa', 340, 1110),
+      lysopa: nNode('lysopa', 200, 800),
+      pa: nNode('pa', 200, 1111),
       // Rẽ nhánh đôi ở đáy
       dag: nNode('dag', 200, 1430),
       tag: nNode('tag', 200, 1750),
-      gpl: nNode('gpl', 580, 1430)
+      gpl: nNode('gpl', 760, 1280)
     };
 
     var reactions = [
@@ -11643,7 +11650,14 @@ var lipidMolecules = {
       order: ['gpdh1', 'gk1', 'facs1', 'gpat1', 'agpat1', 'pap1', 'dgat1', 'gpl1'],
       start: ['dhap', 'fattyacid'],
       regions: [
-        { type: 'rect', label: 'Tế bào chất & Lưới nội chất: Sinh tổng hợp TAG & Glycerophospholipid', color: '#F7EAD5', x: 50, y: 50, w: 980, h: 1790 }
+        {
+          type: 'rect',
+          label: 'Tế bào chất & Lưới nội chất: Sinh tổng hợp TAG & Glycerophospholipid',
+          color: '#F7EAD5',
+          nodes: ['dhap', 'glycerol', 'gly3p', 'fattyacid', 'fattyacylcoa', 'lysopa', 'pa', 'dag', 'tag', 'gpl'],
+          padX: 70, padTop: 70, padBottom: 80,
+          x: 50, y: 50, w: 980, h: 1790
+        }
       ],
       notes: [
         { text: 'Tạo L-Glycerol 3-phosphate', x: 340, y: 550, size: 16, color: '#6b5d3a', anchor: 'middle' },
@@ -11757,8 +11771,22 @@ var lipidMolecules = {
       order: ['regacc1', 'regacc2', 'regacc3', 'regcpt1', 'regcact', 'regbeta'],
       start: ['insulin', 'glucagon', 'acetylcoar'],
       regions: [
-        { type: 'rect', label: 'Tế bào chất (Bào tương): Tổng hợp Acid béo & Điều hòa ACC', color: '#F1F4E4', x: 80, y: 70, w: 680, h: 1140 },
-        { type: 'rect', label: 'Ty thể: Màng ngoài, Màng trong & Matrix (β-Oxy hóa)', color: '#F7EAD5', x: 790, y: 70, w: 1080, h: 1140 }
+        {
+          type: 'rect',
+          label: 'Tế bào chất (Bào tương): Tổng hợp Acid béo & Điều hòa ACC',
+          color: '#F1F4E4',
+          nodes: ['insulin', 'accact', 'accinact', 'acetylcoar', 'malonylcoar', 'facylcoacyt'],
+          padX: 60, padTop: 60, padBottom: 60,
+          x: 80, y: 70, w: 680, h: 1140
+        },
+        {
+          type: 'rect',
+          label: 'Ty thể: Màng ngoài, Màng trong & Matrix (β-Oxy hóa)',
+          color: '#F7EAD5',
+          nodes: ['glucagon', 'facylcarn', 'facylcoamat', 'acetylcoamat'],
+          padX: 60, padTop: 60, padBottom: 60,
+          x: 790, y: 70, w: 1080, h: 1140
+        }
       ],
       membranes: [
         { x1: 790, y1: 80, x2: 790, y2: 1200 },   // Màng ngoài ty thể (nơi có CPT1)
@@ -26406,7 +26434,7 @@ bd.y = pick.y;
 fixed.push({ id: id, b: box(bd.x, bd.y, bd.w, bd.h) });
 });
 }
-function regionGeom(g, L) {
+function regionGeom(g, L, p) {
 if (g.type === 'circle') {
 return {
 type: 'circle', cx: g.cx, cy: g.cy, r: g.r, color: g.color, label: g.label,
@@ -26414,8 +26442,30 @@ bbox: { x0: g.cx - g.r, y0: g.cy - g.r, x1: g.cx + g.r, y1: g.cy + g.r }
 };
 }
 var rx = g.x, ry = g.y, rw = g.w, rh = g.h;
-if ((g.auto || g.nodes) && L && L.cards) {
-var nids = Array.isArray(g.nodes) && g.nodes.length > 0 ? g.nodes : Object.keys(L.cards);
+if (!g.fixed && L && L.cards) {
+var nids = null;
+if (Array.isArray(g.nodes) && g.nodes.length > 0) {
+nids = g.nodes;
+} else {
+var allCards = Object.keys(L.cards);
+var rectRegions = p && p.regions ? p.regions.filter(function (r) { return r.type !== 'circle'; }) : [];
+if (rectRegions.length <= 1) {
+nids = allCards;
+} else if (typeof g.x === 'number' && typeof g.w === 'number') {
+var x0 = g.x - 40, y0 = g.y - 40, x1 = g.x + g.w + 40, y1 = g.y + g.h + 40;
+var inside = [];
+allCards.forEach(function (id) {
+var c = L.cards[id];
+if (c && c.cx >= x0 && c.cx <= x1 && c.cy >= y0 && c.cy <= y1) {
+inside.push(id);
+}
+});
+if (inside.length > 0) {
+nids = inside;
+}
+}
+}
+if (nids && nids.length > 0) {
 var nodeSet = {};
 var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
 var count = 0;
@@ -26472,6 +26522,7 @@ rw = (maxX - minX) + padX * 2;
 rh = (maxY - minY) + padTop + padBottom;
 }
 }
+}
 return {
 type: 'rect', x: rx, y: ry, w: rw, h: rh, color: g.color, label: g.label,
 bbox: { x0: rx, y0: ry, x1: rx + rw, y1: ry + rh }
@@ -26515,7 +26566,7 @@ Object.keys(L.pills).forEach(function (id) { var q = L.pills[id]; solid.push(box
 Object.keys(L.badges).forEach(function (id) { var b = L.badges[id]; solid.push(box(b.x, b.y, b.w, b.h)); });
 L.chips.forEach(function (c) { solid.push(box(c.x, c.y, c.w, c.h)); });
 L.regions = (p.regions || []).map(function (g) {
-var rg = regionGeom(g, L);
+var rg = regionGeom(g, L, p);
 rg.labelBox = regionLabel(rg, solid);
 return rg;
 });
