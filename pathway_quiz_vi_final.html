@@ -2259,8 +2259,14 @@ stroke-dasharray: 1;
 stroke-dashoffset: 0;
 }
 .mgc-arrow-head { fill: var(--mgc-line); }
+.mgc-arrow-halo { fill: none; stroke: var(--mg-bg, #FAF8F2); stroke-width: 9px; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.mgc-arrow-junction { fill: var(--mgc-link); stroke: var(--mg-bg, #FAF8F2); stroke-width: 1.5; pointer-events: none; }
 .mgc-arrow--link .mgc-arrow-line { stroke: var(--mgc-link); stroke-width: 3; }
 .mgc-arrow--link .mgc-arrow-head { fill: var(--mgc-link); }
+.mgc-arrow--role-transfer { --mgc-link: #2b7a78; }
+.mgc-arrow--role-reg { --mgc-link: #c96a1b; }
+.mgc-arrow--role-cycle { --mgc-link: #7a4988; }
+.mgc-arrow--role-mech { --mgc-link: #4a7c59; }
 .mgc-arrow--dashed .mgc-arrow-line { stroke-dasharray: 8 6; stroke-dashoffset: 0; }
 .mgc-arrow--inhibit .mgc-arrow-line { stroke: var(--mgc-inhibit, #C0392B); stroke-width: 3.2; }
 .mgc-arrow--inhibit .mgc-arrow-head { fill: none; stroke: var(--mgc-inhibit, #C0392B); stroke-width: 3.8; stroke-linecap: round; }
@@ -2272,10 +2278,10 @@ stroke-dashoffset: 0;
 .mgc-arrow-badge-text { font-family: var(--mgc-font); font-size: 15px; font-weight: 800; fill: var(--mgc-link); }
 .mgc-arrow--inhibit .mgc-arrow-badge-text { fill: var(--mgc-inhibit, #C0392B); }
 .mgc-arrow--activate .mgc-arrow-badge-text { fill: var(--mgc-activate, #15803D); }
-.mgc-arrow-label-bg { fill: var(--mgc-badge-bg, #FFFFFF); stroke: var(--mgc-link); stroke-width: 1.5; fill-opacity: 0.96; }
+.mgc-arrow-label-bg { fill: var(--mg-bg, #FAF8F2); fill-opacity: 1; stroke: var(--mgc-link); stroke-width: 1.6; }
 .mgc-arrow--inhibit .mgc-arrow-label-bg { stroke: var(--mgc-inhibit, #C0392B); }
 .mgc-arrow--activate .mgc-arrow-label-bg { stroke: var(--mgc-activate, #15803D); }
-.mgc-arrow-label-text { font-family: var(--mgc-font); font-size: 11.5px; font-weight: 700; fill: var(--mgc-link); }
+.mgc-arrow-label-text { font-family: var(--mgc-font); font-size: 12px; font-weight: 700; fill: var(--mgc-link); }
 .mgc-arrow--inhibit .mgc-arrow-label-text { fill: var(--mgc-inhibit, #C0392B); }
 .mgc-arrow--activate .mgc-arrow-label-text { fill: var(--mgc-activate, #15803D); }
 .mgc-draw { animation: mgc-draw 450ms ease-out both; }
@@ -2541,6 +2547,10 @@ outline-offset: 2px;
 [data-theme="dark"] .mgc-region-label { fill: var(--mgc-tag-ink); }
 [data-theme="dark"] .mgc-membrane { stroke: var(--mgc-membrane); }
 [data-theme="dark"] .mgc-note[fill="#6b5d3a"] { fill: var(--mgc-note); }
+[data-theme="dark"] .mgc-arrow--role-transfer { --mgc-link: #4fd1c5; }
+[data-theme="dark"] .mgc-arrow--role-reg { --mgc-link: #f59e0b; }
+[data-theme="dark"] .mgc-arrow--role-cycle { --mgc-link: #c084fc; }
+[data-theme="dark"] .mgc-arrow--role-mech { --mgc-link: #6ee7b7; }
 .mgq-root {
 display: flex;
 flex-direction: column;
@@ -12338,6 +12348,8 @@ if (a.badge) { out.badge = a.badge; }
 if (a.toPill) { out.toPill = a.toPill; }
 if (a.twoWay !== undefined) { out.twoWay = !!a.twoWay; }
 if (a.label) { out.label = a.label; }
+if (a.role) { out.role = a.role; }
+if (a.junction) { out.junction = { x: a.junction.x + dx, y: a.junction.y + dy }; }
 return out;
 });
 if (r.hl) { r.hl = renameHl(r.hl, map); }
@@ -12398,6 +12410,8 @@ if (l.effect) { arrow.effect = l.effect; }
 if (l.badge) { arrow.badge = l.badge; }
 if (l.toPill) { arrow.toPill = l.toPill; }
 if (l.label) { arrow.label = l.label; }
+if (l.role) { arrow.role = l.role; }
+if (l.junction) { arrow.junction = { x: Math.round(l.junction.x), y: Math.round(l.junction.y) }; }
 host.arrows.push(arrow);
 });
 res.start = unique(spec.start || res.start);
@@ -12700,8 +12714,8 @@ if (!MG.pathways || !MG.categories || !MG.everything || !MG.everything._tools ||
 var T = MG.everything._tools;
 var PREFIX = 'mix:';
 var ROW_WIDTH = 4200;   // a row of fallback pieces wraps when exceeding this width
-var GUTTER_X = 280;     // horizontal corridor width between semantic columns/blocks
-var GUTTER_Y = 280;     // vertical corridor height between semantic rows
+var GUTTER_X = 320;     // horizontal corridor width between semantic columns/blocks
+var GUTTER_Y = 320;     // vertical corridor height between semantic rows
 var PAD = 100;          // fallback pad when early boot lacks MG.chart.layout
 var LIPID_GRID = {
   betaox:    { row: 0, col: 0 },
@@ -12712,20 +12726,20 @@ var LIPID_GRID = {
   faelong:   { row: 1, col: 1 },
   desatmech: { row: 2, col: 1 }
 };
-var TRACK_OFFSETS = [0, -24, 24, -48, 48, -72, 72];
+var TRACK_OFFSETS = [0, 52, -52, 104, -104];
 var CROSS_LINKS = [
-  { tier: 'primary',   fromMods: ['fas'],                 fromNode: 'palmitate',    exitSide: 'south', toMods: ['faelong'],   toNode: 'palmitate',    entrySide: 'west',  on: 'elo1',      twoWay: false, label: 'Palmitate 16:0 → kéo dài & khử bão hòa' },
-  { tier: 'primary',   fromMods: ['fas'],                 fromNode: 'palmitate',    exitSide: 'south', toMods: ['tag'],       toNode: 'fattyacid',    entrySide: 'east',  on: 'facs1',     twoWay: false, label: 'Axit béo → tổng hợp TAG/GPL' },
-  { tier: 'primary',   fromMods: ['fas'],                 fromNode: 'malonylcoa',   exitSide: 'west',  toMods: ['lipidsreg'], toNode: 'malonylcoar',  entrySide: 'south', entryStub: [{ dx: -125, dy: 155 }], on: 'regacc3', twoWay: true, label: 'Điều hòa ACC – Mal-CoA – CAT I' },
-  { tier: 'primary',   fromMods: ['desatmech'],           fromNode: 'cytb5',        exitSide: 'north', toMods: ['faelong'],   toNode: 'oleate',       toPill: 'des9b', entrySide: 'south', entryStub: [{ dx: 110, dy: 120 }], on: 'etccyt', twoWay: false, label: 'Cơ chế 2e⁻ Cyt b₅ cho Desaturase ER' },
-  { tier: 'primary',   fromMods: ['betaox'],              fromNode: 'tag',          exitSide: 'west',  toMods: ['tag'],       toNode: 'tag',          entrySide: 'west',  on: 'dgat1',     twoWay: true,  label: 'Tổng hợp TAG ↔ Lipolysis' },
-  { tier: 'primary',   fromMods: ['betaox', 'boxsimple'], fromNode: 'acoa',         exitSide: 'east',  toMods: ['lipidsreg'], toNode: 'facylcoamat',  entrySide: 'south', on: 'regcact',   twoWay: true,  label: 'β-oxy hóa ty thể (CAT I)' },
-  { tier: 'secondary', fromMods: ['fas'],                 fromNode: 'acetylcoa',    exitSide: 'north', toMods: ['lipidsreg'], toNode: 'acetylcoar',   entrySide: 'west',  on: 'glc2accoa', twoWay: true,  label: 'Acetyl-CoA bào tương' },
-  { tier: 'secondary', fromMods: ['betaox', 'boxsimple'], fromNode: 'acetyl',       exitSide: 'south', toMods: ['lipidsreg'], toNode: 'acetylcoamat', entrySide: 'south', on: 'regbeta',   twoWay: true,  label: 'Acetyl-CoA chất nền ty thể' },
-  { tier: 'secondary', fromMods: ['fas'],                 fromNode: 'palmitate',    exitSide: 'south', toMods: ['lipidsreg'], toNode: 'palmsig',      entrySide: 'east',  entryStub: [{ dx: 0, dy: 120 }], on: 'regfas', twoWay: false, label: 'Ức chế ngược ACC' },
-  { tier: 'secondary', fromMods: ['betaox'],              fromNode: 'glycerol',     exitSide: 'west',  toMods: ['tag'],       toNode: 'glycerol',     entrySide: 'west',  on: 'gk1',       twoWay: true,  label: 'Glycerol chung' },
-  { tier: 'secondary', fromMods: ['tag'],                 fromNode: 'glucose',      exitSide: 'east',  toMods: ['lipidsreg'], toNode: 'glucose',      entrySide: 'west',  on: 'carb2glc',  twoWay: true,  label: 'Glucose bào tương' },
-  { tier: 'secondary', fromMods: ['faelong'],             fromNode: 'palmitoleate', exitSide: 'west',  toMods: ['tag'],       toNode: 'fattyacylcoa', entrySide: 'east',  on: 'gpat1',     twoWay: false, label: 'Acyl-CoA biến đổi → TAG/GPL' }
+  { id: 'lnkPalmElo',  tier: 'primary',   role: 'transfer', fromMods: ['fas'],                 fromNode: 'palmitate',    exitSide: 'south', toMods: ['faelong'],   toNode: 'palmitate',    entrySide: 'west',  on: 'elo1',      twoWay: false, label: 'Palmitate 16:0 → kéo dài & khử bão hòa' },
+  { id: 'lnkPalmTag',  tier: 'primary',   role: 'transfer', fromMods: ['fas'],                 fromNode: 'palmitate',    exitSide: 'south', toMods: ['tag'],       toNode: 'fattyacid',    entrySide: 'east',  on: 'facs1',     twoWay: false, label: 'Axit béo → tổng hợp TAG/GPL' },
+  { id: 'lnkMalReg',   tier: 'primary',   role: 'reg',      fromMods: ['fas'],                 fromNode: 'malonylcoa',   exitSide: 'west',  toMods: ['lipidsreg'], toNode: 'malonylcoar',  entrySide: 'south', entryStub: [{ dx: -125, dy: 155 }], on: 'regacc3', twoWay: true, label: 'Điều hòa ACC – Mal-CoA – CAT I' },
+  { id: 'lnkDesMech',  tier: 'primary',   role: 'mech',     fromMods: ['desatmech'],           fromNode: 'cytb5',        exitSide: 'north', toMods: ['faelong'],   toNode: 'oleate',       toPill: 'des9b', entrySide: 'south', entryStub: [{ dx: 110, dy: 120 }], on: 'etccyt', twoWay: false, label: 'Cơ chế 2e⁻ Cyt b₅ cho Desaturase ER' },
+  { id: 'lnkTagCycle', tier: 'primary',   role: 'cycle',    fromMods: ['betaox'],              fromNode: 'tag',          exitSide: 'west',  toMods: ['tag'],       toNode: 'tag',          entrySide: 'west',  on: 'dgat1',     twoWay: true,  label: 'Tổng hợp TAG ↔ Lipolysis' },
+  { id: 'lnkBetaCat1', tier: 'primary',   role: 'reg',      fromMods: ['betaox', 'boxsimple'], fromNode: 'acoa',         exitSide: 'east',  toMods: ['lipidsreg'], toNode: 'facylcoamat',  entrySide: 'south', on: 'regcact',   twoWay: true,  label: 'β-oxy hóa ty thể (CAT I)' },
+  { id: 'lnkAcCyto',   tier: 'secondary', role: 'reg',      fromMods: ['fas'],                 fromNode: 'acetylcoa',    exitSide: 'north', toMods: ['lipidsreg'], toNode: 'acetylcoar',   entrySide: 'west',  on: 'glc2accoa', twoWay: true,  label: 'Acetyl-CoA bào tương' },
+  { id: 'lnkAcMat',    tier: 'secondary', role: 'reg',      fromMods: ['betaox', 'boxsimple'], fromNode: 'acetyl',       exitSide: 'south', toMods: ['lipidsreg'], toNode: 'acetylcoamat', entrySide: 'south', on: 'regbeta',   twoWay: true,  label: 'Acetyl-CoA chất nền ty thể' },
+  { id: 'lnkPalmInh',  tier: 'secondary', role: 'reg',      fromMods: ['fas'],                 fromNode: 'palmitate',    exitSide: 'south', toMods: ['lipidsreg'], toNode: 'palmsig',      entrySide: 'east',  entryStub: [{ dx: 0, dy: 120 }], on: 'regfas', twoWay: false, label: 'Ức chế ngược ACC' },
+  { id: 'lnkGlyCycle', tier: 'secondary', role: 'cycle',    fromMods: ['betaox'],              fromNode: 'glycerol',     exitSide: 'west',  toMods: ['tag'],       toNode: 'glycerol',     entrySide: 'west',  on: 'gk1',       twoWay: true,  label: 'Glycerol chung' },
+  { id: 'lnkGlcCyto',  tier: 'secondary', role: 'reg',      fromMods: ['tag'],                 fromNode: 'glucose',      exitSide: 'east',  toMods: ['lipidsreg'], toNode: 'glucose',      entrySide: 'west',  on: 'carb2glc',  twoWay: true,  label: 'Glucose bào tương' },
+  { id: 'lnkEloTag',   tier: 'secondary', role: 'transfer', fromMods: ['faelong'],             fromNode: 'palmitoleate', exitSide: 'west',  toMods: ['tag'],       toNode: 'fattyacylcoa', entrySide: 'east',  on: 'gpat1',     twoWay: false, label: 'Acyl-CoA biến đổi → TAG/GPL' }
 ];
 function has(obj, key) { return Object.prototype.hasOwnProperty.call(obj, key); }
 function menuOrder() {
@@ -12908,7 +12922,7 @@ function placeSemantic(parts) {
   return {
     placements: placements, cells: cells,
     usedRows: usedRows, usedCols: usedCols, rowY: rowY, rowH: rowH, colX: colX, colW: colW,
-    hMid: hMid, vMid: vMid, hTop: -140, hBot: totalLipidH + 140, vLeft: -140, vRight: totalLipidW + 140,
+    hMid: hMid, vMid: vMid, hTop: -160, hBot: totalLipidH + 160, vLeft: -160, vRight: totalLipidW + 160,
     lipidCount: lipidIdxs.length
   };
 }
@@ -12928,7 +12942,7 @@ function routeCrossLinks(parts, layoutInfo, blockMaps) {
   function allocTrack(key) {
     var i = usedTracks[key] || 0;
     usedTracks[key] = i + 1;
-    return i < TRACK_OFFSETS.length ? TRACK_OFFSETS[i] : ((i % 2 === 0 ? 1 : -1) * Math.ceil(i / 2) * 20);
+    return i < TRACK_OFFSETS.length ? TRACK_OFFSETS[i] : ((i % 2 === 0 ? 1 : -1) * Math.ceil(i / 2) * 52);
   }
   function gutterInfo(side, cell) {
     if (side === 'west') { return { axis: 'V', ch: cell.ci > 0 ? 'V:' + (cell.ci - 1) : 'V:L', base: cell.ci > 0 ? vMid[cell.ci - 1] : layoutInfo.vLeft }; }
@@ -12974,6 +12988,7 @@ function routeCrossLinks(parts, layoutInfo, blockMaps) {
     return out;
   }
   var showSecondary = parts.length <= 3;
+  var earlyFork = !!(cells.fas && cells.tag && cells.faelong && hMid.length > 0 && vMid.length > 0);
   var out = [];
   CROSS_LINKS.forEach(function (spec) {
     if (spec.tier === 'secondary' && !showSecondary) { return; }
@@ -12989,6 +13004,37 @@ function routeCrossLinks(parts, layoutInfo, blockMaps) {
     if (!fLocal || !tLocal) { return; }
     var A0 = { x: fLocal.x + cFrom.dx, y: fLocal.y + cFrom.dy };
     var B0 = { x: tLocal.x + cTo.dx, y: tLocal.y + cTo.dy };
+    if (earlyFork && (spec.id === 'lnkPalmTag' || spec.id === 'lnkPalmElo')) {
+      var yFork = hMid[0] - 104;
+      var xPalm = A0.x;
+      if (spec.id === 'lnkPalmTag') {
+        var xTagTrack = vMid[0] - 90;
+        out.push({
+          on: spec.on, from: fMap[spec.fromNode], to: tMap[spec.toNode],
+          toPill: null, twoWay: false, dashed: true, role: spec.role, label: spec.label,
+          via: cleanVia([
+            { x: xPalm, y: yFork },
+            { x: xTagTrack, y: yFork },
+            { x: xTagTrack, y: B0.y }
+          ])
+        });
+      } else {
+        var xFaTrack = vMid[0] + 90;
+        var yTurn = layoutInfo.rowY[1] + 220;
+        out.push({
+          on: spec.on, from: fMap[spec.fromNode], to: tMap[spec.toNode],
+          toPill: null, twoWay: false, dashed: true, role: spec.role, label: spec.label,
+          junction: { x: xPalm, y: yFork },
+          via: cleanVia([
+            { x: xPalm, y: yFork },
+            { x: xPalm, y: yTurn },
+            { x: xFaTrack, y: yTurn },
+            { x: xFaTrack, y: B0.y }
+          ])
+        });
+      }
+      return;
+    }
     var exPts = (spec.exitStub || []).map(function (s) { return { x: A0.x + s.dx, y: A0.y + s.dy }; });
     var enPts = (spec.entryStub || []).map(function (s) { return { x: B0.x + s.dx, y: B0.y + s.dy }; });
     var pExit = exPts.length ? exPts[exPts.length - 1] : A0;
@@ -13026,7 +13072,7 @@ function routeCrossLinks(parts, layoutInfo, blockMaps) {
     via = via.concat(enPts);
     out.push({
       on: spec.on, from: fMap[spec.fromNode], to: tMap[spec.toNode],
-      toPill: spec.toPill || null, twoWay: !!spec.twoWay, dashed: true, label: spec.label,
+      toPill: spec.toPill || null, twoWay: !!spec.twoWay, dashed: true, role: spec.role, label: spec.label,
       via: cleanVia(via)
     });
   });
@@ -27097,7 +27143,7 @@ L.arrows.push({
 id: 'arr:' + r.id + ':' + i, rxn: r.id, index: i, main: i === 0,
 twoWay: a.twoWay !== undefined ? !!a.twoWay : (a.link ? false : !!r.twoWay),
 link: !!a.link,
-effect: eff, dashed: dashed, badge: badge, toPill: a.toPill || null, label: a.label || null, rawVia: viaPts, shift: o,
+effect: eff, dashed: dashed, badge: badge, toPill: a.toPill || null, label: a.label || null, role: a.role || null, junction: a.junction || null, rawVia: viaPts, shift: o,
 from: a.from, to: a.to,
 pts: route,
 x1: route[0].x, y1: route[0].y, x2: route[route.length - 1].x, y2: route[route.length - 1].y
@@ -27335,30 +27381,82 @@ L.regions.forEach(function (rg) {
 var lb = rg.labelBox;
 if (lb && lb.w) { noteSolid.push(box(lb.x, lb.y, lb.w, lb.h)); }
 });
+function boxHitsSeg(b, p1, p2, pad) {
+  var rx0 = b.x0 - pad, ry0 = b.y0 - pad, rx1 = b.x1 + pad, ry1 = b.y1 + pad;
+  var sx0 = Math.min(p1.x, p2.x), sx1 = Math.max(p1.x, p2.x);
+  var sy0 = Math.min(p1.y, p2.y), sy1 = Math.max(p1.y, p2.y);
+  if (sx1 < rx0 || sx0 > rx1 || sy1 < ry0 || sy0 > ry1) { return false; }
+  var t0 = 0, t1 = 1, dx = p2.x - p1.x, dy = p2.y - p1.y;
+  var p = [-dx, dx, -dy, dy];
+  var q = [p1.x - rx0, rx1 - p1.x, p1.y - ry0, ry1 - p1.y];
+  for (var i = 0; i < 4; i++) {
+    if (Math.abs(p[i]) < 1e-9) {
+      if (q[i] < 0) { return false; }
+    } else {
+      var t = q[i] / p[i];
+      if (p[i] < 0) {
+        if (t > t1) { return false; }
+        if (t > t0) { t0 = t; }
+      } else {
+        if (t < t0) { return false; }
+        if (t < t1) { t1 = t; }
+      }
+    }
+  }
+  return t0 <= t1;
+}
+function hitsOtherArrow(b, ownerArrow, pad) {
+  for (var ai = 0; ai < L.arrows.length; ai++) {
+    var oa = L.arrows[ai];
+    if (oa === ownerArrow || !oa.pts || oa.pts.length < 2) { continue; }
+    for (var pi = 0; pi < oa.pts.length - 1; pi++) {
+      if (boxHitsSeg(b, oa.pts[pi], oa.pts[pi + 1], pad)) { return true; }
+    }
+  }
+  return false;
+}
+var linkLabelIdx = 0;
 L.arrows.forEach(function (a) {
 if (!a.label || !a.pts || a.pts.length < 2) { return; }
-var lw = Math.ceil(String(a.label).length * 11.5 * 0.56) + 18, lh = 22;
+var idx = linkLabelIdx++;
+var lw = Math.ceil(String(a.label).length * 12 * 0.56) + 20, lh = 24;
 var segs = [];
 for (var si = 0; si < a.pts.length - 1; si++) {
   var sp1 = a.pts[si], sp2 = a.pts[si + 1];
-  segs.push({ i: si, p1: sp1, p2: sp2, len: Math.hypot(sp2.x - sp1.x, sp2.y - sp1.y) });
+  var slen = Math.hypot(sp2.x - sp1.x, sp2.y - sp1.y);
+  var isHoriz = Math.abs(sp2.y - sp1.y) < 1;
+  segs.push({ i: si, p1: sp1, p2: sp2, len: slen, horiz: isHoriz, score: slen * (isHoriz ? 1.65 : 1.0) });
 }
-segs.sort(function (sa, sb) { return sb.len - sa.len; });
-var fracs = [0.5, 0.35, 0.65, 0.25, 0.75];
-var offsets = [0, -24, 24, -48, 48];
+segs.sort(function (sa, sb) { return sb.score - sa.score; });
+var fracs = idx % 2 === 0 ? [0.30, 0.70, 0.50, 0.22, 0.78] : [0.70, 0.30, 0.50, 0.78, 0.22];
+var offsets = [0, -26, 26, -46, 46];
 var best = null;
-for (var sk = 0; sk < segs.length && !best; sk++) {
-  var sg = segs[sk];
-  if (sg.len < 40) { continue; }
-  var su = unitVec(sg.p2.x - sg.p1.x, sg.p2.y - sg.p1.y);
-  var sperp = { x: -su.y, y: su.x };
-  for (var oi = 0; oi < offsets.length && !best; oi++) {
+for (var oi = 0; oi < offsets.length && !best; oi++) {
+  for (var sk = 0; sk < segs.length && !best; sk++) {
+    var sg = segs[sk];
+    if (sg.len < 55) { continue; }
+    var su = unitVec(sg.p2.x - sg.p1.x, sg.p2.y - sg.p1.y);
+    var sperp = { x: -su.y, y: su.x };
     for (var fi = 0; fi < fracs.length && !best; fi++) {
       var lx = sg.p1.x + (sg.p2.x - sg.p1.x) * fracs[fi] + sperp.x * offsets[oi];
       var ly = sg.p1.y + (sg.p2.y - sg.p1.y) * fracs[fi] + sperp.y * offsets[oi];
       var lb = box(lx - lw / 2, ly - lh / 2, lw, lh);
-      if (noteSolid.every(function (sb) { return !overlaps(lb, sb, 4); })) {
+      if (noteSolid.every(function (sb) { return !overlaps(lb, sb, 6); }) && !hitsOtherArrow(lb, a, 8)) {
         best = { x: lx, y: ly };
+      }
+    }
+  }
+}
+if (!best) {
+  for (var sk2 = 0; sk2 < segs.length && !best; sk2++) {
+    var sg2 = segs[sk2];
+    if (sg2.len < 40) { continue; }
+    for (var fi2 = 0; fi2 < fracs.length && !best; fi2++) {
+      var lx2 = sg2.p1.x + (sg2.p2.x - sg2.p1.x) * fracs[fi2];
+      var ly2 = sg2.p1.y + (sg2.p2.y - sg2.p1.y) * fracs[fi2];
+      var lb2 = box(lx2 - lw / 2, ly2 - lh / 2, lw, lh);
+      if (noteSolid.every(function (sb) { return !overlaps(lb2, sb, 4); })) {
+        best = { x: lx2, y: ly2 };
       }
     }
   }
@@ -27472,15 +27570,39 @@ acc += segs[j];
 }
 return { x: pts[0].x, y: pts[0].y };
 }
-function polylineD(pts, twoWay, bluntEnd) {
+function polylineD(pts, twoWay, bluntEnd, cornerR) {
 var n = pts.length, last = pts[n - 1], prev = pts[n - 2];
 var l = unitVec(last.x - prev.x, last.y - prev.y);
 var first = pts[0], f = unitVec(pts[1].x - first.x, pts[1].y - first.y);
 var s = twoWay ? { x: first.x + f.x * 8.4, y: first.y + f.y * 8.4 } : first;
 var endPull = bluntEnd ? 0 : 8.4;
+var e = { x: last.x - l.x * endPull, y: last.y - l.y * endPull };
 var d = 'M' + s.x.toFixed(1) + ' ' + s.y.toFixed(1);
+if (n > 2 && cornerR > 0) {
+  var rPts = [s].concat(pts.slice(1, n - 1), [e]);
+  for (var k = 1; k < rPts.length - 1; k++) {
+    var pPrev = rPts[k - 1], pCur = rPts[k], pNext = rPts[k + 1];
+    var len1 = Math.hypot(pCur.x - pPrev.x, pCur.y - pPrev.y);
+    var len2 = Math.hypot(pNext.x - pCur.x, pNext.y - pCur.y);
+    var u1x = len1 > 1 ? (pCur.x - pPrev.x) / len1 : 0;
+    var u1y = len1 > 1 ? (pCur.y - pPrev.y) / len1 : 0;
+    var u2x = len2 > 1 ? (pNext.x - pCur.x) / len2 : 0;
+    var u2y = len2 > 1 ? (pNext.y - pCur.y) / len2 : 0;
+    var cross = Math.abs(u1x * u2y - u1y * u2x);
+    var r = Math.min(cornerR, len1 * 0.45, len2 * 0.45);
+    if (cross > 0.05 && r >= 2) {
+      var c1x = pCur.x - u1x * r, c1y = pCur.y - u1y * r;
+      var c2x = pCur.x + u2x * r, c2y = pCur.y + u2y * r;
+      d += ' L' + c1x.toFixed(1) + ' ' + c1y.toFixed(1) +
+           ' Q' + pCur.x.toFixed(1) + ' ' + pCur.y.toFixed(1) + ' ' + c2x.toFixed(1) + ' ' + c2y.toFixed(1);
+    } else {
+      d += ' L' + pCur.x.toFixed(1) + ' ' + pCur.y.toFixed(1);
+    }
+  }
+  return d + ' L' + e.x.toFixed(1) + ' ' + e.y.toFixed(1);
+}
 for (var k = 1; k < n - 1; k++) { d += ' L' + pts[k].x.toFixed(1) + ' ' + pts[k].y.toFixed(1); }
-return d + ' L' + (last.x - l.x * endPull).toFixed(1) + ' ' + (last.y - l.y * endPull).toFixed(1);
+return d + ' L' + e.x.toFixed(1) + ' ' + e.y.toFixed(1);
 }
 function headAt(pts) {
 var n = pts.length, last = pts[n - 1], prev = pts[n - 2];
@@ -27684,7 +27806,7 @@ var svg = el('svg', { 'class': 'mgc-svg', role: 'group', 'aria-label': P.title +
 container.appendChild(svg);
 var world = el('g', { 'class': 'mgc-world' }, svg);
 var layers = {};
-['regions', 'notes', 'arrows', 'conns', 'chips', 'pills', 'nodes'].forEach(function (name) {
+['regions', 'notes', 'arrows', 'conns', 'chips', 'pills', 'nodes', 'arrowLabels'].forEach(function (name) {
 layers[name] = el('g', { 'class': 'mgc-layer mgc-layer--' + name }, world);
 });
 L.regions.forEach(function (rg) {
@@ -27722,31 +27844,41 @@ var t = el('text', {
 t.textContent = nt.text;
 });
 L.arrows.forEach(function (a) {
+var roleCls = a.role ? ' mgc-arrow--role-' + a.role : '';
 var cls = 'mgc-arrow mgc-off' +
 (a.link ? ' mgc-arrow--link' : '') +
 (a.dashed ? ' mgc-arrow--dashed' : '') +
 (a.effect === 'inhibit' ? ' mgc-arrow--inhibit' : '') +
-(a.effect === 'activate' ? ' mgc-arrow--activate' : '');
+(a.effect === 'activate' ? ' mgc-arrow--activate' : '') +
+roleCls;
 var g = el('g', { 'class': cls, 'data-arrow': a.id }, layers.arrows);
-var shaftAttrs = { 'class': 'mgc-arrow-line', d: polylineD(a.pts, a.twoWay, a.effect === 'inhibit') };
+var dPath = polylineD(a.pts, a.twoWay, a.effect === 'inhibit', a.link ? 14 : 0);
+if (a.link) {
+  el('path', { 'class': 'mgc-arrow-halo', d: dPath }, g);
+}
+var shaftAttrs = { 'class': 'mgc-arrow-line', d: dPath };
 if (!a.dashed) { shaftAttrs.pathLength = 1; }
 var shaft = el('path', shaftAttrs, g);
 var head = el('path', { 'class': 'mgc-arrow-head', d: a.effect === 'inhibit' ? bluntAt(a.pts) : headAt(a.pts) }, g);
 var startHead = a.twoWay ? el('path', { 'class': 'mgc-arrow-head mgc-arrow-head--start', d: headStartAt(a.pts) }, g) : null;
+if (a.junction) {
+  el('circle', { 'class': 'mgc-arrow-junction', cx: a.junction.x.toFixed(1), cy: a.junction.y.toFixed(1), r: 3.5 }, g);
+}
 if (a.badge && a.badgePos) {
 var ab = el('g', { 'class': 'mgc-arrow-badge' }, g);
 el('circle', { 'class': 'mgc-arrow-badge-bg', cx: a.badgePos.x, cy: a.badgePos.y, r: 11 }, ab);
 var abt = el('text', { 'class': 'mgc-arrow-badge-text', x: a.badgePos.x, y: a.badgePos.y, 'text-anchor': 'middle', 'dominant-baseline': 'central' }, ab);
 abt.textContent = a.badge;
 }
+var labelEl = null;
 if (a.label && a.labelPos) {
-var al = el('g', { 'class': 'mgc-arrow-label' }, g);
+labelEl = el('g', { 'class': 'mgc-arrow-label mgc-off' + roleCls, 'data-arrow': a.id }, layers.arrowLabels);
 var lp = a.labelPos;
-el('rect', { 'class': 'mgc-arrow-label-bg', x: (lp.x - lp.w / 2).toFixed(1), y: (lp.y - lp.h / 2).toFixed(1), width: lp.w, height: lp.h, rx: lp.h / 2 }, al);
-var alt = el('text', { 'class': 'mgc-arrow-label-text', x: lp.x.toFixed(1), y: lp.y.toFixed(1), 'text-anchor': 'middle', 'dominant-baseline': 'central' }, al);
+el('rect', { 'class': 'mgc-arrow-label-bg', x: (lp.x - lp.w / 2).toFixed(1), y: (lp.y - lp.h / 2).toFixed(1), width: lp.w, height: lp.h, rx: lp.h / 2 }, labelEl);
+var alt = el('text', { 'class': 'mgc-arrow-label-text', x: lp.x.toFixed(1), y: lp.y.toFixed(1), 'text-anchor': 'middle', 'dominant-baseline': 'central' }, labelEl);
 alt.textContent = a.label;
 }
-arrowRefs.push({ def: a, g: g, shaft: shaft, head: head, startHead: startHead, visible: false });
+arrowRefs.push({ def: a, g: g, shaft: shaft, head: head, startHead: startHead, labelEl: labelEl, visible: false });
 });
 function slotGroup(parent, id, x, y, kind) {
 var g = el('g', {
@@ -27856,6 +27988,7 @@ var vis = opts.arrows === 'always' || (isLit(a.def.from) && targetLit);
 if (vis === a.visible) { return; }
 a.visible = vis;
 a.g.classList.toggle('mgc-off', !vis);
+if (a.labelEl) { a.labelEl.classList.toggle('mgc-off', !vis); }
 if (vis && animate && !reduce) {
 replay(a.shaft, a.def.dashed ? 'mgc-fade' : 'mgc-draw');
 replay(a.head, 'mgc-fade');
