@@ -1,15 +1,48 @@
-<!DOCTYPE html>
+<!doctype html>
+<!-- Pathway Quiz. Bản quyền © 2026 Benjamin E. Peterson. Bảo lưu mọi quyền. Được phép sử dụng miễn phí cho mục đích tự học và giảng dạy; xem LICENSE. Bản dịch tiếng Việt: Hybrid Catalog. -->
 <html lang="vi">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="0; url=pathway_quiz_vi_final.html">
-  <title>Trắc nghiệm Con đường Chuyển hóa (Biochemical Pathways Quiz)</title>
-  <script>window.location.replace("pathway_quiz_vi_final.html");</script>
+	<meta charset="utf-8">
+	<meta name="author" content="Benjamin E. Peterson">
+	<meta name="copyright" content="Copyright (c) 2026 Benjamin E. Peterson. All rights reserved.">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<meta name="theme-color" content="#FBF8EA">
+	<title>Trắc nghiệm Con đường Chuyển hóa</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+
+	<script>
+		/* The saved theme goes on the page before the first paint, so a dark page never flashes light. app.js applies it again at start. */
+		(function () {
+			var theme = 'light';
+			try {
+				var doc = JSON.parse(window.localStorage.getItem('mg.v1') || 'null');
+				var pref = doc && doc.settings ? doc.settings.theme : null;
+				if (pref === 'dark' || (pref === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) { theme = 'dark'; }
+			} catch (err) { theme = 'light'; }
+			document.documentElement.setAttribute('data-theme', theme);
+			if (theme === 'dark') { document.querySelector('meta[name="theme-color"]').setAttribute('content', '#282A36'); }
+		})();
+	</script>
+	<link rel="stylesheet" href="css/main.css">
+	<script defer src="js/data/entities.js"></script>
+	<script defer src="js/data/geometry.js"></script>
+	<script defer src="js/data/pathways.js"></script>
+	<script defer src="js/data/compose.js"></script>
+	<script defer src="js/data/atp-draw.js"></script>
+	<script defer src="js/games/games-core.js"></script>
+	<script defer src="js/packs/packs-core.js"></script>
+	<script defer src="js/packs/advanced-entities.js"></script>
+	<script defer src="js/packs/advanced-pathways.js"></script>
+	<script defer src="js/packs/advanced-games.js"></script>
+	<script defer src="js/engine/core.js"></script>
+	<script defer src="js/engine/chart.js"></script>
+	<script defer src="js/engine/quiz-engine.js"></script>
+	<script defer src="js/ui/modes-ui.js"></script>
+	<script defer src="js/ui/app.js"></script>
 </head>
 <body>
-  <p style="font-family: system-ui, sans-serif; text-align: center; margin-top: 20vh;">
-    Đang tải <a href="pathway_quiz_vi_final.html">Trắc nghiệm Con đường Chuyển hóa (Pathway Quiz)</a>...
-  </p>
+	<div id="app"></div>
 </body>
 </html>

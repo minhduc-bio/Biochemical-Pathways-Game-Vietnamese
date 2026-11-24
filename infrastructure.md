@@ -1,4 +1,36 @@
-Qua việc xem xét và dịch ngược kiến trúc mã nguồn của ứng dụng đơn file HTML (`pathway_quiz_vi_final.html`, ~33.900 dòng code, ~1.93 MB), dưới đây là phân tích toàn diện về **cấu trúc dữ liệu, nguyên lý dựng hình SVG, kiến trúc chống chồng lấn và phương án mở rộng** để phát triển các quá trình/chu trình chuyển hóa mới.
+Ứng dụng đã được tách từ file nguyên khối trước đây thành cấu trúc tĩnh đa file (`index.html`, `css/main.css`, `js/` gồm 15 module JS theo mô hình IIFE trên namespace `window.MG` + `.nojekyll`), triển khai trực tiếp trên GitHub Pages hoặc mở offline qua `file://` không cần bundler. Dưới đây là phân tích toàn diện về **cấu trúc thư mục, dữ liệu, nguyên lý dựng hình SVG, kiến trúc chống chồng lấn và điều hướng SPA**.
+
+---
+
+## 0. Cấu trúc thư mục & Thứ tự nạp Script
+
+```text
+index.html                         # Entry point chính (giữ inline theme FOUC guard ở <head>, nạp 15 script defer)
+.nojekyll                          # Tắt Jekyll trên GitHub Pages
+css/
+└── main.css                       # Toàn bộ stylesheet (Light/Dark tokens, Layout, SVG chart)
+js/
+├── data/
+│   ├── entities.js                # MG.entities (molecule, enzyme, cofactor)
+│   ├── geometry.js                # MG.geometry (tọa độ cấu trúc 2D)
+│   ├── pathways.js                # MG.pathways (đường chuyển hóa lõi + 5 sơ đồ Lipid mới)
+│   ├── compose.js                 # MG.categories (6 danh mục), MG.everything, MG.custom (Semantic Grid)
+│   └── atp-draw.js                # MG.atp, MG.drawTargets, MG.drawEdit, MG.draw
+├── games/
+│   └── games-core.js              # MG.gameEngine, MG.games (comparison, walkthrough)
+├── packs/
+│   ├── packs-core.js              # MG.packs + metadata pack 'advanced'
+│   ├── advanced-entities.js       # Thực thể & hình học của pack 'advanced'
+│   ├── advanced-pathways.js       # Con đường, scenarios, groups, courses của pack 'advanced'
+│   └── advanced-games.js          # 10 mini-games của pack 'advanced'
+├── engine/
+│   ├── core.js                    # MG.slots, MG.match, MG.store, MG.sound
+│   ├── chart.js                   # MG.renderMolecule, MG.chart (layout & SVG)
+│   └── quiz-engine.js             # MG.hints, MG.engine
+└── ui/
+    ├── modes-ui.js                # MG.quiz, MG.atpUi, MG.gamesUi, MG.drawUi
+    └── app.js                     # MG.brand, MG.ui, MG.app (Hash Router, modalStack, navStack) + boot
+```
 
 ---
 
@@ -45,7 +77,7 @@ Kiến trúc bao gồm **6 lớp tách biệt**:
 ## 2. Chi tiết các cấu trúc dữ liệu cốt lõi (Data Schemas)
 
 ### 2.1. Lớp thực thể hóa sinh (Entity Layer)
-Được lưu trong `MG.entities` (tại dòng ~6496–7317), gồm 3 từ điển:
+Được lưu trong `MG.entities` tại `js/data/entities.js`, gồm 3 từ điển:
 
 1. **`molecule`**: Định nghĩa chất chuyển hóa (Metabolites)
    ```javascript
@@ -155,7 +187,7 @@ Mỗi phản ứng trong mảng `reactions` kết nối các `nodes` lại với
 
 ## 3. Nguyên lý dựng hình và bố cục không gian (Spatial Layout Mechanics)
 
-Codebase đã giải quyết rất thông minh bài toán bố cục sơ đồ thông qua hàm `layoutPathway(p, size)` (dòng ~25493) và `MG.chart.create`:
+Codebase đã giải quyết rất thông minh bài toán bố cục sơ đồ thông qua hàm `layoutPathway(p, size)` trong `js/engine/chart.js` (`MG.chart.create`):
 
 ### 3.1. Phân loại 3 mô hình bố cục chính
 1. **Dạng chu trình khép kín (Radial/Trigonometric Layout - ví dụ: Chu trình TCA, Chu trình Urea)**:
@@ -363,10 +395,11 @@ MG.categories.push({
 
 ### 6.2. Các điểm nghẽn hiện tại và Giải pháp khắc phục
 
-| Điểm nghẽn hiện tại | Phân tích vấn đề | Đề xuất giải pháp kiến trúc |
+| Điểm nghẽn / Kiến trúc | Phân tích & Giải pháp đã áp dụng | Quy chuẩn vận hành |
 | :--- | :--- | :--- |
-| **File nguyên khối (Monolith ~1.93 MB)** | Code logic, CSS, dữ liệu hàng trăm chất và con đường gộp chung trong `pathway_quiz_vi_final.html`, tiện cho phân phối offline nhưng cần kỷ luật khi sửa. | Duy trì cấu trúc module hóa logic bên trong IIFE và giữ sạch root project (archive các bản cũ vào `archive/`). |
+| **Cấu trúc đa file tĩnh (`index.html` + `css/` + `js/`)** | Đã tách từ monolith cũ sang `css/main.css` + 15 file JS dạng `<script defer>` theo IIFE trên `window.MG`, chạy mượt cả GitHub Pages lẫn `file://`. | Giữ nguyên thứ tự nạp `<script defer>` trong `index.html` và kiểm tra cú pháp bằng `node --check`. |
+| **Điều hướng SPA & Modal (`js/ui/app.js`)** | Tích hợp Hash Router (`#select`, `#quiz/<id>`, `#atp`, `#games`, `#draw`, `#results`), `navStack` cho nút Back, và `closeAllModals()` trong `setStage()` gỡ sạch `mg-lock`. | Mọi thay đổi màn hình đi qua `setStage()`; thêm test trong `tests/verify_ui_flows.js` nếu thêm route mới. |
 | **Tọa độ nút & ghép `compose()`** | Khi thêm chu trình mới hoặc ghép bản đồ tổng (`compose`), cần tính khoảng đệm giữa các block dựa trên bounding box thực tế. | Chuẩn hóa bước lưới $\Delta x \ge 420\text{ px}, \Delta y \ge 320\text{ px}$ và sử dụng `tools/coordinate_studio/` để tinh chỉnh trực quan. |
-| **Xác thực dữ liệu & Chồng lấn (Validation)** | Dữ liệu mới hoặc tên tiếng Việt dài có thể gây thiếu tham chiếu hoặc chồng lấn giữa pill, chip, note và region label. | Chạy bộ kiểm thử 2 lớp: `node tools/verify_installed_html.js` (Schema) và `node tools/audit_overlaps.js` (Headless Chrome `getBBox()` 0-overlap gate). |
+| **Xác thực dữ liệu & Chồng lấn (Validation)** | Dữ liệu mới hoặc tên tiếng Việt dài có thể gây thiếu tham chiếu hoặc chồng lấn giữa pill, chip, note và region label. | Chạy `node tools/verify_installed_html.js`, `node tests/verify_ui_flows.js`, `node tests/test_all_modes_play.js` và `node tools/audit_overlaps.js`. |
 
 Với kiến trúc này, bạn hoàn toàn có thể mở rộng thêm hàng chục quá trình chuyển hóa khác (chu trình Calvin, thoái hóa/tổng hợp purine/pyrimidine, chu trình Cori, chuyển hóa lipid...) một cách nhất quán, bền vững và tận dụng trọn vẹn toàn bộ các chế độ tương tác học tập đã có sẵn trong ứng dụng.

@@ -6,11 +6,9 @@ Learn metabolic pathways by building them. Each pathway is a flow chart of react
 
 ## Play
 
-**[Play it in your browser](https://benbiochem.github.io/Biochemical-Pathways-Game/pathway_quiz.html).** No download, no sign-up, and it works on a phone.
+Open `index.html` directly in any browser (works offline via `file://` or deployed statically on GitHub Pages) — no download, no bundler, no install required.
 
-To play offline, download `pathway_quiz.html` (open it above and press the download icon), then double-click it on a computer. It is one file: no install, no internet, nothing to set up.
-
-1. **Pick a pathway.** Twenty-two of them, from glycolysis to the urea cycle, or Everything for all of it at once.
+1. **Pick a pathway.** Core pathways across 6 categories (including Lipid biosynthesis & regulation, Carbohydrates, TCA, ETC, Amino acids, and Mitochondrial dynamics), or Everything for combined maps.
 2. **Pick a way to play.** *Build* asks one question at a time and grows the map. *Fill the Map* is a blank map with six choices per blank. *Fill in the Blank* is a blank map where you type every answer. The Cofactors switch leaves out ATP, water and the other cofactors when you only want the molecules and enzymes.
 3. **Start.** Hint gives a clue. Reveal shows the answer and counts as a miss. After a miss the game tells you why, and once you keep missing the same steps, Practice weak steps quizzes you on just those.
 
@@ -20,9 +18,18 @@ Also on the menu: an ATP Calculator, Draw molecules, where you finish or draw th
 
 <p align="center"><img src="images/phone.png" alt="The menu and a finished map on a phone" width="520"></p>
 
-## About the file
+## Architecture & Project Structure
 
-The whole game is that one HTML file: plain JavaScript and CSS, no libraries, no network. A pathway is data (a list of steps, each with its molecules, enzyme and cofactors, drawn on a chart), so the file can be read in any text editor.
+The app uses plain vanilla JavaScript, SVG, and CSS with zero external runtime dependencies or build step:
+
+- `index.html`: Lightweight entry point (inline theme FOUC guard + ordered `<script defer>` modules).
+- `css/main.css`: Theme tokens, layout, and SVG chart styling.
+- `js/data/`: Biochemical entities, 2D molecular geometry, pathway definitions, semantic grid composition (`compose()`), ATP & drawing targets.
+- `js/games/`: Interactive comparison and walkthrough mini-games.
+- `js/packs/`: Optional `advanced` expansion pack (entities, pathways, mini-games).
+- `js/engine/`: Slots, fuzzy matching, storage, sound, SVG layout/rendering (`MG.chart`), and quiz engine.
+- `js/ui/`: Mode UIs, Hash Router (`#select`, `#quiz/<id>`, `#atp`, `#games`, `#draw`, `#results`), modal lifecycle cleanup, and app bootstrap.
+- `tests/`: Automated Headless Chrome CDP UI & gameplay verification suites (`node tests/verify_ui_flows.js`, `node tests/test_all_modes_play.js`).
 
 ## Contact
 

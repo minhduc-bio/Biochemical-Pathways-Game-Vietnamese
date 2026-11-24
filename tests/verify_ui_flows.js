@@ -9,7 +9,7 @@ const http = require('http');
 const path = require('path');
 
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const htmlPath = path.resolve('pathway_quiz_vi_final.html');
+const htmlPath = path.resolve('index.html');
 const PORT = 9227;
 
 console.log("=== BẮT ĐẦU KIỂM THỬ TỰ ĐỘNG CÁC LUỒNG THAO TÁC UI ===");
@@ -40,20 +40,29 @@ async function runTestSuite() {
     }
   }
 
-  // Wait for Chrome CDP port
-  await new Promise(r => setTimeout(r, 1200));
-
   try {
-    const list = await new Promise((resolve, reject) => {
-      http.get(`http://127.0.0.1:${PORT}/json`, (res) => {
-        let d = '';
-        res.on('data', c => d += c);
-        res.on('end', () => resolve(JSON.parse(d)));
-      }).on('error', reject);
-    });
-
-    const page = list.find(p => p.type === 'page');
-    if (!page) throw new Error("No page found on CDP port");
+    // Wait for Chrome CDP port with retry
+    let page = null;
+    let lastErr = null;
+    for (let attempt = 0; attempt < 25; attempt++) {
+      try {
+        const list = await new Promise((resolve, reject) => {
+          http.get(`http://127.0.0.1:${PORT}/json`, (res) => {
+            let d = '';
+            res.on('data', c => d += c);
+            res.on('end', () => {
+              try { resolve(JSON.parse(d)); } catch (e) { reject(e); }
+            });
+          }).on('error', reject);
+        });
+        page = list.find(p => p.type === 'page');
+        if (page) break;
+      } catch (e) {
+        lastErr = e;
+      }
+      await new Promise(r => setTimeout(r, 300));
+    }
+    if (!page) throw lastErr || new Error("No page found on CDP port");
 
     const ws = new WebSocket(page.webSocketDebuggerUrl);
 
@@ -96,6 +105,12 @@ async function runTestSuite() {
         awaitPromise: true
       });
       return res.result ? res.result.value : undefined;
+    }
+
+    for (let w = 0; w < 40; w++) {
+      const ready = await evaluate('!!(window.MG && MG.app && document.querySelector(".mg-app"))');
+      if (ready) break;
+      await new Promise(r => setTimeout(r, 200));
     }
 
     console.log("\n--- TEST GROUP 1: Khởi động & Màn hình Menu (Home Screen) ---");
@@ -276,7 +291,74 @@ async function runTestSuite() {
     assert(storageTest.ok, "localStorage key 'mg.v1' tồn tại và parse JSON hợp lệ");
     assert(storageTest.hasSettings, "Cấu trúc settings trong 'mg.v1' nguyên vẹn");
 
-    console.log("\n--- TEST GROUP 8: Bắt lỗi Console Runtime ---");
+    console.log("\n--- TEST GROUP 8: Hash Router, Browser Back & Dọn dẹp Modal ---");
+    const modalBeforeSwitch = await evaluate(`(() => {
+      MG.app.showSelect();
+      MG.ui.modal({ title: 'Test Modal Cleanup' });
+      const openedModalCount = document.querySelectorAll('.mg-modal').length;
+      const lockedBefore = document.documentElement.classList.contains('mg-lock');
+      MG.app.showAtp();
+      const remainingModalCount = document.querySelectorAll('.mg-modal').length;
+      const lockedAfter = document.documentElement.classList.contains('mg-lock');
+      return {
+        openedModalCount,
+        lockedBefore,
+        remainingModalCount,
+        lockedAfter,
+        atpHash: window.location.hash,
+        atpScreen: document.querySelector('.mg-app').getAttribute('data-screen')
+      };
+    })()`);
+
+    assert(modalBeforeSwitch.openedModalCount === 1 && modalBeforeSwitch.lockedBefore, "Modal mở đúng và gắn mg-lock trước khi chuyển màn hình");
+    assert(modalBeforeSwitch.remainingModalCount === 0 && !modalBeforeSwitch.lockedAfter, "Chuyển màn hình (setStage) dọn sạch modalStack và gỡ mg-lock");
+    assert(modalBeforeSwitch.atpHash === '#atp' && modalBeforeSwitch.atpScreen === 'atp', "Hash Router cập nhật #atp khi vào ATP Calculator", modalBeforeSwitch.atpHash);
+
+    await new Promise(r => setTimeout(r, 150));
+    await evaluate(`(() => { window.history.back(); return true; })()`);
+    await new Promise(r => setTimeout(r, 350));
+
+    const backFromAtp = await evaluate(`({
+      screen: document.querySelector('.mg-app').getAttribute('data-screen'),
+      hash: window.location.hash
+    })`);
+    assert(backFromAtp.screen === 'select', "window.history.back() từ #atp quay lại đúng màn hình select", JSON.stringify(backFromAtp));
+
+    // Kiểm tra navStack với goBack() (atp -> draw -> goBack() về atp)
+    await evaluate(`(() => { MG.app.showAtp(); MG.app.showDraw(); return true; })()`);
+    await new Promise(r => setTimeout(r, 120));
+    const stackBack = await evaluate(`(() => {
+      MG.app._test.goBack();
+      return {
+        screenAfterOneBack: document.querySelector('.mg-app').getAttribute('data-screen'),
+        hashAfterOneBack: window.location.hash
+      };
+    })()`);
+    assert(stackBack.screenAfterOneBack === 'atp', "goBack() từ draw quay lại màn hình trước đó (atp) thay vì nhảy cứng về select", JSON.stringify(stackBack));
+
+    // Kiểm tra vào quiz (#quiz/glycolysis) rồi history.back() quay về select & dọn activeQuiz
+    await evaluate(`(() => {
+      MG.app.showSelect();
+      MG.app._test.setPicked(['glycolysis']);
+      MG.app._test.startFromSelect();
+      return true;
+    })()`);
+    await new Promise(r => setTimeout(r, 250));
+    const inQuizHash = await evaluate(`({
+      screen: document.querySelector('.mg-app').getAttribute('data-screen'),
+      hash: window.location.hash
+    })`);
+    assert(inQuizHash.screen === 'quiz' && inQuizHash.hash.indexOf('#quiz/') === 0, "Vào quiz cập nhật hash #quiz/<pathwayId>", JSON.stringify(inQuizHash));
+
+    await evaluate(`(() => { window.history.back(); return true; })()`);
+    await new Promise(r => setTimeout(r, 350));
+    const backFromQuiz = await evaluate(`({
+      screen: document.querySelector('.mg-app').getAttribute('data-screen'),
+      hasQuizDom: !!document.querySelector('.mg-screen--quiz')
+    })`);
+    assert(backFromQuiz.screen === 'select' && !backFromQuiz.hasQuizDom, "window.history.back() từ quiz quay lại select và dọn DOM quiz", JSON.stringify(backFromQuiz));
+
+    console.log("\n--- TEST GROUP 9: Bắt lỗi Console Runtime ---");
     assert(consoleErrors.length === 0, "Không có bất kỳ console error nào trong suốt quá trình chạy", consoleErrors.join('; '));
 
     ws.close();

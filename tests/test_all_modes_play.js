@@ -5,7 +5,7 @@ const os = require('os');
 const fs = require('fs');
 
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const htmlPath = path.resolve('pathway_quiz_vi_final.html');
+const htmlPath = path.resolve('index.html');
 const PORT = 9228;
 
 console.log("=== KIỂM TRA CHƠI 3 CHẾ ĐỘ & CHẾ ĐỘ ĐIỀN VÀO CHỖ TRỐNG NHẬN ĐÁP ÁN TIẾNG ANH ===");
