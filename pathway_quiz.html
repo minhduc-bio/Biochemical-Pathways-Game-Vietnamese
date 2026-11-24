@@ -11351,8 +11351,8 @@ var lipidMolecules = {
       // Hàng 1: Trục Palmitate -> Stearate -> Oleate -> Linoleate -> aLinolenate -> PUFA (y = 420)
       palmitate: nNode('palmitate', 200, 420),
       stearate: nNode('stearate', 580, 420),
-      oleate: nNode('oleate', 580, 420),
-      linoleate: nNode('linoleate', 1260, 420),
+      oleate: nNode('oleate', 960, 420),
+      linoleate: nNode('linoleate', 1340, 420),
       alinolenate: nNode('alinolenate', 1940, 420),
       pufa: nNode('pufa', 2460, 420),
       // Hàng 2: Palmitoleate, LSFA, gLinolenate (y = 740)
@@ -11677,88 +11677,101 @@ var lipidMolecules = {
 
   // ==========================================================================
   // PATHWAY 4: lipidsreg (Điều hòa đối kháng ACC & CAT I)
-  // Bố cục phân khoang màng ty thể: Tách riêng 2 trạng thái enzyme và 2 màng
+  // Layout: Bào tương bên trái (insulin/glucagon + ACC states + FA synthesis)
+  //         Ty thể bên phải (CPT1 ở màng ngoài, CACT/CPT2 ở màng trong, β-ox matrix)
+  // Canvas ~1980 x 1340 px; CARD_W=140, CARD_H=152
+  // Màng ngoài ty thể: x=840 (dọc suốt); Màng trong: x=1240 (dọc suốt)
   // ==========================================================================
   function lipidsregPathway() {
     var nodes = {
-      // Trục nội tiết điều hòa ACC
-      insulin: nNode('insulin', 200, 200),
-      accact: nNode('accact', 580, 200),
-      accinact: nNode('accinact', 580, 480),
-      glucagon: nNode('glucagon', 960, 480),
-      // Trục tổng hợp acid béo ở Bào tương
-      acetylcoar: nNode('acetylcoa', 200, 760),
-      malonylcoar: nNode('malonylcoa', 580, 760),
-      facylcoacyt: nNode('facylcoacyt', 580, 1080),
-      // Trục qua màng ty thể & Beta-oxidation
-      facylcarn: nNode('facylcarn', 990, 1080),
-      facylcoamat: nNode('facylcoamat', 1370, 1080),
-      acetylcoamat: nNode('acetylcoamat', 1750, 1080)
+      // ── Bào tương: tín hiệu nội tiết (hàng trên) ──
+      insulin:      nNode('insulin',      160,  200),   // tín hiệu "no" - kích hoạt ACC
+      glucagon:     nNode('glucagon',     700,  180),   // tín hiệu "đói" - bất hoạt ACC
+      // ── Bào tương: trạng thái ACC (hàng giữa) ──
+      accact:       nNode('accact',       160,  480),   // ACC hoạt động (dephosphoryl)
+      accinact:     nNode('accinact',     700,  480),   // ACC bất hoạt (phosphoryl)
+      // ── Bào tương: tổng hợp acid béo (hàng dưới) ──
+      acetylcoar:   nNode('acetylcoa',    160,  780),   // Acetyl-CoA cơ chất cho ACC
+      malonylcoar:  nNode('malonylcoa',   700,  780),   // Malonyl-CoA chất ức chế CPT1
+      facylcoacyt:  nNode('facylcoacyt',  160, 1100),   // Fatty acyl-CoA ở bào tương
+      // ── Ty thể: vận chuyển qua màng & β-oxy hóa ──
+      facylcarn:    nNode('facylcarn',   1080, 1100),   // Fatty acyl-carnitine (IMS)
+      facylcoamat:  nNode('facylcoamat', 1560, 1100),   // Fatty acyl-CoA (Matrix)
+      acetylcoamat: nNode('acetylcoamat',2120, 1100)    // Acetyl-CoA sản phẩm β-ox
     };
 
     var reactions = [
+      // Bước 1: Insulin → Phosphatase khử phosphate → kích hoạt ACC
       {
         id: 'regacc1', step: 1, enzyme: 'pphosphatase',
         substrates: ['accinact'], products: ['accact'],
         ins: [], outs: ['pi'],
+        shift: [0, 40],
         arrows: [
           { from: 'accinact', to: 'accact' },
-          { from: 'insulin', to: 'accact', link: true }
+          { from: 'insulin',  to: 'accact', link: true }
         ],
-        cof: LEFT_RIGHT, irreversible: true, type: 'Dephosphorylation',
-        equation: 'ACC-P (Inactive) + H₂O → ACC (Active) + Pᵢ (Kích thích bởi Insulin)',
-        hint: 'Khi no (insulin cao), phosphatase khử phosphate kích hoạt enzyme ACC.'
+        cof: { 'in': 'down', out: 'down' }, irreversible: true, type: 'Dephosphorylation',
+        equation: 'ACC-P (Inactive) + H₂O → ACC (Active) + Pᵢ   [Kích thích bởi Insulin]',
+        hint: 'Khi no (insulin cao), protein phosphatase khử phosphate chuyển ACC-P sang dạng ACC hoạt động.'
       },
+      // Bước 2: Glucagon/PKA phosphoryl hóa → bất hoạt ACC
       {
         id: 'regacc2', step: 2, enzyme: 'pka',
         substrates: ['accact'], products: ['accinact'],
         ins: ['atp'], outs: ['adp'],
+        shift: [0, -40],
         arrows: [
-          { from: 'accact', to: 'accinact', via: [{ x: 670, y: 340 }] },
+          { from: 'accact',   to: 'accinact' },
           { from: 'glucagon', to: 'accinact', link: true }
         ],
-        cof: LEFT_RIGHT, irreversible: true, type: 'Phosphorylation',
-        equation: 'ACC (Active) + ATP → ACC-P (Inactive) + ADP (Kích thích bởi Glucagon/PKA)',
-        hint: 'Khi đói (glucagon cao), PKA phosphoryl hóa làm bất hoạt enzyme ACC.'
+        cof: { 'in': 'up', out: 'up' }, irreversible: true, type: 'Phosphorylation',
+        equation: 'ACC (Active) + ATP → ACC-P (Inactive) + ADP   [Kích thích bởi Glucagon → PKA]',
+        hint: 'Khi đói (glucagon cao), cAMP → PKA → phosphoryl hóa Ser79 trên ACC → bất hoạt enzyme.'
       },
+      // Bước 3: ACC hoạt động carboxyl hóa Acetyl-CoA → Malonyl-CoA
       {
         id: 'regacc3', step: 3, enzyme: 'acc',
         substrates: ['acetylcoar'], products: ['malonylcoar'],
         ins: ['atp', 'hco3'], outs: ['adp', 'pi'],
         arrows: [{ from: 'acetylcoar', to: 'malonylcoar' }],
-        cof: LEFT_RIGHT, irreversible: true, type: 'Carboxylation',
+        cof: LEFT_RIGHT, irreversible: true, type: 'Carboxylation (ACC)',
         equation: 'Acetyl-CoA + ATP + HCO₃⁻ → Malonyl-CoA + ADP + Pᵢ',
-        hint: 'ACC hoạt động biến acetyl-CoA thành malonyl-CoA.'
+        hint: 'ACC (dạng hoạt động, polymer hóa) carboxyl hóa Acetyl-CoA → Malonyl-CoA, bước cam kết tổng hợp acid béo.'
       },
+      // Bước 4: CPT1/CAT I chuyển acyl-CoA → acyl-carnitine; bị Malonyl-CoA ức chế
       {
         id: 'regcpt1', step: 4, enzyme: 'cpt1',
         substrates: ['facylcoacyt'], products: ['facylcarn'],
         ins: [], outs: ['coa'],
         arrows: [
           { from: 'facylcoacyt', to: 'facylcarn' },
-          { from: 'malonylcoar', to: 'facylcarn', link: true, via: [{ x: 780, y: 880 }, { x: 920, y: 880 }] }
+          { from: 'malonylcoar', to: 'facylcarn', link: true,
+            via: [{ x: 700, y: 940 }, { x: 860, y: 940 }] }
         ],
         cof: TOP_BOTTOM, irreversible: true, type: 'Carnitine acyltransfer (CPT1 / CAT I)',
-        equation: 'Fatty acyl-CoA + Carnitine → Fatty acyl-carnitine + CoA-SH (Bị ức chế bởi Malonyl-CoA)',
-        hint: 'CPT1 trên màng ngoài ty thể chuyển gốc acyl sang carnitine; bị malonyl-CoA ức chế mạnh.'
+        equation: 'Fatty acyl-CoA + Carnitine → Fatty acyl-carnitine + CoA-SH   [Bị ức chế bởi Malonyl-CoA]',
+        hint: 'CPT1 (= CAT I) ở màng ngoài ty thể là điểm kiểm soát then chốt; Malonyl-CoA liên kết dị lập thể ngăn β-oxy hóa.'
       },
+      // Bước 5: CACT antiport + CPT2 tái tạo acyl-CoA trong matrix
       {
         id: 'regcact', step: 5, enzyme: 'cact',
         substrates: ['facylcarn'], products: ['facylcoamat'],
         ins: [], outs: [],
         arrows: [{ from: 'facylcarn', to: 'facylcoamat' }],
-        type: 'Antiport Translocation & Re-esterification (CPT2)',
-        equation: 'Fatty acyl-carnitine (IMS) → Fatty acyl-CoA (Matrix) nhờ CACT và CPT2',
-        hint: 'Đưa acyl-carnitine qua màng trong ty thể và tái tạo fatty acyl-CoA trong chất nền.'
+        cof: TOP_BOTTOM, irreversible: true, type: 'Antiport Translocation & Re-esterification (CPT2)',
+        equation: 'Fatty acyl-carnitine (IMS) + CoA-SH → Fatty acyl-CoA (Matrix) + Carnitine   [CACT + CPT2]',
+        hint: 'CACT trao đổi acyl-carnitine vào và carnitine tự do ra; CPT2 ở mặt trong màng trong tái tạo acyl-CoA trong matrix.'
       },
+      // Bước 6: β-Oxy hóa phân giải acyl-CoA → Acetyl-CoA + FADH₂ + NADH
       {
         id: 'regbeta', step: 6, enzyme: 'betaoxenz',
         substrates: ['facylcoamat'], products: ['acetylcoamat'],
         ins: ['fad', 'nad'], outs: ['fadh2', 'nadh'],
         arrows: [{ from: 'facylcoamat', to: 'acetylcoamat' }],
         cof: TOP_BOTTOM, irreversible: true, type: 'β-Oxidation',
-        equation: 'Fatty acyl-CoA (Matrix) → Acetyl-CoA + FADH₂ + NADH (β-Oxy hóa)',
-        hint: 'Chu trình beta-oxy hóa phân giải acid béo thành acetyl-CoA trong matrix ty thể.'
+        equation: 'Fatty acyl-CoA (Matrix) + FAD + NAD⁺ → Acetyl-CoA + FADH₂ + NADH + H⁺   (mỗi vòng −2C)',
+        hint: 'Bốn phản ứng lặp (oxy hóa → hydrat hóa → oxy hóa → thiolysis) rút ngắn chuỗi acyl 2C mỗi vòng.'
       }
     ];
 
@@ -11772,36 +11785,40 @@ var lipidMolecules = {
       start: ['insulin', 'glucagon', 'acetylcoar'],
       regions: [
         {
+          // Vùng bào tương: chứa tất cả node bên trái màng ngoài ty thể
           type: 'rect',
-          label: 'Tế bào chất (Bào tương): Tổng hợp Acid béo & Điều hòa ACC',
+          label: 'Tế bào chất (Bào tương): Điều hòa ACC & Tổng hợp Acid béo',
           color: '#F1F4E4',
-          nodes: ['insulin', 'accact', 'accinact', 'acetylcoar', 'malonylcoar', 'facylcoacyt'],
-          padX: 60, padTop: 60, padBottom: 60,
-          x: 80, y: 70, w: 680, h: 1140
+          nodes: ['insulin', 'glucagon', 'accact', 'accinact', 'acetylcoar', 'malonylcoar', 'facylcoacyt'],
+          fixed: false,
+          padX: 50, padTop: 60, padBottom: 60
         },
         {
+          // Vùng ty thể: từ màng ngoài đến matrix
           type: 'rect',
-          label: 'Ty thể: Màng ngoài, Màng trong & Matrix (β-Oxy hóa)',
+          label: 'Ty thể: Màng ngoài → Màng trong → Matrix (β-Oxy hóa)',
           color: '#F7EAD5',
-          nodes: ['glucagon', 'facylcarn', 'facylcoamat', 'acetylcoamat'],
-          padX: 60, padTop: 60, padBottom: 60,
-          x: 790, y: 70, w: 1080, h: 1140
+          nodes: ['facylcarn', 'facylcoamat', 'acetylcoamat'],
+          fixed: false,
+          padX: 50, padTop: 60, padBottom: 60
         }
       ],
       membranes: [
-        { x1: 790, y1: 80, x2: 790, y2: 1200 },   // Màng ngoài ty thể (nơi có CPT1)
-        { x1: 1180, y1: 80, x2: 1180, y2: 1200 }  // Màng trong ty thể
+        { x1:  840, y1:  60, x2:  840, y2: 1240 },   // Màng ngoài ty thể (OMM – nơi CPT1)
+        { x1: 1240, y1:  60, x2: 1240, y2: 1240 }    // Màng trong ty thể (IMM – nơi CACT)
       ],
       notes: [
-        { text: 'Màng ngoài ty thể (CPT1 / CAT I)', x: 790, y: 1220, size: 16, color: '#6b5d3a', anchor: 'middle' },
-        { text: 'Màng trong ty thể (CACT / CPT2)', x: 1180, y: 1220, size: 16, color: '#6b5d3a', anchor: 'middle' },
-        { text: 'Chất nền ty thể (Matrix)', x: 1560, y: 1000, size: 16, color: '#6b5d3a', anchor: 'middle' },
-        { text: '✖ Malonyl-CoA ức chế CPT1 (Khóa β-oxy hóa khi đang tổng hợp)', x: 800, y: 920, size: 16, color: '#C0392B', anchor: 'middle' }
+        { text: 'OMM – CPT1 / CAT I',              x:  840, y: 1265, size: 15, color: '#5a4a2a', anchor: 'middle' },
+        { text: 'IMM – CACT / CPT2',               x: 1240, y: 1265, size: 15, color: '#5a4a2a', anchor: 'middle' },
+        { text: 'Matrix ty thể  →  β-Oxy hóa',    x: 1610, y:  960, size: 15, color: '#5a4a2a', anchor: 'middle' },
+        { text: '✖ Malonyl-CoA ức chế CPT1 → khóa β-oxy hóa khi đang tổng hợp acid béo',
+          x: 870, y: 980, size: 14, color: '#C0392B', anchor: 'start' }
       ],
       summary: [
-        'Insulin (no) kích hoạt phosphatase khử phosphate để bật ACC; Glucagon (đói) kích hoạt PKA gắn phosphate để tắt ACC.',
-        'Malonyl-CoA là chất ức chế dị lập thể mạnh của Carnitine Palmitoyltransferase I (CPT1 / CAT I).',
-        'Sự ức chế này ngăn chặn chu trình vô ích (futile cycle), không cho acid béo vừa tổng hợp bị đưa vào ty thể thoái hóa.'
+        'Insulin (no) → Protein phosphatase khử phosphate Ser79 → ACC hoạt động → tổng hợp Malonyl-CoA.',
+        'Glucagon (đói) → PKA phosphoryl hóa Ser79 → ACC bất hoạt → dừng tổng hợp acid béo.',
+        'Malonyl-CoA ức chế dị lập thể CPT1 (CAT I) ở màng ngoài ty thể → ngăn Fatty acyl-CoA vào ty thể.',
+        'Cơ chế này ngăn futile cycle: không cho acid béo vừa tổng hợp bị β-oxy hóa ngay lập tức.'
       ],
       region: ['lipid', 'all'], noDistractor: ['hplus', 'mg']
     };
