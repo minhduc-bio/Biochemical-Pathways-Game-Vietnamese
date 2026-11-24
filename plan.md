@@ -1,26 +1,23 @@
-# Kế Hoạch Triển Khai & Cài Đặt Sinh Tổng Hợp Lipid Vào pathway_quiz.html
+# Kế Hoạch Triển Khai & Cài Đặt Sinh Tổng Hợp Lipid Vào `pathway_quiz_vi_final.html`
 
-Tài liệu này xác định chi tiết thiết kế, quy chuẩn định danh (ID schema), cấu trúc đồ thị, logic hóa sinh và quy trình tích hợp các chu trình sinh tổng hợp lipid từ `sinh_tong_hop_lipid_mermaid.md` vào `pathway_quiz.html` theo chuẩn kiến trúc `infrastructure.md`.
+Tài liệu này xác định chi tiết thiết kế, quy chuẩn định danh (ID schema), cấu trúc đồ thị, logic hóa sinh và quy trình tích hợp đầy đủ **5 sơ đồ chi tiết + 2 sơ đồ tổng hợp** từ [`final_mermaid.md`](final_mermaid.md) (Chương 11: Trao đổi Lipid, trang 15–28) vào [`pathway_quiz_vi_final.html`](pathway_quiz_vi_final.html) theo chuẩn kiến trúc [`infrastructure.md`](infrastructure.md).
 
 ---
 
-## I. Kết quả kiểm tra mã nguồn `pathway_quiz.html` (Bước 1)
+## I. Kết quả kiểm tra mã nguồn `pathway_quiz_vi_final.html` (Bước 1)
 
-1. **Entity IDs hiện có**:
-   - `acetylcoa`, `dhap`, `tag`: Đã có trong `molecule`.
-   - `g3p`: Đã có trong `molecule` nhưng là *Glyceraldehyde 3-phosphate* (đường phân). **Bắt buộc dùng `gly3p` cho L-Glycerol 3-phosphate**.
-   - `dag`: Bổ sung trực tiếp vào `lipidMolecules` trong nhóm lipid.
-   - `acc`, `cpt1`: Đã có trong `enzyme` (`cpt1` có alias `cat1`).
-   - `atp`, `adp`, `amp`, `coa`, `co2`, `h2o`, `pi`, `ppi`, `nadph`, `nadp`, `nadh`, `nad`, `hco3`, `o2`, `fad`, `fadh2`: Đã có đầy đủ trong `cofactor`.
-2. **Cơ chế Fallback**:
-   - `structureSvg(mol)`: An toàn trả về `null` nếu không có trong `MG.geometry`, tự động vẽ text card với `short` và `name`.
-   - `note`: Tự fallback về `''` nếu thiếu, không gây lỗi runtime.
-3. **Mũi tên & Liên kết**:
-   - Engine chỉ vẽ mũi tên giữa các Node trong `p.nodes` (`L.cards`). Không trỏ trực tiếp vào `L.pills`.
-   - Điều hòa/ức chế (Malonyl-CoA ức chế CAT I) được thể hiện bằng mũi tên `link: true` đến node đại diện và `notes` trực quan.
-4. **Cơ chế đăng ký chuẩn**:
-   - Đăng ký trực tiếp vào `MG.pathways` và danh mục `lipids` trong `MG.categories` (hiển thị ngay trên menu chính).
-   - Sử dụng `compose()` cho bản đồ tổng thể `lipidssynth` và `everything-lipids`.
+1. **Entity IDs cốt lõi**:
+   - `glucose`, `acetylcoa`, `dhap`, `glycerol`, `tag`, `palmitate`, `malonylcoa`: Đã có trong `MG.entities.molecule`.
+   - `g3p`: Dành cho *Glyceraldehyde 3-phosphate* (đường phân). **Bắt buộc dùng `gly3p` cho L-Glycerol 3-phosphate**.
+   - **Molecules bổ sung theo `final_mermaid.md`**: `fascharged` (*Phức hệ FAS đã nạp*), `acylks` (*Acyl-KS + ACP-SH tự do*), `satfacylcoa` (*Acyl-CoA bão hòa*), `monounsatfacylcoa` (*Acyl-CoA không bão hòa đơn*), `nadphnode` (*NADPH + H⁺*), `dietcarb` (*Carbohydrate thức ăn*), `highglc` (*Đường huyết cao*), `lowglc` (*Đường huyết thấp*).
+   - **Cofactors bổ sung**: `carnitine` (`Carnitine`), `acpsh` (`ACP-SH`), cùng đầy đủ cofactor có sẵn (`atp`, `adp`, `amp`, `coa`, `co2`, `h2o`, `pi`, `ppi`, `nadph`, `nadp`, `nadh`, `nad`, `hco3`, `o2`, `fad`, `fadh2`).
+   - **Enzymes bổ sung**: `glycpdh` (*Đường phân + PDH complex*), `glycolysisenz` (*Đường phân*), `fascomp` (*Phức hệ FAS (7 vòng)*), `desatcompenz` (*Fatty acyl-CoA desaturase*).
+2. **Cơ chế Fallback & Ngắt dòng tiếng Việt**:
+   - `structureSvg(mol)` tự động fallback sang text card khi không có tọa độ 2D trong `MG.geometry`.
+   - Mọi phân tử tên dài (`pufa`, `apoptosis`, `fascharged`, `satfacylcoa`, `monounsatfacylcoa`) đều có `lines` ngắn gọn vừa khung `140 × 152 px` để không bị nén méo chữ (`fitText`).
+3. **Cơ chế đăng ký chuẩn**:
+   - Đăng ký trực tiếp vào `MG.pathways` và danh mục `lipids` (*Chất béo*) trong `MG.categories`.
+   - Sử dụng `compose()` cho 2 sơ đồ tổng hợp (`faoverview`, `lipidssynth`) và siêu bản đồ `everything-lipids`.
 
 ---
 
@@ -28,120 +25,77 @@ Tài liệu này xác định chi tiết thiết kế, quy chuẩn định danh 
 
 1. **Chuẩn hóa ID**:
    - Regex bắt buộc: `/^[a-z0-9]+$/` (chỉ chữ thường và chữ số, KHÔNG dấu gạch dưới `_`).
-   - Pathway IDs: `fas`, `faelong`, `tag`, `lipidsreg`, `lipidssynth`.
-   - Reaction IDs: `acc1`, `mat1`, `kr1`, `dh1`, `er1`, `loop1`, `te1`, `des9a`, `elo1`, `des9b`, `elo2`, `des12`, `des15`, `pufastep`, `des6`, `elo3`, `des5`, `pcdes1`, `pcdes2`, `etcchain`, `gpdh1`, `gk1`, `facs1`, `gpat1`, `agpat1`, `pap1`, `dgat1`, `gpl1`, `regacc1`, `regacc2`, `regacc3`, `regcpt1`, `regcact`, `regbeta`.
-2. **Tránh xung đột `g3p`**:
-   - `gly3p`: L-Glycerol 3-phosphate.
-3. **Tách bạch Molecule và Cofactor**:
-   - `ins`/`outs` chỉ chứa keys từ `MG.entities.cofactor`.
-   - `acetylcoa`, `malonylcoa`, `palmitate`... đặt ở `substrates`/`products` và `arrows`.
-4. **Pathway Object chuẩn**:
-   - Đầy đủ 14 trường: `id`, `title`, `subtitle`, `tag`, `location`, `color`, `nodes`, `reactions`, `order`, `start`, `regions`, `membranes`, `notes`, `summary`.
-5. **Quy chuẩn tọa độ & Khoảng cách (Tránh chồng lấn)**:
-   - Kích thước phần tử engine: Thẻ card $140 \times 152\text{ px}$, enzyme pill cao $34\text{ px}$, cofactor chip $30\text{ px}$, lề an toàn $14\text{ px}$.
-   - Bước lưới chuẩn:
-     - Ngang $\Delta x = 380\text{ px}$ (khoảng hở giữa các mép card: $240\text{ px}$, arrow nhìn thấy rõ ràng $70 - 90\text{ px}$).
-     - Dọc $\Delta y = 320\text{ px}$ (khoảng hở giữa các mép card: $168\text{ px}$, đủ chỗ cho enzyme pill và stack cofactor chip).
-   - `twoWay: true` cho phản ứng thuận nghịch `⇌`.
-   - Bổ sung `cof: LEFT_RIGHT` hoặc `TOP_BOTTOM` và `hint` giáo khoa ngắn gọn cho mỗi phản ứng.
+   - **Pathway IDs (5 chi tiết + 2 tổng hợp + 1 siêu bản đồ)**:
+     - Chi tiết: `fas`, `faelong`, `desatmech`, `tag`, `lipidsreg`.
+     - Tổng hợp: `faoverview` (Gộp 1+2+3+5), `lipidssynth` (Gộp 1–5), `everything-lipids` (Toàn bộ Chất béo).
+   - **Reaction IDs**:
+     - `fas`: `acc1`, `mat1`, `ks1`, `kr1`, `dh1`, `er1`, `trans1`, `rechg1`, `loop1`, `te1`.
+     - `faelong`: `des9a`, `elo1`, `des9b`, `elo2`, `des12`, `des15`, `pufastep`, `des6`, `elo3`, `des5`, `pcdes1`, `pcdes2`.
+     - `desatmech`: `etcred`, `etccyt`, `desatrxn`.
+     - `tag`: `glyc2dhap`, `gpdh1`, `gk1`, `facs1`, `gpat1`, `agpat1`, `pap1`, `dgat1`, `gpl1`.
+     - `lipidsreg`: `carb2glc`, `glc2accoa`, `regacc1`, `regacc2`, `regacc3`, `regfas`, `regcpt1`, `regcact`, `regbeta`.
+2. **Tách bạch Molecule và Cofactor**:
+   - `ins`/`outs` chỉ chứa keys từ `MG.entities.cofactor` (như `atp`, `adp`, `nadph`, `nadp`, `carnitine`, `acpsh`).
+   - Các chất nền/sản phẩm chính đặt ở `substrates`/`products` và `arrows`.
+3. **Quy chuẩn tọa độ & Chống chồng lấn (Anti-Collision Engine v2)**:
+   - Kích thước phần tử: Card `140 × 152 px`, Enzyme pill cao `34 px` (+14px mỗi dòng thêm), Cofactor chip cao `30 px`.
+   - Bước lưới chuẩn: Ngang $\Delta x \ge 420\text{ px}$, Dọc $\Delta y \ge 320\text{ px}$, toàn bộ tọa độ dương ($x \ge 180, y \ge 160$).
+   - Mọi hướng cofactor (`north`, `south`, `west`, `east`, `up`, `down`) được `resolveSide` và `placeChips` xử lý vuông góc chuẩn xác, kết hợp bộ giải va chạm đa lớp cho `pills`, `chips`, `badges`, `notes` và `regionLabel`.
 
 ---
 
-## III. Thiết kế Chi tiết 4 Phân đoạn & 1 Bản đồ Tổng (Bước 3)
+## III. Thiết kế Chi tiết 5 Phân đoạn & 2 Bản đồ Tổng hợp (Bước 3)
 
-### 1. `fas` — Tổng hợp Palmitate & Phức hệ FAS
-- **Nodes**:
-  - `acetylcoa` (350, 150), `malonylcoa` (350, 470)
-  - `acetoacetylacp` (850, 340), `hydroxybutyrylacp` (1120, 610), `butenoylacp` (850, 880), `butyrylacp` (580, 610)
-  - `palmitoylacp` (580, 930), `palmitate` (580, 1250)
-- **Reactions**:
-  - `acc1`: Acetyl-CoA + ATP + HCO₃⁻ → Malonyl-CoA + ADP + Pᵢ (Enzyme: `acc`).
-  - `mat1`: Acetyl-CoA + Malonyl-CoA → β-Ketobutyryl-ACP + CO₂ + 2 CoA-SH (Enzyme: `mat`).
-  - `kr1`: β-Ketobutyryl-ACP + NADPH + H⁺ ⇌ D-β-Hydroxybutyryl-ACP + NADP⁺ (Enzyme: `kr`, `twoWay: true`).
-  - `dh1`: D-β-Hydroxybutyryl-ACP ⇌ trans-Δ²-Butenoyl-ACP + H₂O (Enzyme: `dhfas`, `twoWay: true`).
-  - `er1`: trans-Δ²-Butenoyl-ACP + NADPH + H⁺ → Butyryl-ACP + NADP⁺ (Enzyme: `er`).
-  - `loop1`: Butyryl-ACP (C4) tái nạp Malonyl-CoA lặp 7 vòng → Palmitoyl-ACP (C16) (Enzyme: `ks`). Có liên kết lặp `link: true` quay về ACP.
-  - `te1`: Palmitoyl-ACP + H₂O → Palmitate + ACP (Enzyme: `te`).
+### 1. `fas` — Tổng hợp Malonyl-CoA & Chu trình Palmitate (Trang 16–22)
+- **Nodes (10)**:
+  - Tiền chất & nạp phức hệ: `acetylcoa` (200, 160), `malonylcoa` (200, 520), `fascharged` (680, 340).
+  - Chu trình 6 bước lặp 7 vòng: `acetoacetylacp` (1120, 160), `hydroxybutyrylacp` (1560, 340), `butenoylacp` (1560, 700), `butyrylacp` (1120, 880), `acylks` (680, 700).
+  - Giải phóng sản phẩm: `palmitoylacp` (200, 1180), `palmitate` (200, 1520).
+- **Reactions (10)**: `acc1` → `mat1` → `ks1` → `kr1` (`⇌`) → `dh1` (`⇌`) → `er1` → `trans1` → `rechg1` (`link: true` về `fascharged`) → `loop1` (7 vòng) → `te1` (`+H₂O, -ACP-SH`).
 
-### 2. `faelong` — Kéo dài mạch, Khử bão hòa & Hệ Acyl-CoA Desaturase
-- **Nodes (bố trí dạng lưới ma trận 5 hàng, $\Delta x = 380\text{px}$, $\Delta y = 320\text{px}$)**:
-  - Hàng 0 (Màng Phosphatidylcholine, $y = 100$): `pcoleate` (960, 100), `pclinoleate` (1340, 100), `pclinolenate` (1720, 100).
-  - Hàng 1 (Trục chính, $y = 420$): `palmitate` (200, 420), `stearate` (580, 420), `oleate` (960, 420), `linoleate` (1340, 420), `alinolenate` (1720, 420), `pufa` (2100, 420).
-  - Hàng 2 (Nhánh phân nhánh, $y = 740$): `palmitoleate` (200, 740), `lsf` (580, 740), `glinolenate` (1340, 740).
-  - Hàng 3 (Nhánh Arachidonate, $y = 1060$): `eicosatrienoate` (1340, 1060), `arachidonate` (1720, 1060).
-  - Hàng 4 (Chuỗi truyền e⁻ Desaturase, $y = 1380$): `cytb5red` (960, 1380), `cytb5` (1340, 1380), `desatcomp` (1720, 1380).
-- **Reactions (13 phản ứng)**:
-  - `des9a`: Palmitate → Palmitoleate (Enzyme: `desat9`).
-  - `elo1`: Palmitate → Stearate (Enzyme: `elongase`).
-  - `des9b`: Stearate → Oleate (Enzyme: `desat9`).
-  - `elo2`: Stearate → LSF (Enzyme: `elongase`).
-  - `des12`: Oleate → Linoleate (Enzyme: `desat12`, chỉ có ở thực vật).
-  - `des15`: Linoleate → α-Linolenate (Enzyme: `desat15`, chỉ có ở thực vật).
-  - `pufastep`: α-Linolenate → Other PUFAs (EPA, DHA).
-  - `des6`: Linoleate → γ-Linolenate (Enzyme: `desat6`, động vật).
-  - `elo3`: γ-Linolenate → Eicosatrienoate (Enzyme: `elongase`).
-  - `des5`: Eicosatrienoate → Arachidonate (Enzyme: `desat5`).
-  - `pcdes1`: PC-Oleate → PC-Linoleate (Enzyme: `desat12`).
-  - `pcdes2`: PC-Linoleate → PC-Linolenate (Enzyme: `desat15`).
-  - `etcchain`: NADPH → Cyt b₅ reductase (FAD) → 2 Cyt b₅ (Fe³⁺/Fe²⁺) → Desaturase (Enzyme: `cb5r`).
+### 2. `faelong` — Tổng hợp các axit béo no & không no khác (Trang 16, 23 & 27)
+- **Nodes (14, không trùng tọa độ, không tọa độ âm)**:
+  - Hàng 0 (Màng Phosphatidylcholine, $y = 160$): `pcoleate` (640, 160), `pclinoleate` (1080, 160), `pclinolenate` (1520, 160).
+  - Hàng 1 (Trục chính từ Palmitate, $y = 500$): `palmitate` (200, 500), `stearate` (640, 500), `oleate` (1080, 500), `linoleate` (1520, 500), `alinolenate` (1960, 500), `pufa` (2400, 500).
+  - Hàng 2 ($y = 840$): `palmitoleate` (200, 840), `lsf` (640, 840), `glinolenate` (1520, 840).
+  - Hàng 3 (Nhánh Arachidonate, $y = 1180$): `eicosatrienoate` (1520, 1180), `arachidonate` (1960, 1180).
+- **Reactions (12)**: `des9a`, `elo1`, `des9b`, `elo2`, `des12`, `des15`, `pufastep`, `des6`, `elo3`, `des5`, `pcdes1`, `pcdes2`.
 
-### 3. `tag` — Sinh tổng hợp Triacylglycerol & Glycerophospholipid
-- **Nodes**:
-  - Nhánh Glycerol bên trái: `glycerol` (150, 150), `dhap` (530, 150), `gly3p` (340, 470).
-  - Nhánh Acid béo hoạt hóa bên phải: `fattyacid` (910, 150), `fattyacylcoa` (910, 470).
-  - Trục trung tâm gắn Acyl: `lysopa` (340, 790), `pa` (340, 1110).
-  - Rẽ nhánh đôi ở đáy: `dag` (200, 1430), `tag` (200, 1750), `gpl` (580, 1430).
-- **Reactions (8 phản ứng)**:
-  - `gpdh1`: DHAP + NADH + H⁺ ⇌ gly3p + NAD⁺ (Enzyme: `gpdh`, `twoWay: true`).
-  - `gk1`: Glycerol + ATP → gly3p + ADP (Enzyme: `gk`).
-  - `facs1`: Fatty acid + ATP + CoA-SH → Fatty acyl-CoA + AMP + PPᵢ (Enzyme: `facs`).
-  - `gpat1`: gly3p + Fatty acyl-CoA → Lysophosphatidic acid + CoA-SH (Enzyme: `gpat`).
-  - `agpat1`: Lysophosphatidic acid + Fatty acyl-CoA → Phosphatidic acid + CoA-SH (Enzyme: `agpat`).
-  - `pap1`: Phosphatidic acid + H₂O → 1,2-DAG + Pᵢ (Enzyme: `pap`).
-  - `dgat1`: 1,2-DAG + Fatty acyl-CoA → Triacylglycerol + CoA-SH (Enzyme: `dgat`).
-  - `gpl1`: Phosphatidic acid + Head group → Glycerophospholipid (Enzyme: `cdpdags`).
+### 3. `desatmech` — Cơ chế tạo nối đôi bởi hệ Acyl-CoA Desaturase (Trang 24)
+- **Nodes (5)**:
+  - Chuỗi truyền electron ghép cặp (Màng ER): `nadphnode` (200, 180), `cytb5red` (660, 180), `cytb5` (1120, 180).
+  - Phản ứng khử bão hòa: `satfacylcoa` (660, 540), `monounsatfacylcoa` (1120, 540).
+- **Reactions (3)**: `etcred` (`NADPH + H⁺ → Cyt b₅ reductase`, `-NADP⁺`), `etccyt` (`Cyt b₅ reductase → 2 Cyt b₅`), `desatrxn` (`Saturated acyl-CoA + O₂ → Monounsaturated acyl-CoA + 2 H₂O`, kèm mũi tên `link: true` từ `cytb5`).
 
-### 4. `lipidsreg` — Điều hòa đối kháng ACC – CAT I
-- **Nodes**:
-  - Trục nội tiết điều hòa: `insulin` (200, 200), `accact` (580, 200), `accinact` (580, 480), `glucagon` (960, 480).
-  - Trục Bào tương: `acetylcoar` (200, 760), `malonylcoar` (580, 760), `facylcoacyt` (580, 1080).
-  - Trục Ty thể: `facylcarn` (990, 1080), `facylcoamat` (1370, 1080), `acetylcoamat` (1750, 1080).
-- **Membranes**:
-  - Màng ngoài ty thể (nơi có CPT1 / CAT I): `{ x1: 790, y1: 80, x2: 790, y2: 1200 }`
-  - Màng trong ty thể: `{ x1: 1180, y1: 80, x2: 1180, y2: 1200 }`
-- **Reactions (6 phản ứng)**:
-  - `regacc1`: accinact → accact (Phosphatase khử phosphate, kích hoạt bởi Insulin).
-  - `regacc2`: accact → accinact (PKA gắn phosphate, kích hoạt bởi Glucagon).
-  - `regacc3`: acetylcoar + ATP + HCO₃⁻ → malonylcoar + ADP + Pᵢ (Enzyme: `acc`).
-  - `regcpt1`: facylcoacyt + Carnitine → facylcarn + CoA-SH (Enzyme: `cpt1`, bị `malonylcoar` ức chế qua `link: true` và ghi chú trực quan).
-  - `regcact`: facylcarn → facylcoamat (Chuyển vị qua CACT và CPT2).
-  - `regbeta`: facylcoamat → acetylcoamat (β-oxidation trong chất nền ty thể).
+### 4. `tag` — Sinh tổng hợp Triacylglycerol & Glycerophospholipid (Trang 25–26)
+- **Nodes (11)**:
+  - Nhánh tạo khung Glycerol: `glucose` (620, 160), `glycerol` (180, 480), `dhap` (620, 480), `gly3p` (400, 820).
+  - Nhánh hoạt hóa axit béo: `fattyacid` (1060, 480), `fattyacylcoa` (1060, 820).
+  - Trục trung tâm & rẽ nhánh: `lysopa` (400, 1160), `pa` (400, 1500), `dag` (400, 1840), `tag` (400, 2180), `gpl` (800, 1500).
+- **Reactions (9)**: `glyc2dhap`, `gpdh1` (`cof: east/east`), `gk1` (`cof: west/west`), `facs1`, `gpat1`, `agpat1`, `pap1`, `dgat1`, `gpl1`.
 
-### 5. `lipidssynth` & `everything-lipids` — Ghép nối bằng `compose()`
-- **`lipidssynth`**:
-  - `fas`: `(0, 0)`
-  - `faelong`: `dx: 380, dy: 830`, `share: { palmitate: 'palmitate' }` (Khớp tuyệt đối từng pixel tại điểm nút Palmitate (580, 1250)).
-  - `tag`: `dy: 2350` (Tọa độ tự do, độc lập).
-  - `lipidsreg`: `dx: 1200, dy: 2350` (Tọa độ tự do, độc lập).
-- **`everything-lipids`**:
-  - `betaox`: `(0, 0)`
-  - `fas`: `dx: 1200, dy: 0`
-  - `faelong`: `dx: 1580, dy: 830`, `share: { palmitate: 'palmitate' }`
-  - `tag`: `dy: 1600`
-  - `lipidsreg`: `dx: 1200, dy: 2450`
+### 5. `lipidsreg` — Điều hòa trao đổi axit béo qua trục ACC & CAT I (Trang 28)
+- **Nodes (15)**:
+  - Hàng 0 (Tín hiệu): `dietcarb` (180, 160), `highglc` (600, 160), `insulin` (1020, 160), `lowglc` (1460, 160).
+  - Hàng 1 (Glucose & ACC): `glucose` (180, 480), `accact` (1020, 480), `accinact` (1460, 480), `glucagon` (1900, 480).
+  - Hàng 2 (Bào tương): `acetylcoar` (180, 820), `malonylcoar` (620, 820), `palmitate` (1020, 820).
+  - Hàng 3 (Ty thể): `facylcoacyt` (620, 1180), `facylcarn` (1220, 1180), `facylcoamat` (1720, 1180), `acetylcoamat` (2200, 1180).
+- **Membranes**: Màng ngoài ty thể OMM (`x = 930`), Màng trong ty thể IMM (`x = 1470`).
+- **Reactions (9)**: `carb2glc`, `glc2accoa`, `regacc1` (`shift: [0, 36]`), `regacc2` (`shift: [0, -36]`), `regacc3`, `regfas`, `regcpt1` (bị `malonylcoar` ức chế qua `link: true`), `regcact`, `regbeta`.
+
+### 6. Các Sơ Đồ Tổng Hợp (`faoverview`, `lipidssynth`, `everything-lipids`)
+- **`faoverview` (Gộp 1 + 2 + 3 + 5)**: `fas` `(0, 0)` + `faelong` `(0, 1020, share: palmitate)` + `desatmech` `(0, 2540)` + `lipidsreg` `(2700, 0)`.
+- **`lipidssynth` (Gộp 1–5)**: `fas` `(0, 0)` + `faelong` `(0, 1020, share: palmitate)` + `desatmech` `(0, 2540)` + `tag` `(2700, 1650)` + `lipidsreg` `(2700, 0)`.
+- **`everything-lipids`**: `betaox` `(0, 0)` + `fas` `(1400, 0)` + `faelong` `(1400, 1020, share: palmitate)` + `desatmech` `(1400, 2540)` + `tag` `(0, 1850)` + `lipidsreg` `(4100, 0)`.
 
 ---
 
-## IV. Kết quả Kiểm thử & Trạng thái Hoàn thành (Bước 4)
+## IV. Quy Trình Kiểm Thử & Tiêu Chuẩn Nghiệm Thu (Bước 4)
 
-1. **Kiểm tra Schema Tĩnh (`tools/verify_installed_html.js`)**:
-   - Toàn bộ 5 sơ đồ đơn và 2 bản đồ tổng đạt chuẩn 100%.
-   - Mọi `pathway.id` và `reaction.id` khớp regex `/^[a-z0-9]+$/`.
-   - Mọi `node.mol` $\in$ `MG.entities.molecule`.
-   - Mọi `reaction.enzyme` $\in$ `MG.entities.enzyme`.
-   - Mọi `ins`/`outs` $\in$ `MG.entities.cofactor`.
-   - Mọi `substrates`, `products`, `arrows` $\in$ `pathway.nodes`.
-2. **Kiểm tra Môi trường Trình duyệt Thực tế (`tools/test_browser_render.js`)**:
-   - Chạy trên Google Chrome Headless qua giao thức CDP (Chrome DevTools Protocol).
-   - `MG.chart.create` render thành công 100% SVG DOM cho cả 6 bản đồ (`fas`, `faelong`, `tag`, `lipidsreg`, `lipidssynth`, `everything-lipids`).
-   - Khoảng cách các thẻ card đạt chuẩn không chồng lấn, các enzyme pills và cofactor chips nằm đúng rãnh hiển thị, không bị cắt mép.
+1. **Kiểm tra Schema Tĩnh (`node tools/verify_installed_html.js`)**:
+   - Kiểm tra 100% ID hợp lệ (`/^[a-z0-9]+$/`), tham chiếu `molecule`/`enzyme`/`cofactor`/`nodes`, `layoutPathway` và `MG.slots.list` trên toàn bộ 8 bản đồ lipid.
+2. **Kiểm tra Chồng Lấn Hình Học Thực Tế (`node tools/audit_overlaps.js`)**:
+   - Chạy trên Google Chrome Headless qua CDP, đo `getBBox()` thực tế của mọi `.mgc-node`, `.mgc-pill`, `.mgc-badge`, `.mgc-chip`, `.mgc-note`, `.mgc-region-tag` trên toàn bộ các sơ đồ.
+   - Điều kiện đạt: **0 overlap** và **0 text overflow/squish** trên tất cả sơ đồ.
+3. **Kiểm thử E2E Trình Duyệt (`node tools/test_browser_render.js`, `tests/test_all_modes_play.js`, `tests/verify_ui_flows.js`)**:
+   - Xác minh render SVG DOM và tương tác các chế độ chơi hoạt động ổn định.

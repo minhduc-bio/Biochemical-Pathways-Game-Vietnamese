@@ -5,7 +5,7 @@ const os = require('os');
 const fs = require('fs');
 
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const htmlPath = path.resolve('pathway_quiz.html');
+const htmlPath = path.resolve('pathway_quiz_vi_final.html');
 const PORT = 9228;
 
 console.log("=== KIỂM TRA CHƠI 3 CHẾ ĐỘ & CHẾ ĐỘ ĐIỀN VÀO CHỖ TRỐNG NHẬN ĐÁP ÁN TIẾNG ANH ===");
@@ -21,18 +21,28 @@ async function runPlayTest() {
     `file://${htmlPath}`
   ]);
 
-  await new Promise(r => setTimeout(r, 1500));
-
   try {
-    const list = await new Promise((resolve, reject) => {
-      http.get(`http://127.0.0.1:${PORT}/json`, (res) => {
-        let d = '';
-        res.on('data', c => d += c);
-        res.on('end', () => resolve(JSON.parse(d)));
-      }).on('error', reject);
-    });
-
-    const page = list.find(p => p.type === 'page');
+    let page = null;
+    let lastErr = null;
+    for (let attempt = 0; attempt < 25; attempt++) {
+      try {
+        const list = await new Promise((resolve, reject) => {
+          http.get(`http://127.0.0.1:${PORT}/json`, (res) => {
+            let d = '';
+            res.on('data', c => d += c);
+            res.on('end', () => {
+              try { resolve(JSON.parse(d)); } catch (e) { reject(e); }
+            });
+          }).on('error', reject);
+        });
+        page = list.find(p => p.type === 'page');
+        if (page) break;
+      } catch (e) {
+        lastErr = e;
+      }
+      await new Promise(r => setTimeout(r, 300));
+    }
+    if (!page) throw lastErr || new Error(`No Chrome page target found on port ${PORT}`);
     const ws = new WebSocket(page.webSocketDebuggerUrl);
 
     let id = 1;
@@ -63,11 +73,16 @@ async function runPlayTest() {
       return res.result.value;
     }
 
-    // Wait until DOM is ready
+    // Wait until DOM and controls are ready
     await evaluate(`new Promise(resolve => {
-      if (document.querySelector('[data-key="start"]')) return resolve(true);
-      window.addEventListener('DOMContentLoaded', () => resolve(true));
-      setTimeout(resolve, 2000);
+      const start = Date.now();
+      (function poll() {
+        if (document.querySelector('[data-key="mode:build"]') && document.querySelector('[data-key="start"]')) {
+          return resolve(true);
+        }
+        if (Date.now() - start >= 5000) return resolve(false);
+        setTimeout(poll, 100);
+      })();
     })`);
 
     // 1. Test Mode Build

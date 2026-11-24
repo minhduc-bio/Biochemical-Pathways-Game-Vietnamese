@@ -1,12 +1,4 @@
-Ran inspect line 7310-7325
-Ran inspect pack registration lines 15150-15230
-Ran find advanced pack pathways and groups
-Ran find P.pathways assignments
-Ran inspect ureaCyclePart
-Ran inspect urea pathway export
-Ran find .mgc- CSS classes
-
-Qua việc xem xét và dịch ngược kiến trúc mã nguồn của ứng dụng đơn file HTML (`pathway_quiz.html`, ~32.500 dòng code, ~1.78 MB), dưới đây là phân tích toàn diện về **cấu trúc dữ liệu, nguyên lý dựng hình SVG, cơ chế tương tác và phương án tái sử dụng kiến trúc** để mở rộng thêm nhiều quá trình/chu trình chuyển hóa mới.
+Qua việc xem xét và dịch ngược kiến trúc mã nguồn của ứng dụng đơn file HTML (`pathway_quiz_vi_final.html`, ~33.900 dòng code, ~1.93 MB), dưới đây là phân tích toàn diện về **cấu trúc dữ liệu, nguyên lý dựng hình SVG, kiến trúc chống chồng lấn và phương án mở rộng** để phát triển các quá trình/chu trình chuyển hóa mới.
 
 ---
 
@@ -140,9 +132,11 @@ Mỗi phản ứng trong mảng `reactions` kết nối các `nodes` lại với
   products: ['citrate'],               // ID các node đầu ra (Node IDs)
   ins: ['h2o'],                        // Cofactor đi vào (mũi tên chỉ vào)
   outs: ['coa'],                       // Cofactor đi ra (mũi tên chỉ ra)
-  arrows: [                            // Định nghĩa mũi tên nối các Card
+  arrows: [                            // Định nghĩa mũi tên nối các Card hoặc Enzyme Pill
     { from: 'oaa', to: 'citrate' },
-    { from: 'acetylcoa', to: 'citrate', via: [{ x: 900, y: 600 }] } // 'via' tạo đường cong
+    { from: 'acetylcoa', to: 'citrate', via: [{ x: 900, y: 600 }] }, // 'via' tạo đường cong
+    // Mũi tên điều hòa (ức chế / hoạt hóa):
+    { from: 'malonylcoar', to: 'facylcarn', toPill: 'regcpt1', link: true, effect: 'inhibit', dashed: true, badge: '−' }
   ],
   twoWay: false,                       // true: mũi tên hai chiều thuận nghịch ⇌
   irreversible: true,                  // true: phản ứng một chiều →
@@ -188,9 +182,23 @@ Codebase đã giải quyết rất thông minh bài toán bố cục sơ đồ t
 
 ### 3.2. Thuật toán tự động hóa hình học trong Engine
 - **Tự động cắt xén mũi tên (`clipRoute`)**: Mũi tên không bao giờ đè lên viền hộp phân tử mà tự động dừng tại khoảng cách chuẩn `CARD_W/2 + ARROW_GAP`.
-- **Tránh va chạm nhãn enzyme (`choosePill`)**: Nhãn enzyme (Pill hình viên con nhộng) tự động trượt dọc theo đoạn nối ($f \in [0.25, 0.75]$) và thử các độ rộng khác nhau để chọn vị trí **không đè lên bất kỳ phân tử nào**.
-- **Tự động định vị Cofactor (`placeBadges` / `paintChip`)**: Các phân tử phụ (ATP, NADH, CO₂) được xếp hàng vuông góc với hướng phản ứng cùng dây nối mảnh (`connector`).
-- **Tự tính toán Viewport (`bounds`)**: Tự động tính Bounding Box bao quanh toàn bộ các nút và vùng nền để gán `viewBox` cho SVG, giúp sơ đồ tự co giãn (responsive) trên mọi kích thước màn hình.
+- **Tránh va chạm nhãn enzyme (`choosePill`)**: Nhãn enzyme (Pill hình viên con nhộng) tự động trượt dọc theo đoạn nối ($f \in [0.25, 0.75]$), thử các độ rộng khác nhau và dịch vuông góc (`perps`) để chọn vị trí **không đè lên cards, pills, badges hoặc chips đã đặt**.
+- **Tự động định vị Cofactor (`placeChips`)**: Các phân tử phụ (ATP, NADH, CO₂, Carnitine) được xếp hàng trên trục vuông góc với hướng pháp tuyến `n` (hỗ trợ đầy đủ `'north'`, `'south'`, `'west'`, `'east'`, `'up'`, `'down'`, `'L'`, `'R'`), kèm bộ kiểm tra va chạm tự động dời `offDelta`/`shiftS` hoặc đảo phía khi cần.
+- **Tự tính toán Viewport (`bounds`)**: Tự động tính Bounding Box bao quanh toàn bộ các nút, vùng nền, nhãn vùng và chú thích để gán `viewBox` cho SVG.
+
+### 3.3. Kiến trúc Chống Chồng Lấn (Anti-Collision Layout Engine v2)
+1. **Bảo vệ chống `NaN` khi node trùng tọa độ**: Trong `layoutReaction`, nếu khoảng cách giữa `from` và `to` nhỏ hơn `1 px`, engine ghi log lỗi định danh rõ ràng và dùng vector fallback thay vì để `exitDist()` trả về `Infinity`.
+2. **Giải phóng xung đột Non-Node Components**:
+   - `choosePill` kiểm tra va chạm với toàn bộ `cards` + `pills` + `badges` + `chips` đã đặt, đồng bộ chiều cao `ph = PILL_H + (lines.length - 1) * 14` khớp với `lh = 13.5` và `CHAR_EM = 0.61` cho tiếng Việt có dấu.
+   - `placeChips` tách riêng trục xếp chồng `s ⟂ n` (không dùng `d` trực tiếp trên mũi tên chéo), triệt tiêu lỗi chip đâm ngược vào pill.
+   - `regionLabel` kiểm tra va chạm với `solid` (`cards`, `pills`, `badges`, `chips`), tự động thử nhiều mức `y` và dịch `x` khi bị chặn.
+   - **Per-note collision solver** trong `layoutPathway`: Xử lý độc lập từng `note` (thay vì 1 `shift` toàn cục), kiểm tra va chạm với `solid`, `regionLabel` và các `note` trước đó, đảm bảo note luôn nằm gọn bên trong `rectRegion` của mình.
+3. **Auto-scaling Regions (`regionGeom`)**: Các khung vùng nền có `nodes: [...]` và `fixed !== true` tự động co giãn bao trọn toàn bộ card, pill, badge và chip thuộc vùng đó.
+4. **Mũi tên điều hòa chuẩn hóa sinh (`effect: 'inhibit' | 'activate'`, `dashed`, `badge`, `toPill`)**:
+   - Hỗ trợ `toPill: '<rxnId>'` cho phép mũi tên điều hòa trỏ thẳng vào mép enzyme pill đích (sau khi `choosePill` và `placeBadges` hoàn tất).
+   - `effect: 'inhibit'` tự động render nét đứt màu đỏ (`#C0392B` / dark `#F87171`), đầu chặn ngang **T-bar (`⊣`)** bằng `bluntAt(pts)` thay cho đầu tam giác, và nhãn tròn `−` tại trung điểm đoạn nối.
+   - `effect: 'activate'` render nét đứt màu xanh (`#15803D` / dark `#4ADE80`) kèm nhãn tròn `+`.
+   - Toàn bộ thuộc tính điều hòa được `compose()` bảo toàn nguyên vẹn trên các bản đồ gộp và được `MG.slots.list()` đảm bảo mọi node tham chiếu trong `arrows` đều có DOM card.
 
 ---
 
@@ -357,8 +365,8 @@ MG.categories.push({
 
 | Điểm nghẽn hiện tại | Phân tích vấn đề | Đề xuất giải pháp kiến trúc |
 | :--- | :--- | :--- |
-| **File nguyên khối (Monolith ~1.78 MB)** | Code logic, CSS, dữ liệu hàng trăm chất và con đường gộp chung trong 1 file, rất khó bảo trì hoặc làm việc theo nhóm. | **Module hóa mã nguồn**: Tách thành các file nhỏ (`entities/`, `pathways/`, `engine/`). Dùng Vite hoặc một script bundle nhỏ (như Rollup/Python script) để tự động xuất ra 1 file HTML duy nhất khi release. |
-| **Tọa độ nút vẫn phải tính thủ công** | Mỗi khi tạo chu trình mới, lập trình viên vẫn phải tự viết hàm tính $(x, y)$ hoặc nhẩm tọa độ. | **Xây dựng Factory Helper**: Tạo các hàm tiện ích chuẩn hóa như `createCircularLayout({ center, radius, steps, metabolites })` hoặc `createPathwayBuilder()` để chỉ cần truyền mảng các chất theo thứ tự vòng tròn, vị trí sẽ tự động phát sinh. |
-| **Xác thực dữ liệu (Validation)** | Nếu một phản ứng gõ nhầm tên substrate không có trong danh sách nodes, app có thể bị crash khi chạy mà không báo lỗi sớm. | **Schema Validator**: Tạo một script kiểm thử ngắn (chạy trên Node.js hoặc Python) duyệt qua `MG.pathways`, kiểm tra tính toàn vẹn tham chiếu giữa `reactions.substrates` và `nodes`, cũng như giữa `nodes.mol` và `MG.entities.molecule`. |
+| **File nguyên khối (Monolith ~1.93 MB)** | Code logic, CSS, dữ liệu hàng trăm chất và con đường gộp chung trong `pathway_quiz_vi_final.html`, tiện cho phân phối offline nhưng cần kỷ luật khi sửa. | Duy trì cấu trúc module hóa logic bên trong IIFE và giữ sạch root project (archive các bản cũ vào `archive/`). |
+| **Tọa độ nút & ghép `compose()`** | Khi thêm chu trình mới hoặc ghép bản đồ tổng (`compose`), cần tính khoảng đệm giữa các block dựa trên bounding box thực tế. | Chuẩn hóa bước lưới $\Delta x \ge 420\text{ px}, \Delta y \ge 320\text{ px}$ và sử dụng `tools/coordinate_studio/` để tinh chỉnh trực quan. |
+| **Xác thực dữ liệu & Chồng lấn (Validation)** | Dữ liệu mới hoặc tên tiếng Việt dài có thể gây thiếu tham chiếu hoặc chồng lấn giữa pill, chip, note và region label. | Chạy bộ kiểm thử 2 lớp: `node tools/verify_installed_html.js` (Schema) và `node tools/audit_overlaps.js` (Headless Chrome `getBBox()` 0-overlap gate). |
 
 Với kiến trúc này, bạn hoàn toàn có thể mở rộng thêm hàng chục quá trình chuyển hóa khác (chu trình Calvin, thoái hóa/tổng hợp purine/pyrimidine, chu trình Cori, chuyển hóa lipid...) một cách nhất quán, bền vững và tận dụng trọn vẹn toàn bộ các chế độ tương tác học tập đã có sẵn trong ứng dụng.

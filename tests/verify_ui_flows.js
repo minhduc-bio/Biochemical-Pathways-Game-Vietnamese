@@ -9,7 +9,7 @@ const http = require('http');
 const path = require('path');
 
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const htmlPath = path.resolve('pathway_quiz.html');
+const htmlPath = path.resolve('pathway_quiz_vi_final.html');
 const PORT = 9227;
 
 console.log("=== BẮT ĐẦU KIỂM THỬ TỰ ĐỘNG CÁC LUỒNG THAO TÁC UI ===");

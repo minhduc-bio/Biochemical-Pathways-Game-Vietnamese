@@ -1,6 +1,8 @@
 scratch/
 screenshots/
 FX-Cute-Dino.ttf
+archive/
+node_modules/
 
 # Local translation GUI, mockups & compiler artifacts
 translation_gui_mockup.html
