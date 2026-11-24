@@ -1661,8 +1661,8 @@ var lipidMolecules = {
       note: 'Enzyme gắn màng ER xúc tác phản ứng tạo liên kết đôi cis đồng thời khử O₂ thành 2 H₂O.'
     },
     dag: {
-      name: '1,2-Diacylglycerol (DAG)', short: 'DAG', family: 'lipid', lines: ['1,2-Diacylglycerol', '(DAG)'],
-      aliases: ['dag', 'diacylglycerol', '1,2-diacylglycerol', 'diglyceride', '1,2-dag'],
+      name: '1,2-Diacylglycerol (DAG)', short: 'DAG', family: 'lipid', region: 'both', lines: ['1,2-Diacylglycerol', '(DAG)'],
+      aliases: ['dag', 'diacylglycerol', '1,2-diacylglycerol', 'diglyceride', 'diacylglycerol (dag)', '1,2-dag'],
       note: 'Chất trung gian mang hai gốc acyl và một nhóm OH tự do, tiền chất trực tiếp để tổng hợp TAG.'
     },
     gly3p: {
@@ -1711,13 +1711,13 @@ var lipidMolecules = {
       note: 'Dạng bất hoạt của Acetyl-CoA carboxylase bị PKA hoặc AMPK gắn nhóm phosphate.'
     },
     insulin: {
-      name: 'Insulin (Đường huyết cao)', short: 'Insulin', family: 'messenger', lines: ['Insulin', '(Đường huyết cao)'],
-      aliases: ['insulin', 'high glucose', 'high blood glucose'],
+      name: 'Insulin (Đường huyết cao)', short: 'Insulin', family: 'messenger', region: 'both', lines: ['Insulin', '(Đường huyết cao)'],
+      aliases: ['insulin', 'insulin (hormone)', 'binding of insulin', 'the hormone insulin', 'high glucose', 'high blood glucose'],
       note: 'Hormone kích thích protein phosphatase khử phosphate hoạt hóa ACC, thúc đẩy tổng hợp lipid.'
     },
     glucagon: {
-      name: 'Glucagon / Epinephrine (Đường huyết thấp)', short: 'Glucagon', family: 'messenger', lines: ['/ Epinephrine', '(Đường huyết thấp)'],
-      aliases: ['glucagon', 'epinephrine', 'low glucose', 'low blood glucose'],
+      name: 'Glucagon / Epinephrine (Đường huyết thấp)', short: 'Glucagon', family: 'messenger', region: 'both', lines: ['/ Epinephrine', '(Đường huyết thấp)'],
+      aliases: ['glucagon', 'glucagon hormone', 'glucagon (hormone)', 'epinephrine', 'low glucose', 'low blood glucose'],
       note: 'Hormone báo hiệu đói/stress, hoạt hóa PKA phosphoryl hóa bất hoạt ACC, tắt tổng hợp acid béo.'
     },
     facylcoacyt: {
@@ -1914,8 +1914,9 @@ var lipidMolecules = {
       note: 'Khử nhóm phosphate gắn trên ACC dưới kích thích của insulin, chuyển ACC sang trạng thái hoạt động.'
     },
     pka: {
-      name: 'Protein kinase A (PKA)', short: 'PKA', ec: '2.7.11.11', family: 'kinase',
-      aliases: ['pka', 'protein kinase a'],
+      name: 'Protein kinase A (PKA)', short: 'PKA', ec: '2.7.11.11', family: 'kinase', region: 'both', lines: ['Protein kinase A', '(PKA)'],
+      aliases: ['pka', 'protein kinase a', 'camp-dependent protein kinase', 'cyclic amp-dependent protein kinase', 'camp dependent protein kinase', 'a-kinase', 'protein kinase a (pka)'],
+      confusable: ['pkc', 'camk', 'phk'],
       note: 'Gắn nhóm phosphate vào ACC dưới kích thích của glucagon/epinephrine, ức chế tổng hợp acid béo khi đói.'
     },
     cact: {

@@ -1189,7 +1189,16 @@ backdropTimer = setTimeout(paintBackdrop, 180);
 function start(rootEl) {
 if (app) { return; }
 var host = rootEl || document.getElementById('app') || document.body;
-if (MG.packs && typeof MG.packs.apply === 'function') { MG.packs.apply(MG.packs.savedFlag()); }
+var packBootError = false;
+if (MG.packs && typeof MG.packs.apply === 'function') {
+try {
+MG.packs.apply(MG.packs.savedFlag());
+} catch (err) {
+console.error(err);
+packBootError = true;
+writeSettings({ advanced: false });
+}
+}
 applyTheme();
 loadCourseState();
 backdrop = el('div', { class: 'mg-backdrop', 'aria-hidden': 'true' });
@@ -1216,6 +1225,9 @@ navStack = [{ screen: 'select', route: 'select', summary: null, course: null }];
 applyRoute(initRoute);
 } else {
 showSelect();
+}
+if (packBootError) {
+toast('Không thể bật chế độ Nâng cao; đã quay về chế độ cơ bản');
 }
 }
 function ensure() {

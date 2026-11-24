@@ -2943,11 +2943,6 @@ name: 'PIP2 (phosphatidylinositol 4,5-bisphosphate)', short: 'PIP2', family: 'si
 aliases: ['pip2', 'phosphatidylinositol 4,5-bisphosphate', 'phosphatidylinositol bisphosphate', 'pi 4,5-bisphosphate', 'ptdins(4,5)p2', 'pi(4,5)p2', 'pip2 (phosphatidylinositol 4,5-bisphosphate)'],
 note: 'Một phospholipid ở lớp trong màng sinh chất: gồm vòng inositol có phosphat ở carbon 4 và 5, nối qua liên kết phosphodiester với diacylglycerol. Ở đây hai mạch acyl được vẽ là R. Bản thân nó không phải thụ thể cũng không phải chất truyền tin mà là tiền chất, và sản phẩm tạo ra từ nó tùy thuộc vào con đường tín hiệu.'
 };
-molecule.dag = {
-name: 'Diacylglycerol (DAG)', short: 'DAG', family: 'siglipid', region: 'sig', lines: ['Diacylglycerol', '(DAG)'],
-aliases: ['dag', 'diacylglycerol', '1,2-diacylglycerol', 'diglyceride', 'diacylglycerol (dag)', '1,2-dag'],
-note: 'Nửa không phân cực của PIP2 sau khi phospholipase C cắt tách. Nó ở lại trên màng sinh chất và hoạt hóa protein kinase C tại đó. Ở đây hai mạch acyl được vẽ là R.'
-};
 card('hormone', 'Hormone', 'Hormone', 'messenger', null,
 ['hormone', 'first messenger', 'ligand', 'signaling molecule', 'hormone (first messenger)'],
 'Chất truyền tin đầu tiên: một phân tử được tạo ra ở một bộ phận của cơ thể, mang thông điệp đến các tế bào ở bộ phận khác, nơi nó liên kết với thụ thể.');
@@ -3062,9 +3057,6 @@ card('sigcomplex', 'Phức hợp tín hiệu', 'Phức hợp tín hiệu', 'sigs
 card('rtkmsg', 'Thông điệp đã được chuyển đến ô', 'Tin nhắn đã được gửi vào', 'sigstate', ['Thông báo đã được gửi', 'lên tế bào'],
 ['message passed on to the cell', 'message to the cell', 'phosphorylated target proteins', 'communicate message to cell', 'communication of the message', 'cell response to the message'],
 'Kết thúc chu trình: phức hợp tín hiệu truyền thông điệp đến tế bào, thường bằng cách phosphoryl hóa các protein khác.');
-card('insulin', 'Insulin', 'Insulin', 'messenger', null,
-['insulin', 'insulin (hormone)', 'binding of insulin', 'the hormone insulin'],
-'Hormone polypeptide báo hiệu lượng đường trong máu cao. Thụ thể của nó luôn là một dimer trong màng tế bào.');
 card('irrest', 'Dimer thụ thể insulin ở trạng thái nghỉ', 'IR khi nghỉ ngơi', 'sigstate', ['Insulin lúc nghỉ ngơi', 'dimer thụ thể'],
 ['resting insulin receptor dimer', 'resting insulin receptor', 'insulin receptor dimer', 'insulin receptor (resting)', 'unbound insulin receptor'],
 'Thụ thể insulin khi nằm trong màng tế bào mà không có insulin: luôn ở dạng dimer, với hai miền kinase không hoạt động.');
@@ -3150,11 +3142,6 @@ name: 'Adenylate cyclase', short: 'AC', ec: '4.6.1.1', family: 'lyase', region: 
 aliases: ['adenylate cyclase', 'adenylyl cyclase', 'adenyl cyclase', 'adenylate cyclase (ac)', 'adenylyl cyclase (ac)'],
 note: 'Một enzyme màng chuyển ATP thành AMP vòng (cAMP) và pyrophosphate. Gs alpha-GTP hoạt động kích thích nó còn Gi alpha-GTP ức chế nó, và nó ngừng hoạt động khi tiểu đơn vị G alpha chuyển GTP thành GDP.'
 };
-enzyme.pka = {
-name: 'Protein kinase A (PKA)', short: 'PKA', ec: '2.7.11.11', family: 'kinase', region: 'sig', lines: ['Protein kinase A', '(PKA)'],
-aliases: ['protein kinase a', 'pka', 'camp-dependent protein kinase', 'cyclic amp-dependent protein kinase', 'camp dependent protein kinase', 'a-kinase', 'protein kinase a (pka)'],
-note: 'Một kinase ở trạng thái nghỉ dưới dạng R2C2 gồm hai tiểu đơn vị điều hòa và hai tiểu đơn vị xúc tác, cho đến khi bốn cAMP gắn vào các tiểu đơn vị điều hòa và giải phóng các tiểu đơn vị xúc tác. Các tiểu đơn vị này gắn phosphat của ATP lên các gốc serine và threonine của protein khác; enzyme còn gọi là protein kinase phụ thuộc cAMP.'
-};
 enzyme.pde = {
 name: 'cAMP phosphodiesterase', short: 'PDE', ec: '3.1.4.17', family: 'hydrolase', region: 'sig',
 aliases: ['phosphodiesterase', 'camp phosphodiesterase', 'pde', 'cyclic nucleotide phosphodiesterase', 'camp-pde', 'camp phosphodiesterase (pde)'],
@@ -3237,13 +3224,17 @@ note: 'Chất vận chuyển glucose của tế bào cơ và tế bào mỡ. Ins
 };
 var CONFUSABLE = {
 gpcrp: ['badr', 'rtkp', 'insr'], gprot: ['galpha', 'gbg', 'gpcrp'], galpha: ['gprot', 'gbg', 'adcyc'], gbg: ['galpha', 'gprot', 'gpcrp'],
-badr: ['gpcrp', 'insr', 'rtkp'], adcyc: ['plcp', 'pde', 'galpha'], pka: ['pkc', 'camk', 'phk'], pde: ['adcyc', 'plcp', 'ppase'],
+badr: ['gpcrp', 'insr', 'rtkp'], adcyc: ['plcp', 'pde', 'galpha'], pde: ['adcyc', 'plcp', 'ppase'],
 ppase: ['pde', 'pka', 'phk'], phk: ['pka', 'pkc', 'camk'], plcp: ['adcyc', 'pde', 'pi3k'], ip3r: ['glut4', 'calm', 'plcp'],
 calm: ['camk', 'ip3r', 'pkc'], camk: ['pkc', 'pka', 'calm'], pkc: ['camk', 'pka', 'akt'], rtkp: ['insr', 'gpcrp', 'sh2p'],
 insr: ['rtkp', 'badr', 'irs1'], sh2p: ['irs1', 'rtkp', 'pi3k'], irs1: ['sh2p', 'pi3k', 'insr'], pi3k: ['pdk1', 'akt', 'irs1'],
 pdk1: ['akt', 'pi3k', 'pkc'], akt: ['pdk1', 'pi3k', 'pkc'], glut4: ['ip3r', 'gpcrp', 'insr']
 };
-Object.keys(CONFUSABLE).forEach(function (id) { enzyme[id].confusable = CONFUSABLE[id]; });
+Object.keys(CONFUSABLE).forEach(function (id) { if (enzyme[id]) { enzyme[id].confusable = CONFUSABLE[id]; } });
+P.extendRegions.molecule.dag = ['sig'];
+P.extendRegions.molecule.insulin = ['sig'];
+P.extendRegions.molecule.glucagon = ['sig'];
+P.extendRegions.enzyme.pka = ['sig'];
 })(typeof window !== 'undefined' ? window : globalThis);
 
 (function (root) {
@@ -3300,9 +3291,6 @@ card('boarr', 'Thụ thể có gắn arrestin', 'Thụ thể + arrestin', 'sigst
 card('bagdp', 'Gs alpha-GDP', 'Gs alpha-GDP', 'sigstate', null,
 ['gs alpha-gdp', 'gs alpha gdp', 'gsalpha-gdp', 'inactive gs alpha', 'gs-alpha-gdp'],
 'Sau khi thực hiện hoạt động GTPase của chính nó, tiểu đơn vị alpha của Gs đã chuyển hóa GTP thành GDP. Nó tách khỏi adenylate cyclase và tái hợp với các tiểu đơn vị beta và gamma.');
-card('glucagon', 'Glucagon', 'Glucagon', 'messenger', null,
-['glucagon', 'glucagon hormone', 'glucagon (hormone)'],
-'Một loại hormone peptide gồm 29 axit amin. Nó liên kết với thụ thể liên kết protein G và, thông qua Gs, adenylate cyclase và PKA, nó chuyển đổi tế bào gan từ quá trình đường phân sang quá trình tân tạo đường.');
 card('glact', 'Thụ thể glucagon liên kết với Gs', 'Thụ thể glucagon', 'sigstate', ['Thụ thể glucagon', 'với Gs liên kết'],
 ['glucagon receptor with gs bound', 'glucagon-bound receptor', 'glucagon bound receptor', 'receptor with glucagon bound', 'active glucagon receptor'],
 'Thụ thể glucagon với glucagon liên kết, có hình dạng tác động lên protein G kích thích nằm cạnh nó.');
